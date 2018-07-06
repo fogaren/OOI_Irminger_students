@@ -1,6 +1,9 @@
 %This line will display information about the netcdf file you have
 %downloaded (change the filename it points to)
-filename = ['deployment0003_GI01SUMO-RID16-06-DOSTAD000-recovered_host-dosta_abcdjm_dcl_instrument_recovered_20160710T174508.675000-20170812T204759.773000.nc']; ncdisp(filename)
+path = ['C:\Users\emmal\Dropbox\OOI_Irminger_students\SST_LW_Winter_18\OOI Data_y3\DataFile\Sensor Data\']; %Emma's path
+file = ['deployment0003_GI01SUMO-RID16-06-DOSTAD000-recovered_host-dosta_abcdjm_dcl_instrument_recovered_20160710T174508.675000-20170812T204759.773000.nc']; 
+filename = [path file]
+ncdisp(filename)
 
 %These are the names of the variables I chose to save from the file above.
 %You will probably also want time, lat, and lon and (if available) the sea
@@ -22,10 +25,14 @@ filename = ['deployment0003_GI01SUMO-RID16-06-DOSTAD000-recovered_host-dosta_abc
     %Convert to matlab time (make sure the function convertTime is in your
     %Matlab path)
     Yr3_rid.time_mat = convertTime(Yr3_rid.time);
-    
+
+    %%
     %This line will display information about the netcdf file you have
 %downloaded (change the filename it points to)
-filename = ['deployment0003_GI03FLMB-RIS01-03-DOSTAD000-recovered_host-dosta_abcdjm_sio_instrument_recovered_20160713T160001-20170112T181502.nc']; ncdisp(filename)
+path = ['C:\Users\emmal\Dropbox\OOI_Irminger_students\SST_LW_Winter_18\OOI Data_y3\DataFile\Sensor Data\'];
+file = ['deployment0003_GI03FLMB-RIS01-03-DOSTAD000-recovered_host-dosta_abcdjm_sio_instrument_recovered_20160713T160001-20170112T181502.nc'];
+filename= [path file]
+ncdisp(filename)
 
 %These are the names of the variables I chose to save from the file above.
 %You will probably also want time, lat, and lon and (if available) the sea
@@ -52,7 +59,7 @@ filename = ['deployment0003_GI03FLMB-RIS01-03-DOSTAD000-recovered_host-dosta_abc
     figure(11); clf
     plot(Yr3_rid.time_mat_flankb,Yr3_rid.oxygen_flankb,'k.'); hold on;
     plot(Yr3_rid.time_mat,Yr3_rid.oxygen_apexns,'g.')
-    %xlim([datenum(2015,9,1) datenum(2016,8,1)]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
+    xlim([datenum(2015,9,1) datenum(2016,8,1)]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
     ylim([250 320]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
     datetick('x',12,'keeplimits'); %This changes the x tick labels to be dates
     ylabel('Dissolved oxygen (\mumol kg^{-1})','Fontsize',10)
@@ -82,7 +89,7 @@ filename = ['deployment0003_GI03FLMB-RIS01-03-DOSTAD000-recovered_host-dosta_abc
     %%
     figure(9); clf
     plot(Yr3_rid.time_mat_flankb,Yr3_rid.oxygen_flankb,'k.'); hold on;
-    plot(Yr3_rid.time_mat_flankb,equil_flankb,'g.')
+    %plot(Yr3_rid.time_mat_flankb,equil_flankb,'g.') "equil_flankb" undefined
     %xlim([datenum(2015,9,1) datenum(2016,8,1)]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
     ylim([250 330]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
     datetick('x',12,'keeplimits'); %This changes the x tick labels to be dates
@@ -93,7 +100,7 @@ filename = ['deployment0003_GI03FLMB-RIS01-03-DOSTAD000-recovered_host-dosta_abc
     %%
     figure(10); clf
     plot(Yr3_rid.time_mat,Yr3_rid.oxygen_apexns,'k.'); hold on;
-    plot(Yr3_rid.time_mat,equil_apex,'g.')
+    %plot(Yr3_rid.time_mat,equil_apex,'g.') "equil_apex" undefined
     %xlim([datenum(2015,9,1) datenum(2016,8,1)]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
     %ylim([250 330]) %This allows you to set limits for the min and max y axis values - I comment this out until I've looked at the data
     datetick('x',12,'keeplimits'); %This changes the x tick labels to be dates
