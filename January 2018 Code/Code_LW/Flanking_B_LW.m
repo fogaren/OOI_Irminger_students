@@ -1,9 +1,10 @@
 %This line will display information about the netcdf file you have
 %downloaded (change the filename it points to)
-path = ['C:\Users\emmal\Dropbox\OOI_Irminger_students\SST_LW_Winter_18\OOI Data_y3\DataFile\Sensor Data\'];
+%Emma's path = ['C:\Users\emmal\Dropbox\OOI_Irminger_students\SST_LW_Winter_18\OOI Data_y3\DataFile\Sensor Data\'];
+path = ['/Users/lucywanzer/Dropbox/OOI_Irminger_students/SST_LW_Winter_18/OOI Data_y3/DataFile/Sensor Data/'];
 file = ['deployment0003_GI03FLMB-RIS01-03-DOSTAD000-recovered_host-dosta_abcdjm_sio_instrument_recovered_20160713T160001-20170112T181502.nc'];
 filename= [path file]
-ncdisp(filename)
+ncdisp(filename) 
 
 %These are the names of the variables I chose to save from the file above.
 %You will probably also want time, lat, and lon and (if available) the sea
