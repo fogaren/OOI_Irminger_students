@@ -83,39 +83,47 @@ mintime = datenum(2018,6,5); maxtime = datenum(2018,6,25);
     gps.lat_filt = gps.data_filt(:,2);
     
 [suna.time_filt, suna.NO3_filt] = meanTimeInterval(suna.time, suna.NO3raw, time_step, begtime, endtime);
-%% Isolate data from transects 1&2
-maxT1=datenum(2018,6,7); minT2=datenum(2018,6,22)
-    time_step = 10/24/60; %10 minutes
-    begtimeT1  = mintime; 
-    begtimeT2 =minT2
-    endtimeT1 = maxT1;
-    endtimeT2 =maxtime
 
+%% Attempt to remove cleaning times from nitrate *help required*
+C1start = datenum(2018,6,15,16,25,00); C1end = datenum(2018,6,15,17,45,00);
+clean = find((suna.time_filt>C1start) & (suna.time_filt<C1end)); %when I ask Matlab to find the data between C1start and C1end, it returns an empty matrix
+    suna.time_clean = suna.time_filt; %now suna.time_clean is the variable which includes cleaning times
+    suna.time_filt(clean) = NaN; %now all proceeding figures will not include cleaning times
+%Figure to see if it works
+figure(5);
+    plot(suna.time_clean, suna.NO3_filt, 'k.'); hold on;
+    plot(suna.time_filt, suna.NO3_filt, 'm.'); hold on;
+    axis([mintime maxtime 50 110]);
+    datetick('x', 2, 'keeplimits');
+%% Isolate data from transects 1&2
+maxT1=datenum(2018,6,7); minT2=datenum(2018,6,22);
+    time_step = 10/24/60; %10 minutes
+    
     %T1
-[ssw.time_filtT1, ssw.data_filtT1] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, begtimeT1, endtimeT1);
+[ssw.time_filtT1, ssw.data_filtT1] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, mintime, maxT1);
     ssw.flr_filtT1 = ssw.data_filtT1(:,1);
     ssw.SST_filtT1 = ssw.data_filtT1(:,2);
     ssw.SSS_filtT1 = ssw.data_filtT1(:,3);
     ssw.Tship_filtT1 = ssw.data_filtT1(:,4);
     
-[gps.time_filtT1, gps.data_filtT1] = meanTimeInterval(gps.time, [gps.lon gps.lat], time_step, begtimeT1, endtimeT1);
+[gps.time_filtT1, gps.data_filtT1] = meanTimeInterval(gps.time, [gps.lon gps.lat], time_step, mintime, maxT1);
     gps.lon_filtT1 = gps.data_filtT1(:,1);
     gps.lat_filtT1 = gps.data_filtT1(:,2);
     
-[suna.time_filtT1, suna.NO3_filtT1] = meanTimeInterval(suna.time, suna.NO3raw, time_step, begtimeT1, endtimeT1);
+[suna.time_filtT1, suna.NO3_filtT1] = meanTimeInterval(suna.time, suna.NO3raw, time_step, mintime, maxT1);
 
     %T2
-[ssw.time_filtT2, ssw.data_filtT2] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, begtimeT2, endtimeT2);
+[ssw.time_filtT2, ssw.data_filtT2] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, minT2, maxtime);
     ssw.flr_filtT2 = ssw.data_filtT2(:,1);
     ssw.SST_filtT2 = ssw.data_filtT2(:,2);
     ssw.SSS_filtT2 = ssw.data_filtT2(:,3);
     ssw.Tship_filtT2 = ssw.data_filtT2(:,4);
     
-[gps.time_filtT2, gps.data_filtT2] = meanTimeInterval(gps.time, [gps.lon gps.lat], time_step, begtimeT2, endtimeT2);
+[gps.time_filtT2, gps.data_filtT2] = meanTimeInterval(gps.time, [gps.lon gps.lat], time_step, minT2, maxtime);
     gps.lon_filtT2 = gps.data_filtT2(:,1);
     gps.lat_filtT2 = gps.data_filtT2(:,2);
     
-[suna.time_filtT2, suna.NO3_filtT2] = meanTimeInterval(suna.time, suna.NO3raw, time_step, begtimeT2, endtimeT2);
+[suna.time_filtT2, suna.NO3_filtT2] = meanTimeInterval(suna.time, suna.NO3raw, time_step, minT2, maxtime);
 %% Filter oxygen data
 %Calculate derivative of O2 data
 O2diff = diff(optode.O2raw);
@@ -163,8 +171,8 @@ optode.O2_nospike_salcorr = aaoptode_salpresscorr(optode.O2_nospike, optode.SST_
 %% Filter O2 to even grid
 [optode.time_filt, optode.O2_nospike_salcorr_filt] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, begtime, endtime);
 %O2 for Transects 1&2
-[optode.time_filtT1, optode.O2_nospike_salcorr_filtT1] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, begtimeT1, endtimeT1);
-[optode.time_filtT2, optode.O2_nospike_salcorr_filtT2] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, begtimeT2, endtimeT2);
+[optode.time_filtT1, optode.O2_nospike_salcorr_filtT1] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, mintime, maxT1);
+[optode.time_filtT2, optode.O2_nospike_salcorr_filtT2] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, minT2, maxtime);
 
 %% Read in calibration data for O2
 % [Winkler_BCP, Winkler_BCPtxt] = xlsread('C:/Users/Hilary/Dropbox/Irminger5/Irminger5_WinklerSamples.xlsx');
@@ -230,13 +238,20 @@ axis([lonminplot lonmaxplot latminplot latmaxplot])
 xlabel('Longitude'); ylabel('Latitude'); title('Nitrate')
 %% Emma nitrate vs. fluorometer figure TRANSECTS
 figure (4); clf;
-    subplot(211)
+subplot(221)
     plot(suna.NO3_filtT1, ssw.flr_filtT1, 'b.')
     xlabel('Nitrate'); ylabel('Fluo');
     axis ([-20, 20, 60, 90]); 
-% Emma nitrate vs. O2 concentration figure
-    subplot(212)
+subplot(222)
     plot(suna.NO3_filtT1, optode.O2_nospike_salcorr_filtT1, 'r.')
+    xlabel('Nitrate'); ylabel('O2 Concentration')
+    axis ([0, 20, 280, 380])
+subplot(223)
+    plot(suna.NO3_filtT2, ssw.flr_filtT2, 'b.')
+    xlabel('Nitrate'); ylabel('Fluo');
+    axis ([-20, 20, 60, 90]); 
+subplot(224)
+    plot(suna.NO3_filtT2, optode.O2_nospike_salcorr_filtT2, 'r.')
     xlabel('Nitrate'); ylabel('O2 Concentration')
     axis ([0, 20, 280, 380])
 %% Emma spatial and time-based figures for fluo and nitrate LONGITUDE
