@@ -84,19 +84,24 @@ mintime = datenum(2018,6,5); maxtime = datenum(2018,6,25);
     
 [suna.time_filt, suna.NO3_filt] = meanTimeInterval(suna.time, suna.NO3raw, time_step, begtime, endtime);
 
-%% Attempt to remove cleaning times from nitrate *help required*
-C1start = datenum(2018,6,15,16,25,00); C1end = datenum(2018,6,15,17,45,00);
-clean = find((suna.time_filt>C1start) & (suna.time_filt<C1end)); %when I ask Matlab to find the data between C1start and C1end, it returns an empty matrix
-    suna.time_clean = suna.time_filt; %now suna.time_clean is the variable which includes cleaning times
-    suna.time_filt(clean) = NaN; %now all proceeding figures will not include cleaning times
+%% Remove cleaning times from nitrate 
+C1start = datenum(2018,6,15,16,15,00); C1end = datenum(2018,6,15,17,45,00); %Cleaned SUNA-only 
+C2start = datenum(2018,6,19,12,00,00); C2end = datenum(2018,6,19,13,30,00); %tube cleaning
+
+clean = find(suna.time_filt>C1start & suna.time_filt<C1end);
+    suna.time_clean = suna.time_filt; 
+    suna.time_clean(clean) = NaN; %now suna.time_clean omits SUNA cleaning times
+cleantube = find(suna.time_filt>C2start & suna.time_filt<C2end);
+    suna.time_clean(cleantube) = NaN; %now suna.time_clean omits tube cleaning times
+
 %Figure to see if it works
-figure(5);
-    plot(suna.time_clean, suna.NO3_filt, 'k.'); hold on;
-    plot(suna.time_filt, suna.NO3_filt, 'm.'); hold on;
-    axis([mintime maxtime 50 110]);
+figure(5); clf;
+plot(suna.time_filt, suna.NO3_filt, 'm.'); hold on; %plots everything
+plot(suna.time_clean, suna.NO3_filt, 'k.'); hold on; %omits the cleaning times
+    axis([mintime maxtime -20 30]);
     datetick('x', 2, 'keeplimits');
 %% Isolate data from transects 1&2
-maxT1=datenum(2018,6,7); minT2=datenum(2018,6,22);
+maxT1=datenum(2018,6,7); minT2=datenum(2018,6,22); %use begtime and endtime too
     time_step = 10/24/60; %10 minutes
     
     %T1
