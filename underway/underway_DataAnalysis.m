@@ -93,42 +93,25 @@ clean = find(suna.time_filt>C1start & suna.time_filt<C1end);
     suna.time_clean(clean) = NaN; %now suna.time_clean omits SUNA cleaning times
 cleantube = find(suna.time_filt>C2start & suna.time_filt<C2end);
     suna.time_clean(cleantube) = NaN; %now suna.time_clean omits tube cleaning times
+    suna.NO3_clean = suna.NO3_filt;
+    suna.NO3_clean(clean) = NaN;
+    suna.NO3_clean(cleantube) = NaN;
 
 %Figure to see if it works
 figure(5); clf;
-plot(suna.time_filt, suna.NO3_filt, 'm.'); hold on; %plots everything
-plot(suna.time_clean, suna.NO3_filt, 'k.'); hold on; %omits the cleaning times
-    axis([mintime maxtime -20 30]);
+plot(suna.time_filt, suna.NO3_filt, 'k.'); hold on; %plots everything
+plot(suna.time_filt(clean), suna.NO3_filt(clean), 'm.', 'MarkerSize', 15); hold on; %omits the cleaning times
+plot(suna.time_filt(cleantube), suna.NO3_filt(cleantube), 'm.', 'MarkerSize', 15); hold on; %omits the cleaning times
+    axis([mintime maxtime -20 20]);
     datetick('x', 2, 'keeplimits');
 %% Isolate data from transects 1&2
-maxT1=datenum(2018,6,7); minT2=datenum(2018,6,22); %use begtime and endtime too
-    time_step = 10/24/60; %10 minutes
-    
+maxT1=datenum(2018,6,7); minT2=datenum(2018,6,22); maxT2=datenum(2018,6,23,17,40,00); %use begtime too
+
     %T1
-[ssw.time_filtT1, ssw.data_filtT1] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, mintime, maxT1);
-    ssw.flr_filtT1 = ssw.data_filtT1(:,1);
-    ssw.SST_filtT1 = ssw.data_filtT1(:,2);
-    ssw.SSS_filtT1 = ssw.data_filtT1(:,3);
-    ssw.Tship_filtT1 = ssw.data_filtT1(:,4);
-    
-[gps.time_filtT1, gps.data_filtT1] = meanTimeInterval(gps.time, [gps.lon gps.lat], time_step, mintime, maxT1);
-    gps.lon_filtT1 = gps.data_filtT1(:,1);
-    gps.lat_filtT1 = gps.data_filtT1(:,2);
-    
-[suna.time_filtT1, suna.NO3_filtT1] = meanTimeInterval(suna.time, suna.NO3raw, time_step, mintime, maxT1);
+T1= find(ssw.time_filt>begtime &ssw.time_filt<maxT1);
 
     %T2
-[ssw.time_filtT2, ssw.data_filtT2] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, minT2, maxtime);
-    ssw.flr_filtT2 = ssw.data_filtT2(:,1);
-    ssw.SST_filtT2 = ssw.data_filtT2(:,2);
-    ssw.SSS_filtT2 = ssw.data_filtT2(:,3);
-    ssw.Tship_filtT2 = ssw.data_filtT2(:,4);
-    
-[gps.time_filtT2, gps.data_filtT2] = meanTimeInterval(gps.time, [gps.lon gps.lat], time_step, minT2, maxtime);
-    gps.lon_filtT2 = gps.data_filtT2(:,1);
-    gps.lat_filtT2 = gps.data_filtT2(:,2);
-    
-[suna.time_filtT2, suna.NO3_filtT2] = meanTimeInterval(suna.time, suna.NO3raw, time_step, minT2, maxtime);
+T2= find(ssw.time_filt>minT2 & ssw.time_filt<maxT2);
 %% Filter oxygen data
 %Calculate derivative of O2 data
 O2diff = diff(optode.O2raw);
@@ -175,9 +158,6 @@ optode.O2_nospike_salcorr = aaoptode_salpresscorr(optode.O2_nospike, optode.SST_
 
 %% Filter O2 to even grid
 [optode.time_filt, optode.O2_nospike_salcorr_filt] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, begtime, endtime);
-%O2 for Transects 1&2
-[optode.time_filtT1, optode.O2_nospike_salcorr_filtT1] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, mintime, maxT1);
-[optode.time_filtT2, optode.O2_nospike_salcorr_filtT2] = meanTimeInterval(optode.time, optode.O2_nospike_salcorr, time_step, minT2, maxtime);
 
 %% Read in calibration data for O2
 % [Winkler_BCP, Winkler_BCPtxt] = xlsread('C:/Users/Hilary/Dropbox/Irminger5/Irminger5_WinklerSamples.xlsx');
@@ -215,7 +195,7 @@ plot(optode.time_filt, optode.O2_nospike_salcorr_filt, 'b.'); hold on;
 axis([mintime maxtime O2min O2max])
 datetick('x', 2, 'keeplimits'); title('Oxygen concentration')
 
-    subplot(4,1,4)
+    subplot(4,1,4) %INCLUDES CLEANING TIMES STILL
 plot(suna.time, suna.NO3raw, 'k.'); hold on;
 plot(suna.time_filt, suna.NO3_filt, 'b.'); hold on;
 axis([mintime maxtime NO3min NO3max])
@@ -242,28 +222,28 @@ scatter(gps.lon_filt, gps.lat_filt, [], suna.NO3_filt); colorbar;
 axis([lonminplot lonmaxplot latminplot latmaxplot])
 xlabel('Longitude'); ylabel('Latitude'); title('Nitrate')
 %% Emma nitrate vs. fluorometer figure TRANSECTS
-figure (4); clf;
+figure (4); clf; %ALL OMIT CLEANING TIMES
 subplot(221)
-    plot(suna.NO3_filtT1, ssw.flr_filtT1, 'b.')
+    plot(suna.NO3_clean(T1), ssw.flr_filt(T1), 'b.')
     xlabel('Nitrate'); ylabel('Fluo');
-    axis ([-20, 20, 60, 90]); 
+    axis ([-20, 20, 60, 90]); title('Transect 1 Nitrate vs. Fluo')
 subplot(222)
-    plot(suna.NO3_filtT1, optode.O2_nospike_salcorr_filtT1, 'r.')
+    plot(suna.NO3_clean(T1), optode.O2_nospike_salcorr_filt(T1), 'r.')
     xlabel('Nitrate'); ylabel('O2 Concentration')
-    axis ([0, 20, 280, 380])
+    axis ([-20, 20, 280, 390]); title('Transect 1 Nitrate vs. O2')
 subplot(223)
-    plot(suna.NO3_filtT2, ssw.flr_filtT2, 'b.')
+    plot(suna.NO3_clean(T2), ssw.flr_filt(T2), 'b.')
     xlabel('Nitrate'); ylabel('Fluo');
-    axis ([-20, 20, 60, 90]); 
+    axis ([-20, 20, 60, 90]); title('Transect 2 Nitrate vs. Fluo')
 subplot(224)
-    plot(suna.NO3_filtT2, optode.O2_nospike_salcorr_filtT2, 'r.')
+    plot(suna.NO3_clean(T2), optode.O2_nospike_salcorr_filt(T2), 'r.')
     xlabel('Nitrate'); ylabel('O2 Concentration')
-    axis ([0, 20, 280, 380])
+    axis ([-20, 20, 280, 390]); title('Transect 2 Nitrate vs. O2')
 %% Emma spatial and time-based figures for fluo and nitrate LONGITUDE
 figure (6); clf;
 lonminplot= -43; lonmaxplot= -20; NO3minplot= -30; NO3maxplot= 20; Fminplot= 50; Fmaxplot= 110;
     subplot(211)
-scatter(gps.lon_filt, suna.NO3_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+scatter(gps.lon_filt, suna.NO3_clean, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
 axis([lonminplot lonmaxplot NO3minplot NO3maxplot])
 xlabel('Longitude'); ylabel('Nitrate'); title('Nitrate by Space and Time')
     subplot(212)
@@ -274,7 +254,7 @@ xlabel('Longitude'); ylabel('Fluo'); title('Fluo by Space and Time')
 figure (7); clf;
 latminplot= 59; latmaxplot= 65; NO3minplot= -30; NO3maxplot= 20; Fminplot= 50; Fmaxplot= 110;
     subplot(211)
-scatter(gps.lat_filt, suna.NO3_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+scatter(gps.lat_filt, suna.NO3_lean, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
 axis([latminplot latmaxplot NO3minplot NO3maxplot])
 xlabel('Latitude'); ylabel('Nitrate'); title('Nitrate by Space and Time')
     subplot(212)
