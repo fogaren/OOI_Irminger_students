@@ -175,6 +175,32 @@ optode.O2_nospike_salcorr = aaoptode_salpresscorr(optode.O2_nospike, optode.SST_
 %     Tship_uw = interp1(ssw.time_filt, ssw.Tship_filt, time_uw);
 %     dens_uw = sw_dens0(SSS_uw, Tship_uw);
     
+%% Calculate O2sol and AOU
+optode.O2sol_filt= gsw_O2sol_SP_pt(ssw.SSS_filt, ssw.SST_filt); %calculates O2sol using PSU and SST
+optode.aou_filt= (optode.O2sol_filt)-(optode.O2_nospike_salcorr_filt); %calculates AOU
+optode.O2Sat= ((optode.O2_nospike_salcorr_filt)-(optode.O2sol_filt))./(optode.O2sol_filt); %Percent saturation
+
+%Plot AOU
+AOUmin= -100; AOUmax= 100; 
+figure(5);clf
+   subplot(211)
+   yyaxis left 
+   plot(optode.time_filt, optode.aou_filt, 'm.'); hold on;
+    axis([mintime maxtime AOUmin AOUmax]);
+    ylabel ('AOU');
+    datetick('x', 2, 'keeplimits'); title('Oxygen');
+   yyaxis right
+   plot(optode.time_filt, optode.O2Sat, 'y.');
+    axis([mintime maxtime -.3 0.3]);
+    ylabel ('Percent Saturation')
+   subplot(212)
+    plot(optode.time_filt, optode.O2_nospike_salcorr_filt, 'c.'); hold on;
+    plot(optode.time_filt, optode.O2sol_filt, 'r.');
+    ylabel ('O2')
+    axis([mintime maxtime 190 390]);
+    legend('O2', 'O2sol');
+    datetick('x', 2, 'keeplimits'); 
+
 %% Plot data by time
 O2min = 290; O2max = 390; NO3min = -5; NO3max = 25; SSTmin = 4; SSTmax = 10; flrmin = 50; flrmax = 110;
 
@@ -223,19 +249,19 @@ xlabel('Longitude'); ylabel('Latitude'); title('Chlorophyll fluorescence')
 scatter(gps.lon_filt, gps.lat_filt, [], suna.NO3_filt, 'filled'); colorbar;
 axis([lonminplot lonmaxplot latminplot latmaxplot])
 xlabel('Longitude'); ylabel('Latitude'); title('Nitrate')
-%% Emma SPATIAL RATIOS of NO3(clean), Flr, O2
+%% Emma TRANSECT Ratio Comparisons
 figure (4); clf; 
-subplot(3,3,1)
+subplot(221)
     plot(suna.NO3_clean(T1), ssw.flr_filt(T1), 'b.'); hold on;
     plot(suna.NO3_clean(T2), ssw.flr_filt(T2), 'y.');
     xlabel('Nitrate'); ylabel('Fluo');
     axis ([NO3min NO3max flrmin flrmax]); title('Transects: NO3 vs. Fluo');
-subplot(3,3,4)
+subplot(222)
     plot(suna.NO3_clean(T1), optode.O2_nospike_salcorr_filt(T1), 'b.'); hold on;
     plot(suna.NO3_clean(T2), optode.O2_nospike_salcorr_filt(T2), 'y.');
     xlabel('Nitrate'); ylabel('O2 Concentration')
     axis ([NO3min NO3max O2min O2max]); title('Transect: NO3 vs. O2')
-subplot(3,3,7)
+subplot(223)
     plot(ssw.flr_filt(T1), optode.O2_nospike_salcorr_filt(T1), 'b.'); hold on;
     plot(ssw.flr_filt(T2), optode.O2_nospike_salcorr_filt(T2), 'y.');
     xlabel('Fluo'); ylabel('O2 Concentration')
@@ -267,3 +293,39 @@ xlabel('Latitude'); ylabel('Nitrate'); title('Nitrate by Space and Time')
 scatter(gps.lat_filt, ssw.flr_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
 axis([latminplot latmaxplot flrmin flrmax])
 xlabel('Latitude'); ylabel('Fluo'); title('Fluo by Space and Time')
+
+%% Emma Spatial Ratio Comparisons
+figure (8); clf; 
+subplot(221)
+    plot(suna.NO3_clean(T1), ssw.flr_filt(T1), 'b.'); hold on;
+    plot(suna.NO3_clean(T2), ssw.flr_filt(T2), 'y.'); hold on;
+    plot(suna.NO3_clean(array), ssw.flr_filt(array), 'c.'); hold on;
+    plot(suna.NO3_clean(shelf), ssw.flr_filt(shelf), 'g.'); hold on;
+    xlabel('Nitrate'); ylabel('Fluo');
+    axis ([NO3min NO3max flrmin flrmax]); title('NO3 vs. Fluo');
+subplot(222)
+    plot(suna.NO3_clean(T1), optode.aou_filt(T1), 'b.'); hold on;
+    plot(suna.NO3_clean(T2), optode.aou_filt(T2), 'y.'); hold on;
+    plot(suna.NO3_clean(array), optode.aou_filt(array), 'c.'); hold on;
+    plot(suna.NO3_clean(shelf), optode.aou_filt(shelf), 'g.'); hold on;
+    xlabel('Nitrate'); ylabel('AOU')
+    axis ([NO3min NO3max AOUmin AOUmax]); title('NO3 vs. AOU')
+subplot(223)
+    plot(ssw.flr_filt(T1), optode.aou_filt(T1), 'b.'); hold on;
+    plot(ssw.flr_filt(T2), optode.aou_filt(T2), 'y.'); hold on;
+    plot(ssw.flr_filt(array), optode.aou_filt(array), 'c.'); hold on;
+    plot(ssw.flr_filt(shelf), optode.aou_filt(shelf), 'g.'); hold on;
+    xlabel('Fluo'); ylabel('AOU')
+    axis ([flrmin flrmax AOUmin AOUmax]); title('Fluo vs. AOU')
+subplot(224)
+    plot(ssw.flr_filt(T1), optode.aou_filt(T1), 'b', 'LineWidth', 5); hold on;
+    plot(ssw.flr_filt(T2), optode.aou_filt(T2), 'y','LineWidth', 5); hold on;
+    plot(ssw.flr_filt(array), optode.aou_filt(array), 'c','LineWidth', 5); hold on;
+    plot(ssw.flr_filt(shelf), optode.aou_filt(shelf), 'g','LineWidth', 5); hold on;
+    legend ({'Transect1', 'Transect2', 'Array', 'Shelf'}, 'Fontsize', 28);
+%% Emma NO3 vs AOU over time
+figure (9); clf;
+scatter(suna.NO3_clean, optode.aou_filt, 5, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+    xlabel('Nitrate'); ylabel('AOU')
+    axis ([NO3min NO3max AOUmin AOUmax]); title('NO3 vs. AOU')
+    
