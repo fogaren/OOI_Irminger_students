@@ -15,9 +15,12 @@ for i = 1:length(castnums)
     cast{castnums(i)}.F = ASCContinuousCTDData (:,7); %flECO-AFL: Fluorescence, WET Labs ECO-AFL/FL [mg/m^3]
     cast{castnums(i)}.Turb = ASCContinuousCTDData (:,8); %turbWETntu0: Turbidity, WET Labs ECO [NTU]
     cast{castnums(i)}.D= ASCContinuousCTDData (:,11); %Depth, meters
+        [~, cast{castnums(i)}.maxindex] = max (cast{castnums(i)}.D);
     cast{castnums(i)}.Sal= ASCContinuousCTDData (:,13); %sal11: Salinity, Practical [PSU]
     cast{castnums(i)}.O2 = ASCContinuousCTDData (:,14)/(.022391); %Sbeox0ML/L converted to micromoles/L
-    cast{castnums(i)}.SvCM = ASCContinuousCTDData (:,15); %also not sure about this one, not defined in .ros files
+    cast{castnums(i)}.SvCM = ASCContinuousCTDData (:,15); 
+    cast{castnums(i)}.Lat = ASCContinuousCTDData (:,18);
+    cast{castnums(i)}.Long = ASCContinuousCTDData (:,19);
     cast{castnums(i)}.SA = gsw_SA_from_SP(cast{castnums(i)}.Sal,cast{castnums(i)}.Pres,60,19);
     cast{castnums(i)}.CT = gsw_CT_from_t(cast{castnums(i)}.SA,cast{castnums(i)}.T1,cast{castnums(i)}.Pres);
     cast{castnums(i)}.rho0 = gsw_rho(cast{castnums(i)}.SA,cast{castnums(i)}.CT,0);
@@ -29,13 +32,13 @@ end
 %%
 figure(1); clf
     castToPlot = 8;
-plot (cast{castToPlot}.T1, cast{castToPlot}.D) 
+plot (cast{castToPlot}.T1(1:cast{castToPlot}.maxindex), cast{castToPlot}.D (1:cast{castToPlot}.maxindex)) 
 axis ij
 
 %%
 figure (2); clf
-plot (cast{3}.O2, cast{3}.D); hold on;
-plot (cast{4}.O2, cast{4}.D) 
+plot (cast{3}.O2 (1:cast{3}.maxindex), cast{3}.D (1: cast{3}.maxindex)); hold on;
+plot (cast{4}.O2 (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex)) 
 axis ij
 
 %%
@@ -51,7 +54,7 @@ xlabel('Temperature (Celcius)')
 %%
 figure (4); clf
 subplot(1,2,1)
-plot (cast{3}.rho, cast{3}.D, 'g'); hold on;
+plot (cast{3}.rho0, cast{3}.D, 'g'); hold on;
 axis ij
 legend ('cast22')
 ylabel('Depth (meters)')
@@ -78,7 +81,7 @@ axis ij
 figure (6); clf
 subplot(1,2,1)
 for i = [1:8,10:12]
-plot (cast{i}.rho, cast{i}.D); hold on; %FLMA
+plot (cast{i}.rho0, cast{i}.D); hold on; %FLMA
 end
 % plot (cast{15}.T1, cast{15}.D); hold on;%FLMB
 % plot (cast{5}.T1, cast{5}.D); hold on;%SUMO
@@ -90,6 +93,7 @@ axis ij
 subplot(1,2,2)
 for i = [1:8,10:12]
 plot (cast{i}.O2, cast{i}.D); hold on; %FLMA
+[~, cast{castnums(i)}.maxindex] = max (cast{castnums(i)}.D);
 end
 % plot (cast{15}.T1, cast{15}.D); hold on;%FLMB
 % plot (cast{5}.T1, cast{5}.D); hold on;%SUMO
@@ -103,7 +107,7 @@ axis ij
 figure (6); clf
 subplot(1,2,1)
 for i = [14:22]
-plot (cast{i}.rho, cast{i}.D); hold on; %FLMA
+plot (cast{i}.rho0, cast{i}.D); hold on; 
 end
 % plot (cast{15}.T1, cast{15}.D); hold on;%FLMB
 % plot (cast{5}.T1, cast{5}.D); hold on;%SUMO
@@ -148,14 +152,96 @@ axis ij
 
 %%
 figure (7); clf
-plot (cast{7}.O2, cast{7}.D); hold on; 
-plot (cast{8}.O2, cast{8}.D); hold on;
-plot (cast{11}.O2, cast{11}.D); hold on;
-plot (cast{12}.O2, cast{12}.D); hold on;
+plot (cast{7}.aou (1:cast{7}.maxindex), cast{7}.D (1:cast{7}.maxindex)); hold on; 
+plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex)); hold on;
+plot (cast{11}.aou (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex)); hold on;
+plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex)); hold on;
 ylabel('Depth (meters)')
-xlabel('Oxygen (micromoles/L)')
+xlabel('AOU')
 legend ('Cast 7', 'Cast 8', 'Cast 11', 'Cast 12')
 axis ij
+
+%% Casts with shallow winter ventilation depths
+figure (12); clf
+subplot(2,2,1); 
+plot (cast{4}.aou (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2); hold on; 
+plot (cast{11}.aou (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2); hold on;
+plot (cast{16}.aou (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2); hold on;
+plot (cast{18}.aou (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2); hold on;
+title('Casts with shallow WVD')
+ylabel('Depth (meters)')
+xlabel('AOU')
+ylim ([0 2600])
+legend ({'Cast 4', 'Cast 11', 'Cast 16','Cast 18'}, 'FontSize', 7, 'Location', 'southwest')
+axis ij
+
+subplot(2,2,2);
+plot (cast{4}.rho0 (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2); hold on; 
+plot (cast{11}.rho0 (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2); hold on;
+plot (cast{16}.rho0 (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2); hold on;
+plot (cast{18}.rho0 (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2); hold on;
+title('Casts with shallow WVD')
+ylabel('Depth (meters)')
+xlabel('Density')
+legend ({'Cast 4', 'Cast 11', 'Cast 16', 'Cast 18'}, 'FontSize', 7, 'Location', 'southwest')
+axis ij
+
+%casts with deep winter ventilation depths
+subplot(2,2,3); 
+plot (cast{6}.aou (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2); hold on; 
+plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidth',2); hold on;
+plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2); hold on;
+plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2); hold on;
+title('Casts with deep WVD')
+ylabel('Depth (meters)')
+xlabel('AOU')
+ylim ([0 2600])
+legend ({'Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 7, 'Location', 'southwest')
+axis ij
+
+subplot(2,2,4); 
+plot (cast{6}.rho0 (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2); hold on; 
+plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewidth',2); hold on;
+plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2); hold on;
+plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2); hold on;
+title('Casts with deep WVD')
+ylabel('Depth (meters)')
+xlabel('Density')
+legend ({'Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 7, 'Location', 'southwest')
+axis ij
+%%
+figure (14); clf
+subplot(1,2,1); 
+plot (cast{4}.aou (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2,'Color','g'); hold on; 
+plot (cast{11}.aou (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2, 'Color', 'g'); hold on;
+plot (cast{16}.aou (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2, 'Color','g'); hold on;
+plot (cast{18}.aou (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2, 'Color','g'); hold on;
+plot (cast{6}.aou (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2, 'Color','b'); hold on; 
+plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidth',2, 'Color','b'); hold on;
+plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2, 'Color','b'); hold on;
+plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2, 'Color', 'b'); hold on;
+title('AOU Profile Illustrating WVD')
+ylabel('Depth (meters)')
+xlabel('AOU (micromoles/L)')
+ylim ([0 2600])
+legend ({'Cast 4', 'Cast 11', 'Cast 16','Cast 18', 'Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 8, 'Location', 'southwest')
+axis ij
+
+subplot(1,2,2);
+plot (cast{4}.rho0 (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2,'Color','g'); hold on; 
+plot (cast{11}.rho0 (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2,'Color','g'); hold on;
+plot (cast{16}.rho0 (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2,'Color','g'); hold on;
+plot (cast{18}.rho0 (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2,'Color','g'); hold on;
+plot (cast{6}.rho0 (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2,'Color','b'); hold on; 
+plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewidth',2,'Color','b'); hold on;
+plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2,'Color','b'); hold on;
+plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2,'Color','b'); hold on;
+title('Density Profile Illustrating WVD')
+ylabel('Depth (meters)')
+xlabel('Density (kg/m^3)')
+legend ({'Cast 4', 'Cast 11', 'Cast 16', 'Cast 18','Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 8, 'Location', 'southwest')
+axis ij
+
 
 %%
 figure (10); clf
@@ -175,15 +261,44 @@ ylabel('Depth (meters)')
 xlabel('Fluorescence')
 axis ij
 
-
-
 %%
-%figure(8); clf
-%plot (cast{5}.Sal, cast{5}.D); hold on;%SUMO %how to plot 2 xaxis on one graph
-%plot (cast{5}.Temp, cast{5}.D); hold on;%SUMO
-%axis ij
+figure (13); clf
+C = NaN*ones(22,3);
+C(1,:) = nicecolor('ry');
+C(2,:) = nicecolor('ry');
+C(3,:) = nicecolor('ry');
+C(4,:) = nicecolor('g');
+C(5,:) = nicecolor('ry');
+C(6,:) = nicecolor('b');
+C(7,:) = nicecolor('ry');
+C(8,:) = nicecolor('b');
+C(10,:) = nicecolor('ry');
+C(11,:) = nicecolor('g');
+C(12,:) = nicecolor('b');
+C(14,:) = nicecolor('ry');
+C(15,:) = nicecolor('b');
+C(16,:) = nicecolor('g');
+C(17,:) = nicecolor('ry');
+C(18,:) = nicecolor('g');
+C(19,:) = nicecolor('ry');
+C(20,:) = nicecolor('ry');
+C(21,:) = nicecolor('ry');
+C(22,:) = nicecolor('ry');
+for i = [1:8,10:12,14:22]
+plot (cast{i}.Long, cast{i}.Lat,'.','markersize',40,'color',C(i,:)); hold on; 
+end
+plot(OOImoorings.SUMO4(2), OOImoorings.SUMO4(1),'ms','markersize',M); hold on;
+plot(OOImoorings.HYPM4(2), OOImoorings.HYPM4(1),'md','markersize',M); hold on;
+plot(OOImoorings.FLMA4(2), OOImoorings.FLMA4(1),'mp','markersize',M); hold on;
+plot(OOImoorings.FLMB4(2), OOImoorings.FLMB4(1),'mh','markersize',M); hold on;
+set (gca, 'xdir', 'reverse')
+ylabel('Latitude (deg N)', 'Fontsize', 15)
+xlabel('Longitude (Deg W)', 'Fontsize',15)
+legend ('Cast 1', 'Cast 2', 'Cast 3', 'Cast 4', 'Cast 5', 'Cast 6', 'Cast 7', 'Cast 8', 'Cast 10', 'Cast 11', 'Cast 12', 'Cast 14', 'Cast 15', 'Cast 16', 'Cast 17', 'Cast 18', 'Cast 19', 'Cast 20', 'Cast 21', 'Cast 22','SUMO','HYPM', 'FLMA', 'FLMB','Location','southeast')
 
-%%
+
+
+%% Showing that O2sol and O2sol2 produce the same values 
 figure (6); clf
 subplot(1,2,1)
 plot (cast{7}.O2sol, cast{7}.D); hold on; %FLMA
@@ -202,3 +317,5 @@ ylabel('Depth (meters)')
 xlabel('O2sol2')
 legend ('Cast 7', 'Cast 15', 'Cast 5')
 axis ij
+
+
