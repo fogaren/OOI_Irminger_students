@@ -71,15 +71,15 @@ filename = ['deployment0002_GI02HYPM-WFP02-01-FLORDL000-recovered_wfp-flord_l_wf
     Yr2_wfp.chla = ncread(filename,'fluorometric_chlorophyll_a'); %long_name = 'Chlorophyll-a Concentration' units = 'ug L-1'  
 
  %% Assign profile indices prior to gridding
-Yr1_wfp.depth_dosta = gsw_z_from_p(Yr1_wfp.pressure_dosta,Yr1_wfp.lat_dosta);
+Yr1_wfp.depth_dosta = -gsw_z_from_p(Yr1_wfp.pressure_dosta,Yr1_wfp.lat_dosta);
     [Yr1_wfp.profile_index,Yr1_wfp.updown_index] = profileIndex(Yr1_wfp.depth_dosta);
 
-Yr2_wfp.depth_dosta = gsw_z_from_p(Yr2_wfp.pressure_dosta,Yr2_wfp.lat_dosta);
+Yr2_wfp.depth_dosta = -gsw_z_from_p(Yr2_wfp.pressure_dosta,Yr2_wfp.lat_dosta);
     [Yr2_wfp.profile_index,Yr2_wfp.updown_index] = profileIndex(Yr2_wfp.depth_dosta);
 
 %% Calculate density in raw profiles to enable gridding on density surfaces
-Yr1_wfp.pdens = gsw_p_from_z(Yr1_wfp.depth_dosta, Yr1_wfp.lat_dosta); %potential density function
-Yr2_wfp.pdens = gsw_p_from_z(Yr2_wfp.depth_dosta, Yr2_wfp.lat_dosta);
+Yr1_wfp.pdens = gsw_p_from_z(-Yr1_wfp.depth_dosta, Yr1_wfp.lat_dosta); %potential density function
+Yr2_wfp.pdens = gsw_p_from_z(-Yr2_wfp.depth_dosta, Yr2_wfp.lat_dosta);
 
 %% Grid data to consistent depth intervals for each profile
 depth_grid = [150:5:2600];
@@ -108,7 +108,6 @@ Yr2_wfpgrid.updown = Yr2_wfpgrid.profile_direction;
 [Yr1_wfpgrid.scivars_pair,Yr1_wfpgrid.ind_pair] = profilePairMean(Yr1_wfpgrid,tol);
 [Yr2_wfpgrid.scivars_pair,Yr2_wfpgrid.ind_pair] = profilePairMean(Yr2_wfpgrid,tol);
 
-    
 %% Unpack scivars in gridded form
 %When using scivars, gets all profiles (both up and down)
 %When using scivars_pair, takes mean of paired up and down profiles
@@ -143,8 +142,6 @@ Yr2_wfpgrid.press = sw_pres(repmat(Yr2_wfpgrid.depth_grid,length(Yr2_wfpgrid.pro
 Yr1_wfpgrid.O2sat = (Yr1_wfpgrid.O2conc./O2equil - 1)*100;   
     O2equil = O2sol(Yr2_wfpgrid.S,Yr2_wfpgrid.T);
 Yr2_wfpgrid.O2sat = (Yr2_wfpgrid.O2conc./O2equil - 1)*100;
-    O2equil = O2sol(Yr1_wfpgrid_dens.S,Yr1_wfpgrid_dens.T);
-
 
 %% If using separate up and down profiles, show comparison (don't do this if using profilePairMean above)
 %plotUpDownProfileComparisonWFP
