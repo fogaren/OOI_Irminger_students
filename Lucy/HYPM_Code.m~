@@ -138,9 +138,9 @@ Yr2_wfpgrid.press = gsw_p_from_z(repmat(-Yr2_wfpgrid.depth_grid,length(Yr2_wfpgr
         repmat(Yr2_wfpgrid.lat,1,length(Yr2_wfpgrid.depth_grid))');      
     
 %Calculate O2 saturation    
-    O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid.S,Yr1_wfpgrid.T);
+    O2equil = gsw_O2sol(Yr1_wfpgrid.S,Yr1_wfpgrid.T);
 Yr1_wfpgrid.O2sat = (Yr1_wfpgrid.O2conc./O2equil - 1)*100;   
-    O2equil = gsw_O2sol_SP_pt(Yr2_wfpgrid.S,Yr2_wfpgrid.T);
+    O2equil = O2sol(Yr2_wfpgrid.S,Yr2_wfpgrid.T);
 Yr2_wfpgrid.O2sat = (Yr2_wfpgrid.O2conc./O2equil - 1)*100;
 
 %% If using separate up and down profiles, show comparison (don't do this if using profilePairMean above)

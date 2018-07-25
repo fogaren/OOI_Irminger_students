@@ -1,5 +1,8 @@
 depth = Yr1_wfp.depth_dosta;
 daten = Yr1_wfp.time_dosta;
+lat = Yr1_wfp.lat_dosta;
+lon = Yr1_wfp.lon_dosta;
+profile_direction = Yr1_wfp.updown_index'
 profile_index = Yr1_wfp.profile_index; %%Lucy added this
 num_profiles = floor(max(profile_index));
 num_scivars = min(size(scivars)); %assumes here that there will be more timestamps than variables
