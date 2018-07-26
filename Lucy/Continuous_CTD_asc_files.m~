@@ -264,15 +264,15 @@ axis ij
 %%
 figure (13); clf
 C = NaN*ones(22,3);
-C(1,:) = nicecolor('ry');
-C(2,:) = nicecolor('ry');
-C(3,:) = nicecolor('ry');
+C(1,:) = nicecolor('k');
+C(2,:) = nicecolor('k');
+C(3,:) = nicecolor('k');
 C(4,:) = nicecolor('g');
-C(5,:) = nicecolor('ry');
+C(5,:) = nicecolor('k');
 C(6,:) = nicecolor('b');
 C(7,:) = nicecolor('ry');
 C(8,:) = nicecolor('b');
-C(10,:) = nicecolor('ry');
+C(10,:) = nicecolor('');
 C(11,:) = nicecolor('g');
 C(12,:) = nicecolor('b');
 C(14,:) = nicecolor('ry');
@@ -287,10 +287,10 @@ C(22,:) = nicecolor('ry');
 for i = [1:8,10:12,14:22]
 plot (cast{i}.Long, cast{i}.Lat,'.','markersize',40,'color',C(i,:)); hold on; 
 end
-plot(OOImoorings.SUMO4(2), OOImoorings.SUMO4(1),'mt','markersize',M); hold on;
-plot(OOImoorings.HYPM4(2), OOImoorings.HYPM4(1),'mt','markersize',M); hold on;
-plot(OOImoorings.FLMA4(2), OOImoorings.FLMA4(1),'mt','markersize',M); hold on;
-plot(OOImoorings.FLMB4(2), OOImoorings.FLMB4(1),'mt','markersize',M); hold on;
+plot(-OOImoorings.SUMO4(2), OOImoorings.SUMO4(1),'^k','markersize',M); hold on;
+plot(-OOImoorings.HYPM4(2), OOImoorings.HYPM4(1),'^k','markersize',M); hold on;
+plot(-OOImoorings.FLMA4(2), OOImoorings.FLMA4(1),'^k','markersize',M); hold on;
+plot(-OOImoorings.FLMB4(2), OOImoorings.FLMB4(1),'^k','markersize',M); hold on;
 set (gca, 'xdir', 'reverse')
 ylabel('Latitude (deg N)', 'Fontsize', 15)
 xlabel('Longitude (Deg W)', 'Fontsize',15)
