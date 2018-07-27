@@ -216,11 +216,11 @@ plot (cast{4}.aou (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewid
 plot (cast{11}.aou (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2, 'Color', 'g'); hold on;
 plot (cast{16}.aou (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2, 'Color','g'); hold on;
 plot (cast{18}.aou (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2, 'Color','g'); hold on;
-plot (cast{6}.aou (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2, 'Color',nicecolor('bw')); hold on; 
-plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidth',2, 'Color',nicecolor('bw')); hold on;
-plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2, 'Color',nicecolor('bw')); hold on;
-plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2, 'Color', nicecolor('bw')); hold on;
-%title('AOU Profile Illustrating WVD')
+plot (cast{6}.aou (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2, 'Color','b'); hold on; 
+plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidth',2, 'Color','b'); hold on;
+plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2, 'Color','b'); hold on;
+plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2, 'Color', 'b'); hold on;
+title('AOU Profile Illustrating WVD')
 ylabel('Depth (meters)')
 xlabel('AOU (micromoles/L)')
 ylim ([0 2600])
@@ -232,11 +232,11 @@ plot (cast{4}.rho0 (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewi
 plot (cast{11}.rho0 (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2,'Color','g'); hold on;
 plot (cast{16}.rho0 (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2,'Color','g'); hold on;
 plot (cast{18}.rho0 (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2,'Color','g'); hold on;
-plot (cast{6}.rho0 (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on; 
-plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on;
-plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on;
-plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2,'Color', nicecolor('bw')); hold on;
-%title('Density Profile Illustrating WVD')
+plot (cast{6}.rho0 (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2,'Color','b'); hold on; 
+plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewidth',2,'Color','b'); hold on;
+plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2,'Color','b'); hold on;
+plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2,'Color','b'); hold on;
+title('Density Profile Illustrating WVD')
 ylabel('Depth (meters)')
 xlabel('Density (kg/m^3)')
 legend ({'Cast 4', 'Cast 11', 'Cast 16', 'Cast 18','Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 8, 'Location', 'southwest')
@@ -269,21 +269,21 @@ C(2,:) = nicecolor('k');
 C(3,:) = nicecolor('k');
 C(4,:) = nicecolor('g');
 C(5,:) = nicecolor('k');
-C(6,:) = nicecolor('bw');
-C(7,:) = nicecolor('k');
-C(8,:) = nicecolor('bw');
-C(10,:) = nicecolor('k');
+C(6,:) = nicecolor('b');
+C(7,:) = nicecolor('ry');
+C(8,:) = nicecolor('b');
+C(10,:) = nicecolor('');
 C(11,:) = nicecolor('g');
-C(12,:) = nicecolor('bw');
-C(14,:) = nicecolor('k');
-C(15,:) = nicecolor('bw');
+C(12,:) = nicecolor('b');
+C(14,:) = nicecolor('ry');
+C(15,:) = nicecolor('b');
 C(16,:) = nicecolor('g');
-C(17,:) = nicecolor('k');
+C(17,:) = nicecolor('ry');
 C(18,:) = nicecolor('g');
-C(19,:) = nicecolor('k');
-C(20,:) = nicecolor('k');
-C(21,:) = nicecolor('k');
-C(22,:) = nicecolor('k');
+C(19,:) = nicecolor('ry');
+C(20,:) = nicecolor('ry');
+C(21,:) = nicecolor('ry');
+C(22,:) = nicecolor('ry');
 for i = [1:8,10:12,14:22]
 plot (cast{i}.Long, cast{i}.Lat,'.','markersize',40,'color',C(i,:)); hold on; 
 end
