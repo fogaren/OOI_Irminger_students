@@ -91,18 +91,18 @@ filename = ['deployment0003_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr3_wfp.time_dosta_mat = convertTime(Yr1_wfp.time_dosta);
 
 %Wire-following profiler, Year 3, Fluorometer    
-filename = ['deployment0001_GI02HYPM-WFP02-01-FLORDL000-recovered_wfp-flord_l_wfp_instrument_recovered_20140912T050204-20150812T103930.nc']; ncdisp(filename)
-    Yr3_wfp.time_flord = ncread(filename,'time'); %Note that this is the same as time_dosta
+filename = ['deployment0003_GI02HYPM-WFP02-01-FLORDL000-recovered_wfp-flord_l_wfp_instrument_recovered_20160712T000207-20170712T072809.nc']; ncdisp(filename)
+    Yr3_wfp.time_flord = ncread(filename,'time');
     Yr3_wfp.lon_flord = ncread(filename,'lon');
     Yr3_wfp.lat_flord = ncread(filename,'lat');
     %CTD data - Note that these appear to be directly taken from corresponding points in
     %CTD file, and so could be used without having to pull from the CTD data
-    Yr3_wfp.temperature_flord = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_temperature'); %standard_name = 'sea_water_temperature' units = 'deg_C'
-    Yr3_wfp.pracsal_flord = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_practical_salinity'
-    Yr3_wfp.pressure_flord = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
+    Yr3_wfp.temperature_flord = ncread(filename,'ctdpf_ckl_seawater_temperature'); %standard_name = 'sea_water_temperature' units = 'deg_C'
+    Yr3_wfp.pracsal_flord = ncread(filename,'practical_salinity'); %standard_name = 'sea_water_practical_salinity'
+    Yr3_wfp.pressure_flord = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Fluorometer data
-    Yr3_wfp.backscatter = ncread(filename,'flort_kn_bback_total'); %long_name = 'Optical Backscatter' units = 'm-1'
-    Yr3_wfp.scat_total = ncread(filename,'scat_seawater'); %long_name = 'Total Scattering Coefficient of Pure Seawater' units = 'm-1'
+    Yr3_wfp.backscatter = ncread(filename,'optical_backscatter'); %long_name = 'Optical Backscatter' units = 'm-1'
+    Yr3_wfp.scat_total = ncread(filename,'seawater_scattering_coefficient'); %long_name = 'Total Scattering Coefficient of Pure Seawater' units = 'm-1'
     Yr3_wfp.chla = ncread(filename,'fluorometric_chlorophyll_a'); %long_name = 'Chlorophyll-a Concentration' units = 'ug L-1'
         %Note that there are other scattering based results that I don't
         %really understand - look back at these if I actually want to use
@@ -151,7 +151,7 @@ Yr2_wfpgrid.updown = Yr2_wfpgrid.profile_direction;
 scivars = [Yr3_wfp.temperature_dosta, Yr3_wfp.pracsal_dosta, Yr3_wfp.oxygen, Yr3_wfp.optode_temperature...
         Yr3_wfp.backscatter, Yr3_wfp.scat_total, Yr3_wfp.chla];
 [Yr3_wfpgrid] = glider_grid(Yr3_wfp.time_dosta,Yr3_wfp.lat_dosta,Yr3_wfp.lon_dosta,Yr3_wfp.depth_dosta,Yr3_wfp.profile_index,Yr3_wfp.updown_index',scivars,depth_grid);
-    Yr2_wfpgrid.depth_grid = depth_grid;
+    Yr3_wfpgrid.depth_grid = depth_grid;
 Yr3_wfpgrid.time_start = convertTime(Yr3_wfpgrid.time_start);
 Yr3_wfpgrid.duration = Yr3_wfpgrid.duration/secinday;
 Yr3_wfpgrid.updown = Yr3_wfpgrid.profile_direction; 
