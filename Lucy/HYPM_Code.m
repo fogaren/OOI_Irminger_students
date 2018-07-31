@@ -249,3 +249,81 @@ imagesc(plotting.scat_total); colorbar; title('Scat Total');
 imagesc(plotting.chla); colorbar; caxis([0 0.3]); title('Chlorophyll a');
 
 end
+
+%% Merge all years of data into a single dataset (no corrections)
+wfpmerge.time = [Yr1_wfpgrid.time_start(Yr1_wfpgrid.ind_pair); Yr2_wfpgrid.time_start(Yr2_wfpgrid.ind_pair); Yr3_wfpgrid.time_start(Yr3_wfpgrid.ind_pair)];
+wfpmerge.depth_grid = Yr1_wfpgrid.depth_grid;
+wfpmerge.T = [Yr1_wfpgrid.T Yr2_wfpgrid.T Yr3_wfpgrid.T];
+wfpmerge.S = [Yr1_wfpgrid.S Yr2_wfpgrid.S Yr3_wfpgrid.S];
+wfpmerge.pdens = [Yr1_wfpgrid.pdens Yr2_wfpgrid.pdens Yr3_wfpgrid.pdens];
+wfpmerge.O2conc = [Yr1_wfpgrid.O2conc Yr2_wfpgrid.O2conc Yr3_wfpgrid.O2conc];
+wfpmerge.O2sat = [Yr1_wfpgrid.O2sat Yr2_wfpgrid.O2sat Yr3_wfpgrid.O2sat];
+wfpmerge.backscatter = [Yr1_wfpgrid.backscatter Yr2_wfpgrid.backscatter Yr3_wfpgrid.backscatter];
+wfpmerge.chla = [Yr1_wfpgrid.chla Yr2_wfpgrid.chla Yr3_wfpgrid.chla];
+
+%% Plot merged data
+%Adjustable parameters for plotting
+    mindepth = 150; maxdepth = 2600;
+    cints = 60; %number of contour intervals
+    C = cmocean('Dense'); %set colormap
+    C2 = cmocean('Algae'); 
+
+%Make plotting grid
+[X,Y] = meshgrid(wfpmerge.time, wfpmerge.depth_grid);
+
+figure(i + 1); clf;
+    subplot(411) %Density
+cmin = 27.5; cmax = 27.8; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.pdens - 1000,cvec,'linecolor','none'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('\sigma_\theta')
+
+    subplot(412) %Temperature
+cmin = 2; cmax = 6; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.T,cvec,'linecolor','none'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Temperature (deg C)')
+
+    subplot(413) %Oxygen concentration
+cmin = 230; cmax = 320; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.O2conc,cvec,'linecolor','none'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Oxygen concentration')
+
+    subplot(414) %Oxygen saturation
+cmin = -25; cmax = 0; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.O2sat,cvec,'linecolor','none'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Oxygen saturation (%)')
+
+figure (i + 2); clf;
+    subplot(211) %Backscatter
+cmin = 4E-4; cmax = 1.5E-3; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.backscatter,cvec,'linecolor','none'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C2); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Backscatter')
+
+    subplot(212) %Chlorophyll
+cmin = 0; cmax = 0.3; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.chla,cvec,'linecolor','none'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C2); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Chlorophyll')
+
