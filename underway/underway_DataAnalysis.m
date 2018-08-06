@@ -95,19 +95,21 @@ cleantube = find(suna.time_filt>C2start & suna.time_filt<C2end);
     suna.NO3_clean = suna.NO3_filt;
     suna.NO3_clean(clean) = NaN;
     suna.NO3_clean(cleantube) = NaN;
-
-%Figure to see if it works
-figure(1); clf;
-plot(suna.time_filt, suna.NO3_filt, 'k.'); hold on; %plots everything
-    plot(suna.time_filt(clean), suna.NO3_filt(clean), 'm.', 'MarkerSize', 15); hold on; %omits the cleaning times
-    plot(suna.time_filt(cleantube), suna.NO3_filt(cleantube), 'm.', 'MarkerSize', 15); hold on; %omits the cleaning times
-    %Can also just plot suna.NO3_clean to verify above
-    axis([mintime maxtime -20 20]);
-    datetick('x', 2, 'keeplimits');
-%% Define Sections for Time & Spatial Analysis
-   
-    %Use begtime as min for T1
-    maxT1=datenum(2018,6,8,5,00,00); %arrival at OOI array
+%% Suggested discrete samples to analyze and SUNA cleaning times
+discrete_suna = [datenum(2018,6,5,19,27,00) datenum(2018,6,6,6,42,00) datenum(2018,6,8,6,26,00) datenum(2018,6,9,8,25,00) ...
+                datenum(2018,6,10,6,31,00) datenum(2018,6,12,6,31,00) datenum(2018,6,12,19,58,00) datenum(2018,6,13,18,27,00) ...
+                datenum(2018,6,14,6,39,00) datenum(2018,6,15,17,40,00) datenum(2018,6,16,12,38,00) datenum(2018,6,17,18,52,00) ...
+                datenum(2018,6,18,20,16,00) datenum(2018,6,19,12,42,00) datenum(2018,6,22,17,54,00) datenum(2018,6,23,6,59,00)];
+discrete_suna_y = [16*ones(length(discrete_suna))];
+figure(1); clf; %shows cleaning times and suggested underway sample times
+plot(suna.time_filt, suna.NO3_filt, 'm.'); hold on; %plots everything
+plot(suna.time_clean, suna.NO3_clean, 'k.'); hold on; %omits the cleaning times
+plot(discrete_suna, discrete_suna_y, 'rx');
+axis([mintime maxtime -15 20]);
+datetick('x',2, 'keeplimits');    
+%% Define Sections for Time & Spatial Analysis   
+    maxT1 = datenum(2018,6,8,5,00,00); %arrival at OOI array 
+    %use begtime as minimum time for T1
 T1= find(ssw.time_filt>begtime &ssw.time_filt<maxT1); %Transect out to array
 
     MinM4=datenum(2018,6,12,19,51,00); %CTD Cast010 prior to steaming to OSNAP M4
@@ -120,7 +122,7 @@ M4 = find(ssw.time_filt>MinM4 & ssw.time_filt<MaxM4);
 array1 = [array1A array1B];
 
     shelfmin = datenum(2018,6,16,19,00,00); %start move to OSNAP (not from Cruise report - eyeballed)
-    midshelf = datenum(2018,6,16,19,00,00);
+    %midshelf = datenum(2018,6,16,19,00,00);
     shelfmax = datenum(2018,6,19,13,49,00); %End of CTD020, move back toward SUMO5
 shelf = find(ssw.time_filt>shelfmin & ssw.time_filt<shelfmax);
 
@@ -133,7 +135,7 @@ array2 = find(ssw.time_filt>shelfmax & ssw.time_filt<minT2);
 transect = [T1 T2];
 array = [array1 array2];
 
-figure(11); clf;
+figure(11); clf; %Shows gps track with sections color coded
 %scatter(gps.lon_filt, gps.lat_filt, [], ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar; hold on;
 scatter(gps.lon_filt(T1), gps.lat_filt(T1), 'MarkerEdgeColor', nicecolor('R'), 'MarkerFaceColor', nicecolor('Rw'), 'LineWidth', .75); hold on;
 scatter(gps.lon_filt(T2), gps.lat_filt(T2), 'MarkerEdgeColor', nicecolor('R'), 'MarkerFaceColor', nicecolor('rk'), 'LineWidth', .75); hold on;
@@ -145,7 +147,6 @@ axis([-42 -30 59.5 63]);
 legend({'Transect 1', 'Transect 2', 'OSNAP East', 'OSNAP West', 'OOI Array 1', 'OOI Array 2'}, 'Fontsize', 16);
 %legend.FontSize = 20;
 xlabel('Longitude', 'Fontsize', 15); ylabel('Latitude', 'Fontsize', 15); %title('Sections of Cruise Track');
-
 
 %% Filter oxygen data
 %Calculate derivative of O2 data
@@ -316,28 +317,33 @@ xlabel('Longitude'); ylabel('O2 Sat'); title('O2 Saturation by Space and Time')
 %% Emma Spatial Ratio Comparisons !DOES NOT INCLUDE ALL SECTIONS
 figure (9); clf; 
 subplot(221)
-    plot(suna.NO3_clean(T1), ssw.flr_filt(T1), 'b.'); hold on;
-    plot(suna.NO3_clean(T2), ssw.flr_filt(T2), 'y.'); hold on;
-    plot(suna.NO3_clean(array), ssw.flr_filt(array), 'c.'); hold on;
-    plot(suna.NO3_clean(shelf), ssw.flr_filt(shelf), 'g.'); hold on;
+    scatter(suna.NO3_clean(T1), ssw.flr_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
+    scatter(suna.NO3_clean(T2), ssw.flr_filt(T2), 15, nicecolor('rk'), 'filled'); hold on;
+    scatter(suna.NO3_clean(array1), ssw.flr_filt(array1), 15, nicecolor('BRw'), 'filled'); hold on;
+    scatter(suna.NO3_clean(array2), ssw.flr_filt(array2), 15, nicecolor('rBk'), 'filled'); hold on;
+    scatter(suna.NO3_clean(shelf), ssw.flr_filt(shelf), 15,  nicecolor('GY'), 'filled'); hold on;
+    scatter(suna.NO3_clean(M4), ssw.flr_filt(M4), 15, nicecolor('Bbw'), 'filled'); hold on;
     xlabel('Nitrate'); ylabel('Fluo');
     axis ([NO3min NO3max flrmin flrmax]); title('NO3 vs. Fluo');
 subplot(222)
-    plot(suna.NO3_clean(T1), optode.aou_filt(T1), 'b.'); hold on;
-    plot(suna.NO3_clean(T2), optode.aou_filt(T2), 'y.'); hold on;
-    plot(suna.NO3_clean(array), optode.aou_filt(array), 'c.'); hold on;
-    plot(suna.NO3_clean(shelf), optode.aou_filt(shelf), 'g.'); hold on;
-    legend('T1', 'T2','Array', 'Shelf');
+    scatter(suna.NO3_clean(T1), optode.aou_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
+    scatter(suna.NO3_clean(T2), optode.aou_filt(T2), 15, nicecolor('rk'), 'filled'); hold on;
+    scatter(suna.NO3_clean(array1), optode.aou_filt(array1), 15, nicecolor('BRw'), 'filled'); hold on;
+    scatter(suna.NO3_clean(array2), optode.aou_filt(array2), 15,  nicecolor('rBk'), 'filled'); hold on;
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), 15, nicecolor('GY'), 'filled'); hold on;
+    scatter(suna.NO3_clean(M4), optode.aou_filt(M4), 15, nicecolor('Bbw'), 'filled'); hold on;
     xlabel('Nitrate'); ylabel('AOU')
     axis ([NO3min NO3max AOUmin AOUmax]); title('NO3 vs. AOU')
 subplot(223)
-    plot(ssw.flr_filt(T1), optode.aou_filt(T1), 'b.'); hold on;
-    plot(ssw.flr_filt(T2), optode.aou_filt(T2), 'y.'); hold on;
-    plot(ssw.flr_filt(array), optode.aou_filt(array), 'c.'); hold on;
-    plot(ssw.flr_filt(shelf), optode.aou_filt(shelf), 'g.'); hold on;
+    scatter(ssw.flr_filt(T1), optode.aou_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
+    scatter(ssw.flr_filt(T2), optode.aou_filt(T2), 15, nicecolor('rk'), 'filled'); hold on;
+    scatter(ssw.flr_filt(array1), optode.aou_filt(array1), 15, nicecolor('BRw'), 'filled'); hold on;
+    scatter(ssw.flr_filt(array2), optode.aou_filt(array2), 15,  nicecolor('rBk'), 'filled'); hold on;
+    scatter(ssw.flr_filt(shelf), optode.aou_filt(shelf), 15, nicecolor('GY'), 'filled'); hold on;
+    scatter(ssw.flr_filt(M4), optode.aou_filt(M4), 15, nicecolor('Bbw'), 'filled'); hold on;
     xlabel('Fluo'); ylabel('AOU')
     axis ([flrmin flrmax AOUmin AOUmax]); title('Fluo vs. AOU')
-%% Emma NO3 vs AOU by AREA SECTIONS
+%% Emma NO3 vs AOU by AREA SECTIONS with LINES
 figure (10); clf;
 subplot(221)
     scatter(suna.NO3_clean(T1), optode.aou_filt(T1), 25, nicecolor('Rw'), 'filled'); hold on;
@@ -372,7 +378,7 @@ x8 = optode.O2Sat(M4);
 x = [x1; x2; x3; x4; x5; x6; x7; x8];
 g = [zeros(length(x1),1); ones(length(x2),1); 2*ones(length(x3),1); 3*ones(length(x4),1); 4*ones(length(x5),1); 5*ones(length(x6),1); 6*ones(length(x7),1); 7*ones(length(x8),1)];
     figure (12);clf;
-    boxplot(x, g, 'symbol', 'y.',...
+    boxplot(x, g,'symbol', 'y.',...
         'Labels', {'Transects','Transect1', 'Transect2', 'OOI Array', 'Array1', 'Array2', 'OSNAP West', 'OSNAP East'},...
         'colors', 'k'); % 'LineWidth', 5);
         %'Color'%,{nicecolor('r'),nicecolor('R'), nicecolor('Rk'), nicecolor('B'), nicecolor('BBR'), nicecolor('rB'), nicecolor('GY'), nicecolor('Bk')});
@@ -395,26 +401,75 @@ figure(13); clf;
 %% NO3 vs AOU Shelf investigation
 figure(14); clf;
 subplot(221)
-    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], ssw.time_filt(shelf) - min(ssw.time_filt(shelf)), 'filled'); colorbar;    
-    xlabel('NO3'); ylabel('AOU')
-    axis ([NO3min 10 -70 AOUmax]);
-    title('West of Array- by Days');
+    scatter(ssw.SST_filt(shelf), ssw.SSS_filt(shelf), [], ssw.time_filt(shelf) - min(ssw.time_filt(shelf)), 'filled'); colorbar;    
+    xlabel('SST'); ylabel('Salinity')
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('SST vs. Salinity vs. Days');
 subplot(222)
-    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], gps.lon_filt(shelf) - min(gps.lon_filt(shelf)), 'filled'); colorbar;    
-    xlabel('NO3'); ylabel('AOU')
-    axis ([NO3min 10 -70 AOUmax]);
-    title('West of Array- by Lon');
+    scatter(ssw.SST_filt(shelf), ssw.SSS_filt(shelf), [], ssw.flr_filt(shelf), 'filled'); colorbar;    
+    xlabel('SST'); ylabel('Salinity')
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('SST vs. Salinity vs. Fluo');
 subplot(223)
-    scatter(optode.aou_filt(shelf),ssw.flr_filt(shelf), [], ssw.time_filt(shelf) - min(ssw.time_filt(shelf)), 'filled'); colorbar;    
-    xlabel('AOU'); ylabel('Fluo')
-    axis ([-70 AOUmax flrmin flrmax]);
-    title('West of Array- by Days');
+    scatter(ssw.SST_filt(shelf), ssw.SSS_filt(shelf), [], suna.NO3_filt(shelf), 'filled'); colorbar;    
+     xlabel('SST'); ylabel('Salinity')
+    %axis ([-70 AOUmax flrmin flrmax]);
+    title('SST vs. Salinity vs. Nitrate');
 subplot(224)
-    scatter(optode.aou_filt(shelf),ssw.flr_filt(shelf), [], gps.lon_filt(shelf) - min(gps.lon_filt(shelf)), 'filled'); colorbar;    
-    xlabel('AOU'); ylabel('Fluo')
-    axis ([-70 AOUmax flrmin flrmax]);
-    title('West of Array- by Lon');
+    scatter(ssw.SST_filt(shelf), ssw.SSS_filt(shelf), [], optode.aou_filt(shelf), 'filled'); colorbar;    
+    xlabel('SST'); ylabel('Salinity')
+    %axis ([-70 AOUmax flrmin flrmax]);
+    title('SST vs. Salinity vs. AOU');
     
+figure(16); clf;
+subplot(221)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], ssw.flr_filt(shelf),'filled'); colorbar;    
+    xlabel('Nitrate'); ylabel('AOU')
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('Nitrate vs. AOU vs. Fluo');
+subplot(222)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], ssw.SST_filt(shelf), 'filled'); colorbar;    
+    xlabel('Nitrate'); ylabel('AOU')
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('Nitrate vs. AOU vs. SST');
+subplot(223)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [],ssw.SSS_filt(shelf), 'filled'); colorbar;    
+    xlabel('Nitrate'); ylabel('AOU')
+    %axis ([-70 AOUmax flrmin flrmax]);
+    title('Nitrate vs. AOU vs. Salinity');
+subplot(224)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], ssw.time_filt(shelf) - min(ssw.time_filt(shelf)), 'filled'); colorbar;    
+    xlabel('Nitrate'); ylabel('AOU')
+    %axis ([-70 AOUmax flrmin flrmax]);
+    title('Nitrate vs. AOU vs. Days');
+    
+    %% POSTER Shelf investigation figure
+figure(17); clf;
+subplot(233)
+    scatter(ssw.SST_filt(shelf), ssw.SSS_filt(shelf), [], ssw.flr_filt(shelf), 'filled'); colorbar;    
+    xlabel('SST', 'FontSize', 16); ylabel('Salinity', 'FontSize', 16)
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('Fluo', 'FontSize', 16);
+subplot(232)
+    scatter(ssw.SST_filt(shelf), ssw.SSS_filt(shelf), [], optode.aou_filt(shelf), 'filled'); colorbar;    
+    xlabel('SST', 'FontSize', 16); ylabel('Salinity', 'FontSize', 16)
+    %axis ([-70 AOUmax flrmin flrmax]);
+    title('AOU', 'FontSize', 16);
+subplot(231)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], ssw.flr_filt(shelf),'filled'); colorbar;    
+    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('Fluo', 'FontSize', 16);
+subplot(234)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [], ssw.SST_filt(shelf), 'filled'); colorbar;    
+    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
+    %axis ([NO3min 10 -70 AOUmax]);
+    title('SST', 'FontSize', 16);
+subplot(235)
+    scatter(suna.NO3_clean(shelf), optode.aou_filt(shelf), [],ssw.SSS_filt(shelf), 'filled'); colorbar;    
+    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
+    %axis ([-70 AOUmax flrmin flrmax]);
+    title('Salinity', 'FontSize', 16);
 %% Sensors over time COLORED BY SECTION
 figure(15); clf
     subplot(4,1,1)
@@ -425,7 +480,7 @@ scatter(ssw.time_filt(array2), ssw.SST_filt(array2), 15,nicecolor('rBk'), 'fille
 scatter(ssw.time_filt(shelf), ssw.SST_filt(shelf), 15,nicecolor('GY'), 'filled'); hold on;
 scatter(ssw.time_filt(M4), ssw.SST_filt(M4), 15 ,nicecolor('Bbw'), 'filled'); hold on;
 axis([mintime maxtime SSTmin SSTmax])
-datetick('x', 2, 'keeplimits'); title('Sea Surface Temperature', 'FontSize', 16)
+datetick('x', 2, 'keeplimits'); title('Sea Surface Temperature', 'FontSize', 20)
 
     subplot(4,1,2)
 scatter(ssw.time_filt(T1), ssw.flr_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
@@ -435,7 +490,7 @@ scatter(ssw.time_filt(array2), ssw.flr_filt(array2),15, nicecolor('rBk'), 'fille
 scatter(ssw.time_filt(shelf), ssw.flr_filt(shelf), 15,nicecolor('GY'), 'filled'); hold on;
 scatter(ssw.time_filt(M4), ssw.flr_filt(M4), 15,nicecolor('Bbw'), 'filled'); hold on;
 axis([mintime maxtime flrmin flrmax])
-datetick('x', 2, 'keeplimits'); title('Chlorophyll Fluorescence', 'FontSize', 16)
+datetick('x', 2, 'keeplimits'); title('Chlorophyll Fluorescence', 'FontSize', 20)
 
     subplot(4,1,3)
 scatter(optode.time_filt(T1), optode.O2_nospike_salcorr_filt(T1), 15,nicecolor('Rw'), 'filled'); hold on;
@@ -445,7 +500,7 @@ scatter(optode.time_filt(array2),optode.O2_nospike_salcorr_filt(array2), 15, nic
 scatter(optode.time_filt(shelf), optode.O2_nospike_salcorr_filt(shelf), 15, nicecolor('GY'), 'filled'); hold on;
 scatter(optode.time_filt(M4), optode.O2_nospike_salcorr_filt(M4), 15, nicecolor('Bbw'), 'filled'); hold on;
 axis([mintime maxtime O2min O2max])
-datetick('x', 2, 'keeplimits'); title('Oxygen Concentration', 'FontSize', 16)
+datetick('x', 2, 'keeplimits'); title('Oxygen Concentration', 'FontSize', 20)
 
     subplot(4,1,4) %INCLUDES CLEANING TIMES STILL
 scatter(suna.time_filt(T1), suna.NO3_clean(T1), 15, nicecolor('Rw'), 'filled'); hold on;
@@ -455,5 +510,5 @@ scatter(suna.time_filt(array2),suna.NO3_clean(array2), 15, nicecolor('rBk'), 'fi
 scatter(suna.time_filt(shelf), suna.NO3_clean(shelf), 15, nicecolor('GY'), 'filled'); hold on;
 scatter(suna.time_filt(M4), suna.NO3_clean(M4), 15, nicecolor('Bbw'), 'filled'); hold on;
 axis([mintime maxtime NO3min NO3max])
-datetick('x', 2, 'keeplimits'); title('Nitrate', 'FontSize', 16)
+datetick('x', 2, 'keeplimits'); title('Nitrate', 'FontSize', 20)
     
