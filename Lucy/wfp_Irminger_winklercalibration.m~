@@ -1,7 +1,7 @@
 %% Load discrete oxygen data from Irminger deployment cruises
-loadWinklerIrmingerAllYears
+loadWinklerIrmingerA
 
-%% Plot Year 1 discrete casts at Irminger OOI site, and line up with corresponding hypm profiles?
+%% Plot Year 1 discrete casts at Irminger OOI site, and line up with corresponding gider profiles
 C(1,:) = nicecolor('rrry'); C(2,:) = nicecolor('gggkb'); C(3,:) = nicecolor('bbc'); C(4,:) = nicecolor('rbm'); %color
 time_window = 1; %all profiles within X days before or after the cast
 depth_window = 20; %compare points in profile only if within X meters of Winkler sampling depth
