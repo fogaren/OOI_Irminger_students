@@ -1,22 +1,30 @@
 %% Load discrete oxygen data from Irminger deployment cruises
-loadWinklerIrmingerA
+loadWinklerIrmingerAllYears
 
-%% Plot Year 1 discrete casts at Irminger OOI site, and line up with corresponding gider profiles
+%% Plot Year 1 discrete casts at Irminger OOI site, and line up with corresponding hypm profiles?
 C(1,:) = nicecolor('rrry'); C(2,:) = nicecolor('gggkb'); C(3,:) = nicecolor('bbc'); C(4,:) = nicecolor('rbm'); %color
 time_window = 1; %all profiles within X days before or after the cast
 depth_window = 20; %compare points in profile only if within X meters of Winkler sampling depth
 tol_O2std = 5; %tolerance - only calculate gain if std of profile O2 measurements at a given depth are within X
 tol_dist = 30; %limit of distance between cast and glider in order to use for calibration
 
-for k = 1:2
+for k = 1:4
     if k == 1
         cast_list = [5,6,7,9]; %casts in OOI site region (no test casts)
-        wfp_plot = Yr1_wfpgrid;
+        wfp_plot = Yr1_wfpgrid.O2conc;
         disc_plot = Yr1_disc;
     elseif k == 2
         cast_list = [6,9,10,11,12,13]; %casts in OOI site region (no test casts, and not 4 and 5 b/c before gliders in water) %casts 11,12
-        wfp_plot = Yr2_wfpgrid;
+        wfp_plot = Yr2_wfpgrid.O2conc;
         disc_plot = Yr2_disc;
+    elseif k == 3
+        cast_list = [1,5,6,7,8,9,10]; %casts in OOI site region, cast 1 only to 121 m
+        wfp_plot = Yr3_wfpgrid.O2conc;
+        disc_plot = Yr3_disc;
+    else k == 4
+        cast_list = [7,8,10,11,12]; %casts in OOI site region, cast 1 only to 121 m
+        wfp_plot = Yr4_wfpgrid.O2conc;
+        disc_plot = Yr4_disc;
     end
 figure(10 + k); clf
 set(gcf,'color','w')

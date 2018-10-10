@@ -113,8 +113,8 @@ Yr4_disc.oxy = num(:,10)/(0.0223916); %convert from mL/L to mmol/L; O2 = 22391.6
 
 %Calculate uncertainty in Year 4 samples (take stdev of all duplicates,
 %and use mean stdev value)
-for i = 24:28 %can't get it to include last pair 57&58
-    dups = Yr4_disc.oxy(2*i-1:2*i);
+for i = 23:28 
+    dups = Yr4_disc.oxy(2*i:2*i+1)
     duperr(i) = std(dups);
 end
 Yr4_disc.oxy_err = mean(duperr);
