@@ -3,14 +3,10 @@
     %For calculating precision, note that first 12 samples are 6 pairs of
     %duplicates (test samples)
 [num,txt,~]=xlsread('IrmingerYr1_KN221_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr1_disc.day = NaN*ones(length(txt)-1,1);
-for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1 %cellfun applies function to contents of an array (date)
-        Yr1_disc.day(i) = NaN;
-    else Yr1_disc.day(i) = datenum(date(i));
-    end
-end
+loaddates (num, txt, Yr1_disc.day);
+%t=date(1:end,1)
+%t=addtodate(t, 1, 'day');
+%Yr1_disc.day(t)
 
 Yr1_disc.cast = num(:,1);
 Yr1_disc.time = num(:,3);
@@ -30,15 +26,8 @@ Yr1_disc.oxy_err = mean(duperr);
 
 %Year 2
 [num,txt,~]=xlsread('IrmingerYr2_AT30_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr2_disc.day = NaN*ones(length(txt)-1,1);
-for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1
-        Yr2_disc.day(i) = NaN;
-    else Yr2_disc.day(i) = datenum(date(i));
-    end
-end
 
+loaddates (num, txt, Yr2_disc.day);
 Yr2_disc.cast = num(:,1);
 Yr2_disc.time = num(:,3);
 Yr2_disc.lat = num(:,4);
@@ -63,14 +52,8 @@ Yr2_disc.oxy_err = mean(duperr);
 
 %Year 3
 [num,txt,~]=xlsread('IrmingerYr3_AR07_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr3_disc.day = NaN*ones(length(txt)-1,1);
-for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1
-        Yr3_disc.day(i) = NaN;
-    else Yr3_disc.day(i) = datenum(date(i));
-    end
-end
+
+loaddates (num, txt, Yr3_disc.day);
 
 Yr3_disc.cast = num(:,1);
 Yr3_disc.time = num(:,3); %note that this is currently not formatted properly
@@ -92,14 +75,8 @@ Yr3_disc.oxy_err = mean(duperr);
 
 %Year 4
 [num,txt,~]=xlsread('IrmingerYr4_AR21_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr4_disc.day = NaN*ones(length(txt)-1,1);
-for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1
-        Yr4_disc.day(i) = NaN;
-    else Yr4_disc.day(i) = datenum(date(i));
-    end
-end
+
+loaddates (num, txt, Yr4_disc.day);
 
 Yr4_disc.cast = num(:,1);
 Yr4_disc.time = num(:,3); %note that this is currently not formatted properly

@@ -11,19 +11,19 @@ tol_dist = 30; %limit of distance between cast and glider in order to use for ca
 for k = 1:4
     if k == 1
         cast_list = [5,6,7,9]; %casts in OOI site region (no test casts)
-        wfp_plot = Yr1_wfpgrid.O2conc;
+        wfp_plot = Yr1_wfpgrid;
         disc_plot = Yr1_disc;
     elseif k == 2
         cast_list = [6,9,10,11,12,13]; %casts in OOI site region (no test casts, and not 4 and 5 b/c before gliders in water) %casts 11,12
-        wfp_plot = Yr2_wfpgrid.O2conc;
+        wfp_plot = Yr2_wfpgrid;
         disc_plot = Yr2_disc;
     elseif k == 3
-        cast_list = [1,5,6,7,8,9,10]; %casts in OOI site region, cast 1 only to 121 m
-        wfp_plot = Yr3_wfpgrid.O2conc;
+        cast_list = [1,5,6,7,8,9,10]; %casts in OOI site region, cast 1 only to 121 m use or no?
+        wfp_plot = Yr3_wfpgrid;
         disc_plot = Yr3_disc;
     elseif k == 4
-        cast_list = [7,8,10,11,12]; %casts in OOI site region, cast 1 only to 121 m
-        wfp_plot = Yr4_wfpgrid.O2conc;
+        cast_list = [7,8,10,11,12]; %casts in OOI site region
+        wfp_plot = Yr4_wfpgrid;
         disc_plot = Yr4_disc;
     end
 figure(10 + k); clf

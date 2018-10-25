@@ -368,7 +368,7 @@ contourf(X,Y,wfpmerge.O2conc,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
 colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)', 'Fontsize', 10); hcb = colorbar; set(hcb,'location','eastoutside')
 datetick('x',2,'keeplimits');
-title('Oxygen concentration (?mol/L)', 'Fontsize', 12)
+title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 
     subplot(414) %Oxygen saturation
 cmin = -25; cmax = 0; %manually set min and max
@@ -396,5 +396,5 @@ contourf(X,Y,wfpmerge.chla,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
 colormap(C2); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
 datetick('x',2,'keeplimits');
-title('Chlorophyll (µg/L)')
+title('Chlorophyll (µg/L)', 'Fontsize', 15)
 

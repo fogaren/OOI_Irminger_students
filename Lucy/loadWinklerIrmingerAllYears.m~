@@ -3,14 +3,19 @@
     %For calculating precision, note that first 12 samples are 6 pairs of
     %duplicates (test samples)
 [num,txt,~]=xlsread('IrmingerYr1_KN221_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr1_disc.day = NaN*ones(length(txt)-1,1);
+date = datenum(num(1:end,2)); %pull out text dates from num using datenum so it knows they're dates
+Yr1_disc.day = NaN*ones(length(txt)-1,1); 
 for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1 %cellfun applies function to contents of an array (date)
-        Yr1_disc.day(i) = NaN;
-    else Yr1_disc.day(i) = datenum(date(i));
+    tf=isempty((i));
+     if tf==1 
+         Yr1_disc.day(i) = NaN;
+     else Yr1_disc.day(i) = date(i)
     end
 end
+t=date(1:end,1)
+t=addtodate(t, 1, 'day');
+Yr1_disc.day(t)
+
 
 Yr1_disc.cast = num(:,1);
 Yr1_disc.time = num(:,3);
@@ -30,15 +35,15 @@ Yr1_disc.oxy_err = mean(duperr);
 
 %Year 2
 [num,txt,~]=xlsread('IrmingerYr2_AT30_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr2_disc.day = NaN*ones(length(txt)-1,1);
+date = datenum(num(1:end,2)); %pull out text dates from num using datenum so it knows they're dates
+Yr2_disc.day = NaN*ones(length(txt)-1,1); 
 for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1
-        Yr2_disc.day(i) = NaN;
-    else Yr2_disc.day(i) = datenum(date(i));
+    tf=isempty((i));
+     if tf==1 
+         Yr2_disc.day(i) = NaN;
+     else Yr2_disc.day(i) = date(i)
     end
 end
-
 Yr2_disc.cast = num(:,1);
 Yr2_disc.time = num(:,3);
 Yr2_disc.lat = num(:,4);
@@ -63,12 +68,13 @@ Yr2_disc.oxy_err = mean(duperr);
 
 %Year 3
 [num,txt,~]=xlsread('IrmingerYr3_AR07_CTDWaterSamplingData.xlsx');
-date = txt(2:end,3); %pull out text dates
-Yr3_disc.day = NaN*ones(length(txt)-1,1);
+date = datenum(num(1:end,2)); %pull out text dates from num using datenum so it knows they're dates
+Yr3_disc.day = NaN*ones(length(txt)-1,1); 
 for i = 1:length(num)
-    if cellfun('isempty',date(i)) == 1
-        Yr3_disc.day(i) = NaN;
-    else Yr3_disc.day(i) = datenum(date(i));
+    tf=isempty((i));
+     if tf==1 
+         Yr3_disc.day(i) = NaN;
+     else Yr_disc.day(i) = date(i)
     end
 end
 
@@ -113,8 +119,8 @@ Yr4_disc.oxy = num(:,10)/(0.0223916); %convert from mL/L to mmol/L; O2 = 22391.6
 
 %Calculate uncertainty in Year 4 samples (take stdev of all duplicates,
 %and use mean stdev value)
-for i = 47:58 %can't get it to include last pair 57&58
-    dups = Yr4_disc.oxy(2*i:i)
+for i = 23:28 
+    dups = Yr4_disc.oxy(2*i:2*i+1)
     duperr(i) = std(dups);
 end
 Yr4_disc.oxy_err = mean(duperr);
