@@ -18,15 +18,15 @@ for k = 1:4
         wfp_plot = Yr2_wfpgrid;
         disc_plot = Yr2_disc;
     elseif k == 3
-        cast_list = [1,5,6,7,8,9,10]; %casts in OOI site region, cast 1 only to 121 m use or no?
+        cast_list = [7,8,9,10]; %casts in OOI site region - note that casts before #7 are before the Yr 3 profiler data has started
         wfp_plot = Yr3_wfpgrid;
         disc_plot = Yr3_disc;
     elseif k == 4
-        cast_list = [7,8,10,11,12]; %casts in OOI site region
+        cast_list = [8,10,11,12]; %casts in OOI site region - note that casts before #8 are before the Yr 4 profiler data has started
         wfp_plot = Yr4_wfpgrid;
         disc_plot = Yr4_disc;
     end
-figure(10 + k); clf
+figure(k); clf
 set(gcf,'color','w')
     x0=1;
     y0=1;
