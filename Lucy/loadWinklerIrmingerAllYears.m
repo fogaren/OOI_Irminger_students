@@ -2,10 +2,10 @@
 %Year 1
     %For calculating precision, note that first 12 samples are 6 pairs of
     %duplicates (test samples)
-[num,txt,~]=xlsread('IrmingerYr1_KN221_CTDWaterSamplingData.xlsx');
-Yr1_disc.day = loaddates (num, txt);
+[num,txt,~]=xlsread('IrmingerYr1_KN221_CTDWaterSamplingData2.xlsx');
 
 Yr1_disc.cast = num(:,1);
+Yr1_disc.day = num(:,2);
 Yr1_disc.time = num(:,3);
 Yr1_disc.lat = num(:,4);
 Yr1_disc.lon360 = -1*num(:,5) + 360; %degrees W - make negative to match convention
@@ -22,10 +22,10 @@ Yr1_disc.oxy_err = mean(duperr);
 
 
 %Year 2
-[num,txt,~]=xlsread('IrmingerYr2_AT30_CTDWaterSamplingData.xlsx');
-Yr2_disc.day = loaddates (num, txt);
+[num,txt,~]=xlsread('IrmingerYr2_AT30_CTDWaterSamplingData2.xlsx');
 
 Yr2_disc.cast = num(:,1);
+Yr2_disc.day = num(:,2);
 Yr2_disc.time = num(:,3);
 Yr2_disc.lat = num(:,4);
 Yr2_disc.lon360 = -1*num(:,5) + 360; %degrees W - make negative to match convention
@@ -48,10 +48,10 @@ end
 Yr2_disc.oxy_err = mean(duperr);
 
 %Year 3
-[num,txt,~]=xlsread('IrmingerYr3_AR07_CTDWaterSamplingData.xlsx');
-Yr3_disc.day = loaddates (num, txt);
+[num,txt,~]=xlsread('IrmingerYr3_AR07_CTDWaterSamplingData2.xlsx');
 
 Yr3_disc.cast = num(:,1);
+Yr3_disc.day = num(:,2);
 Yr3_disc.time = num(:,3); %note that this is currently not formatted properly
 Yr3_disc.lat = num(:,4);
 Yr3_disc.lon360 = -1*num(:,5) + 360; %degrees W - make negative to match convention
@@ -70,10 +70,10 @@ end
 Yr3_disc.oxy_err = mean(duperr);
 
 %Year 4
-[num,txt,~]=xlsread('IrmingerYr4_AR21_CTDWaterSamplingData.xlsx');
-Yr4_disc.day = loaddates (num, txt);
+[num,txt,~]=xlsread('IrmingerYr4_AR21_CTDWaterSamplingData2.xlsx');
 
 Yr4_disc.cast = num(:,1);
+Yr4_disc.day = num(:,2);
 Yr4_disc.time = num(:,3); %note that this is currently not formatted properly
 Yr4_disc.lat = num(:,4);
 Yr4_disc.lon360 = -1*num(:,5) + 360; %degrees W - make negative to match convention
