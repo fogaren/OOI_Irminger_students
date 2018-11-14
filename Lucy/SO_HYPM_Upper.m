@@ -13,7 +13,7 @@ filename = ['deployment0001_GS02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr1_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
     Yr1_wfp.oxygen = ncread(filename,'dissolved_oxygen'); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    Yr1_wfp.optode_temperature = ncread(filename,'optode_temperature_qc_results'); %long_name = 'Optode Temperature' units = 'deg_C'
+    Yr1_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
         %temperature may be indicator of bad oxygen data points.
@@ -53,7 +53,7 @@ filename = ['deployment0002_GS02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr2_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
     Yr2_wfp.oxygen = ncread(filename,'dissolved_oxygen'); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    Yr2_wfp.optode_temperature = ncread(filename,'optode_temperature_qc_results'); %long_name = 'Optode Temperature' units = 'deg_C'   
+    Yr2_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'   
     %Convert to matlab time
     Yr2_wfp.time_dosta_mat = convertTime(Yr2_wfp.time_dosta);
 
@@ -84,7 +84,7 @@ filename = ['deployment0003_GS02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr3_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
     Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen'); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    Yr3_wfp.optode_temperature = ncread(filename,'optode_temperature_qc_results'); %long_name = 'Optode Temperature' units = 'deg_C'
+    Yr3_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
         %temperature may be indicator of bad oxygen data points.
@@ -112,6 +112,7 @@ filename = ['deployment0003_GS02HYPM-WFP02-01-FLORDL000-recovered_wfp-flord_l_wf
     Yr3_wfp.time_flord_mat = convertTime(Yr1_wfp.time_flord);
     
  %% Assign profile indices prior to gridding
+
 Yr1_wfp.depth_dosta = -gsw_z_from_p(Yr1_wfp.pressure_dosta,Yr1_wfp.lat_dosta);
     [Yr1_wfp.profile_index,Yr1_wfp.updown_index] = profileIndex(Yr1_wfp.depth_dosta);
 
@@ -122,18 +123,18 @@ Yr3_wfp.depth_dosta = -gsw_z_from_p(Yr3_wfp.pressure_dosta,Yr3_wfp.lat_dosta);
     [Yr3_wfp.profile_index,Yr3_wfp.updown_index] = profileIndex(Yr3_wfp.depth_dosta);
 
 %% Calculate density in raw profiles to enable gridding on density surfaces
-Yr1_wfp.pdens = gsw_p_from_z(-Yr1_wfp.depth_dosta, Yr1_wfp.lat_dosta); %potential density function
-Yr2_wfp.pdens = gsw_p_from_z(-Yr2_wfp.depth_dosta, Yr2_wfp.lat_dosta);
-Yr3_wfp.pdens = gsw_p_from_z(-Yr3_wfp.depth_dosta, Yr3_wfp.lat_dosta);
+% Removed for now - will need to be added back in later for depth surface
+% gridding using gsw_rho function
 
 %% Grid data to consistent depth intervals for each profile
 depth_grid = [150:5:2600];
 secinday = 60*60*24;
 
 %All profiles for year 1
-scivars = [Yr1_wfp.temperature_dosta, Yr1_wfp.pracsal_dosta, Yr1_wfp.oxygen, Yr1_wfp.optode_temperature...
-        Yr1_wfp.backscatter, Yr1_wfp.scat_total, Yr1_wfp.chla];
-[Yr1_wfpgrid] = glider_grid(Yr1_wfp.time_dosta,Yr1_wfp.lat_dosta,Yr1_wfp.lon_dosta,Yr1_wfp.depth_dosta,Yr1_wfp.profile_index,Yr1_wfp.updown_index',scivars,depth_grid);
+    indgood = find(isnan(Yr1_wfp.pressure_dosta)==0);
+scivars = [Yr1_wfp.temperature_dosta(indgood), Yr1_wfp.pracsal_dosta(indgood), Yr1_wfp.oxygen(indgood), Yr1_wfp.optode_temperature(indgood)...
+        Yr1_wfp.backscatter(indgood), Yr1_wfp.scat_total(indgood), Yr1_wfp.chla(indgood)];
+[Yr1_wfpgrid] = glider_grid(Yr1_wfp.time_dosta(indgood),Yr1_wfp.lat_dosta(indgood),Yr1_wfp.lon_dosta(indgood),Yr1_wfp.depth_dosta(indgood),Yr1_wfp.profile_index(indgood),Yr1_wfp.updown_index',scivars,depth_grid);
     Yr1_wfpgrid.depth_grid = depth_grid;
 Yr1_wfpgrid.time_start = convertTime(Yr1_wfpgrid.time_start);
 Yr1_wfpgrid.duration = Yr1_wfpgrid.duration/secinday;
