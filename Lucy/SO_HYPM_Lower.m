@@ -53,7 +53,7 @@ filename = ['deployment0002_GS02HYPM-WFP03-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr2_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
     Yr2_wfp.oxygen = ncread(filename,'dissolved_oxygen'); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    Yr2_wfp.optode_temperature = ncread(filename,'optode_temperature_qc_results'); %long_name = 'Optode Temperature' units = 'deg_C'   
+    Yr2_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'   
     %Convert to matlab time
     Yr2_wfp.time_dosta_mat = convertTime(Yr2_wfp.time_dosta);
 
@@ -84,7 +84,7 @@ filename = ['deployment0003_GS02HYPM-WFP03-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr3_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
     Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen'); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    Yr3_wfp.optode_temperature = ncread(filename,'optode_temperature_qc_results'); %long_name = 'Optode Temperature' units = 'deg_C'
+    Yr3_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
         %temperature may be indicator of bad oxygen data points.
@@ -142,8 +142,7 @@ secinday = 60*60*24;
 %All profiles for year 1
 scivars = [Yr1_wfp.temperature_dosta, Yr1_wfp.pracsal_dosta, Yr1_wfp.oxygen, Yr1_wfp.optode_temperature,...
         Yr1_wfp.backscatter, Yr1_wfp.scat_total, Yr1_wfp.chla];
-%%
-    [Yr1_wfpgrid] = glider_grid(Yr1_wfp.time_dosta,Yr1_wfp.lat_dosta,Yr1_wfp.lon_dosta,Yr1_wfp.depth_dosta,Yr1_wfp.profile_index,Yr1_wfp.updown_index',scivars,depth_grid);
+[Yr1_wfpgrid] = glider_grid(Yr1_wfp.time_dosta,Yr1_wfp.lat_dosta,Yr1_wfp.lon_dosta,Yr1_wfp.depth_dosta,Yr1_wfp.profile_index,Yr1_wfp.updown_index',scivars,depth_grid);
     Yr1_wfpgrid.depth_grid = depth_grid;
 Yr1_wfpgrid.time_start = convertTime(Yr1_wfpgrid.time_start);
 Yr1_wfpgrid.duration = Yr1_wfpgrid.duration/secinday;
