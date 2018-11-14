@@ -123,9 +123,17 @@ Yr3_wfp.depth_dosta = -gsw_z_from_p(Yr3_wfp.pressure_dosta,Yr3_wfp.lat_dosta);
     [Yr3_wfp.profile_index,Yr3_wfp.updown_index] = profileIndex(Yr3_wfp.depth_dosta);
 
 %% Calculate density in raw profiles to enable gridding on density surfaces
-Yr1_wfp.pdens = gsw_p_from_z(-Yr1_wfp.depth_dosta, Yr1_wfp.lat_dosta); %potential density function
-Yr2_wfp.pdens = gsw_p_from_z(-Yr2_wfp.depth_dosta, Yr2_wfp.lat_dosta);
-Yr3_wfp.pdens = gsw_p_from_z(-Yr3_wfp.depth_dosta, Yr3_wfp.lat_dosta);
+%To calculate potential density use the function gsw_rho(SA,CT,p) where the
+%input for p is the reference pressure (zero). This requires first
+%calculating SA (absolute salinity) and conservative temperature (CT).
+
+%This is an example for Yr1 - take a look at how this works and the
+%underlying gibbs seawater toolbox functions it calls, and then apply for
+%other years.
+[Yr1_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr1_wfp.pracsal_dosta, Yr1_wfp.pressure_dosta, Yr1_wfp.lon_dosta, Yr1_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr1_wfp.CT_dosta = gsw_CT_from_t(Yr1_wfp.SA_dosta, Yr1_wfp.temperature_dosta, Yr1_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr1_wfp.pdens = gsw_rho(Yr1_wfp.SA_dosta, Yr1_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
 
 %% Grid data to consistent depth intervals for each profile
 depth_grid = [1000:5:5000];
