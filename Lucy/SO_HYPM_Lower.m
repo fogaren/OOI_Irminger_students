@@ -13,7 +13,7 @@ filename = ['deployment0001_GS02HYPM-WFP03-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr1_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
     Yr1_wfp.oxygen = ncread(filename,'dissolved_oxygen'); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    Yr1_wfp.optode_temperature = ncread(filename,'optode_temperature_qc_results'); %long_name = 'Optode Temperature' units = 'deg_C'
+    Yr1_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
         %temperature may be indicator of bad oxygen data points.
