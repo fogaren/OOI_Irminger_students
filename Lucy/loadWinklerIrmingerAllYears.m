@@ -89,4 +89,4 @@ for i = 23:28
     dups = Yr4_disc.oxy(2*i:2*i+1)
     duperr(i) = std(dups);
 end
-Yr4_disc.oxy_err = mean(duperr);
+% % Yr4_disc.oxy_err = mean(duperr);

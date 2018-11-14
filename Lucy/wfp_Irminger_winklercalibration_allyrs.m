@@ -69,10 +69,10 @@ gainnum(k) = sum(~isnan(G));
             A = disc_plot.time(ind(1)) + disc_plot.day(ind(1));
             ind_time = find(wfp_plot.time_start < A + time_window & wfp_plot.time_start > A - time_window);
             dist = distlatlon(wfp_plot.lat(ind_time(1)),disc_plot.lat(ind(end)),wfp_plot.lon(ind_time(1))+360,disc_plot.lon360(ind(end)));
-        plot(wfp_plot.O2conc(:,ind_time)*nanmean(G),wfp_plot.depth_grid,'.','color',nicecolor('kw')); hold on;
-        plot(wfp_plot.O2conc(:,ind_time)*(nanmean(G)-nanstd(G)),wfp_plot.depth_grid,'.','color',nicecolor('kww')); hold on;
-        plot(wfp_plot.O2conc(:,ind_time)*(nanmean(G)+nanstd(G)),wfp_plot.depth_grid,'.','color',nicecolor('kww')); hold on;
-        plot(disc_plot.oxy(ind),disc_plot.depth(ind),'k*','color',C(1,:),'linewidth',4); hold on;
+        plot(wfp_plot.O2conc(:,ind_time)*nanmean(G),wfp_plot.depth_grid,'.','color',nicecolor('kw')); hold on; %gain correction
+        plot(wfp_plot.O2conc(:,ind_time)*(nanmean(G)-nanstd(G)),wfp_plot.depth_grid,'.','color',nicecolor('kww')); hold on; %std of gain lower
+        plot(wfp_plot.O2conc(:,ind_time)*(nanmean(G)+nanstd(G)),wfp_plot.depth_grid,'.','color',nicecolor('kww')); hold on; %std of gain higher
+        plot(disc_plot.oxy(ind),disc_plot.depth(ind),'k*','color',C(1,:),'linewidth',4); hold on; %original
     end  
     
 end

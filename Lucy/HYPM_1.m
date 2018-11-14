@@ -10,9 +10,9 @@ filename = ['deployment0001_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr1_wfp.temperature_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_temperature'); %standard_name = 'sea_water_temperature' units = 'deg_C'
     Yr1_wfp.pracsal_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_practical_salinity'
     Yr1_wfp.pressure_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
-    %Optode data
-    Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,1);
-    %Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');%standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+       %Optode data
+    %Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,1);
+    Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');%standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
     Yr1_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
@@ -52,8 +52,8 @@ filename = ['deployment0002_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr2_wfp.pracsal_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_practical_salinity'
     Yr2_wfp.pressure_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
-    Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,2); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    %Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');
+%     Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,2); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+    Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');
     Yr2_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'   
     %Convert to matlab time
     Yr2_wfp.time_dosta_mat = convertTime(Yr2_wfp.time_dosta);
@@ -84,8 +84,8 @@ filename = ['deployment0003_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr3_wfp.pracsal_dosta = ncread(filename,'practical_salinity'); %standard_name = 'sea_water_practical_salinity'
     Yr3_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
-    Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,3); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    %Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen');
+%     Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,3); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+    Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen');
     Yr3_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
@@ -125,8 +125,8 @@ filename = ['deployment0004_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr4_wfp.pracsal_dosta = ncread(filename,'practical_salinity'); %standard_name = 'sea_water_practical_salinity'
     Yr4_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
-    Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,4); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    %Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen');
+%     Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,4); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+    Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen');
     Yr4_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
