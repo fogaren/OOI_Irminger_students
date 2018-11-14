@@ -111,7 +111,6 @@ filename = ['deployment0003_GS02HYPM-WFP02-01-FLORDL000-recovered_wfp-flord_l_wf
     %Convert to matlab time
     Yr3_wfp.time_flord_mat = convertTime(Yr1_wfp.time_flord);
     
-
  %% Assign profile indices prior to gridding
 Yr1_wfp.depth_dosta = -gsw_z_from_p(Yr1_wfp.pressure_dosta,Yr1_wfp.lat_dosta);
     [Yr1_wfp.profile_index,Yr1_wfp.updown_index] = profileIndex(Yr1_wfp.depth_dosta);

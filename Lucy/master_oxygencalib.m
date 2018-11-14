@@ -1,4 +1,4 @@
-%Lucy's master thesis script 
+%Lucy's master script for oxygen calibration 
 %first run HYPM_1 to load in all data and create plots without calibrations
     HYPM_1
     close all

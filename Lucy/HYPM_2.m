@@ -173,19 +173,19 @@ Yr3_wfp.pdens = gsw_p_from_z(-Yr3_wfp.depth_dosta, Yr3_wfp.lat_dosta);
 Yr4_wfp.pdens = gsw_p_from_z(-Yr4_wfp.depth_dosta, Yr4_wfp.lat_dosta);
 
 %% Grid data to consistent depth intervals for each profile
-%depth_grid = [150:5:2600];
+depth_grid = [150:5:2600];
 therm_grid = [1.1:0.05:5.6];
 secinday = 60*60*24;
 
 
 %All profiles for year 1
-% scivars = [Yr1_wfp.temperature_dosta, Yr1_wfp.pracsal_dosta, Yr1_wfp.oxygen, Yr1_wfp.optode_temperature...
-%         Yr1_wfp.backscatter, Yr1_wfp.scat_total, Yr1_wfp.chla];
-% [Yr1_wfpgrid] = glider_grid(Yr1_wfp.time_dosta,Yr1_wfp.lat_dosta,Yr1_wfp.lon_dosta,Yr1_wfp.depth_dosta,Yr1_wfp.profile_index,Yr1_wfp.updown_index',scivars,depth_grid);
-%     Yr1_wfpgrid.depth_grid = depth_grid;
-% Yr1_wfpgrid.time_start = convertTime(Yr1_wfpgrid.time_start);
-% Yr1_wfpgrid.duration = Yr1_wfpgrid.duration/secinday;
-% Yr1_wfpgrid.updown = Yr1_wfpgrid.profile_direction;
+scivars = [Yr1_wfp.temperature_dosta, Yr1_wfp.pracsal_dosta, Yr1_wfp.oxygen, Yr1_wfp.optode_temperature...
+        Yr1_wfp.backscatter, Yr1_wfp.scat_total, Yr1_wfp.chla];
+[Yr1_wfpgrid] = glider_grid(Yr1_wfp.time_dosta,Yr1_wfp.lat_dosta,Yr1_wfp.lon_dosta,Yr1_wfp.depth_dosta,Yr1_wfp.profile_index,Yr1_wfp.updown_index',scivars,depth_grid);
+    Yr1_wfpgrid.depth_grid = depth_grid;
+Yr1_wfpgrid.time_start = convertTime(Yr1_wfpgrid.time_start);
+Yr1_wfpgrid.duration = Yr1_wfpgrid.duration/secinday;
+Yr1_wfpgrid.updown = Yr1_wfpgrid.profile_direction;
 
 % Grid on isotherms
     [~,deepind] = unique(Yr1_wfp.temperature_dosta); %remove duplicates so can use interp1 function
@@ -197,13 +197,13 @@ Yr1_wfpgrid_therm.duration = Yr1_wfpgrid_therm.duration/secinday;
 Yr1_wfpgrid_therm.updown = Yr1_wfpgrid_therm.profile_direction;
 
 %All profiles for year 2
-% scivars = [Yr2_wfp.temperature_dosta, Yr2_wfp.pracsal_dosta, Yr2_wfp.oxygen, Yr2_wfp.optode_temperature...
-%         Yr2_wfp.backscatter, Yr2_wfp.scat_total, Yr2_wfp.chla];
-% [Yr2_wfpgrid] = glider_grid(Yr2_wfp.time_dosta,Yr2_wfp.lat_dosta,Yr2_wfp.lon_dosta,Yr2_wfp.depth_dosta,Yr2_wfp.profile_index,Yr2_wfp.updown_index',scivars,depth_grid);
-%     Yr2_wfpgrid.depth_grid = depth_grid;
-% Yr2_wfpgrid.time_start = convertTime(Yr2_wfpgrid.time_start);
-% Yr2_wfpgrid.duration = Yr2_wfpgrid.duration/secinday;
-% Yr2_wfpgrid.updown = Yr2_wfpgrid.profile_direction;  
+scivars = [Yr2_wfp.temperature_dosta, Yr2_wfp.pracsal_dosta, Yr2_wfp.oxygen, Yr2_wfp.optode_temperature...
+        Yr2_wfp.backscatter, Yr2_wfp.scat_total, Yr2_wfp.chla];
+[Yr2_wfpgrid] = glider_grid(Yr2_wfp.time_dosta,Yr2_wfp.lat_dosta,Yr2_wfp.lon_dosta,Yr2_wfp.depth_dosta,Yr2_wfp.profile_index,Yr2_wfp.updown_index',scivars,depth_grid);
+    Yr2_wfpgrid.depth_grid = depth_grid;
+Yr2_wfpgrid.time_start = convertTime(Yr2_wfpgrid.time_start);
+Yr2_wfpgrid.duration = Yr2_wfpgrid.duration/secinday;
+Yr2_wfpgrid.updown = Yr2_wfpgrid.profile_direction;  
 
 % Grid on isotherms
     [~,deepind] = unique(Yr2_wfp.temperature_dosta); %remove duplicates so can use interp1 function
@@ -215,13 +215,13 @@ Yr2_wfpgrid_therm.duration = Yr2_wfpgrid_therm.duration/secinday;
 Yr2_wfpgrid_therm.updown = Yr2_wfpgrid_therm.profile_direction;
 
 %All profiles for year 3
-% scivars = [Yr3_wfp.temperature_dosta, Yr3_wfp.pracsal_dosta, Yr3_wfp.oxygen, Yr3_wfp.optode_temperature...
-%         Yr3_wfp.backscatter, Yr3_wfp.scat_total, Yr3_wfp.chla];
-% [Yr3_wfpgrid] = glider_grid(Yr3_wfp.time_dosta,Yr3_wfp.lat_dosta,Yr3_wfp.lon_dosta,Yr3_wfp.depth_dosta,Yr3_wfp.profile_index,Yr3_wfp.updown_index',scivars,depth_grid);
-%     Yr3_wfpgrid.depth_grid = depth_grid;
-% Yr3_wfpgrid.time_start = convertTime(Yr3_wfpgrid.time_start);
-% Yr3_wfpgrid.duration = Yr3_wfpgrid.duration/secinday;
-% Yr3_wfpgrid.updown = Yr3_wfpgrid.profile_direction; 
+scivars = [Yr3_wfp.temperature_dosta, Yr3_wfp.pracsal_dosta, Yr3_wfp.oxygen, Yr3_wfp.optode_temperature...
+        Yr3_wfp.backscatter, Yr3_wfp.scat_total, Yr3_wfp.chla];
+[Yr3_wfpgrid] = glider_grid(Yr3_wfp.time_dosta,Yr3_wfp.lat_dosta,Yr3_wfp.lon_dosta,Yr3_wfp.depth_dosta,Yr3_wfp.profile_index,Yr3_wfp.updown_index',scivars,depth_grid);
+    Yr3_wfpgrid.depth_grid = depth_grid;
+Yr3_wfpgrid.time_start = convertTime(Yr3_wfpgrid.time_start);
+Yr3_wfpgrid.duration = Yr3_wfpgrid.duration/secinday;
+Yr3_wfpgrid.updown = Yr3_wfpgrid.profile_direction; 
 
 % Grid on isotherms
     [~,deepind] = unique(Yr3_wfp.temperature_dosta); %remove duplicates so can use interp1 function
@@ -233,13 +233,13 @@ Yr3_wfpgrid_therm.duration = Yr3_wfpgrid_therm.duration/secinday;
 Yr3_wfpgrid_therm.updown = Yr3_wfpgrid_therm.profile_direction;
 
 %All profiles for year 4
-% scivars = [Yr4_wfp.temperature_dosta, Yr4_wfp.pracsal_dosta, Yr4_wfp.oxygen, Yr4_wfp.optode_temperature...
-%         Yr4_wfp.backscatter, Yr4_wfp.scat_total, Yr4_wfp.chla];
-% [Yr4_wfpgrid] = glider_grid(Yr4_wfp.time_dosta,Yr4_wfp.lat_dosta,Yr4_wfp.lon_dosta,Yr4_wfp.depth_dosta,Yr4_wfp.profile_index,Yr4_wfp.updown_index',scivars,depth_grid);
-%     Yr4_wfpgrid.depth_grid = depth_grid;
-% Yr4_wfpgrid.time_start = convertTime(Yr4_wfpgrid.time_start);
-% Yr4_wfpgrid.duration = Yr4_wfpgrid.duration/secinday;
-% Yr4_wfpgrid.updown = Yr4_wfpgrid.profile_direction; 
+scivars = [Yr4_wfp.temperature_dosta, Yr4_wfp.pracsal_dosta, Yr4_wfp.oxygen, Yr4_wfp.optode_temperature...
+        Yr4_wfp.backscatter, Yr4_wfp.scat_total, Yr4_wfp.chla];
+[Yr4_wfpgrid] = glider_grid(Yr4_wfp.time_dosta,Yr4_wfp.lat_dosta,Yr4_wfp.lon_dosta,Yr4_wfp.depth_dosta,Yr4_wfp.profile_index,Yr4_wfp.updown_index',scivars,depth_grid);
+    Yr4_wfpgrid.depth_grid = depth_grid;
+Yr4_wfpgrid.time_start = convertTime(Yr4_wfpgrid.time_start);
+Yr4_wfpgrid.duration = Yr4_wfpgrid.duration/secinday;
+Yr4_wfpgrid.updown = Yr4_wfpgrid.profile_direction; 
 
 % Grid on isotherms
     [~,deepind] = unique(Yr4_wfp.temperature_dosta); %remove duplicates so can use interp1 function
