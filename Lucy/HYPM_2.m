@@ -7,7 +7,7 @@ filename = ['deployment0001_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr1_wfp.lat_dosta = ncread(filename,'lat');
     %CTD data - Note that these appear to be directly taken from corresponding points in
     %CTD file, and so could be used without having to pull from the CTD data
-    Yr1_wfp.temperature_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_temperature'); %standard_name = 'sea_water_temperature' units = 'deg_C'
+    Yr1_wfp.temperature_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_temperature' units = 'deg_C'
     Yr1_wfp.pracsal_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_practical_salinity'
     Yr1_wfp.pressure_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
@@ -164,7 +164,7 @@ Yr3_wfp.depth_dosta = -gsw_z_from_p(Yr3_wfp.pressure_dosta,Yr3_wfp.lat_dosta);
     [Yr3_wfp.profile_index,Yr3_wfp.updown_index] = profileIndex(Yr3_wfp.depth_dosta);
     
 Yr4_wfp.depth_dosta = -gsw_z_from_p(Yr4_wfp.pressure_dosta,Yr4_wfp.lat_dosta);
-    [Yr4_wfp.profile_index,Yr4_wfp.updown_index] = profileIndex(Yr4_wfp.depth_dosta)
+    [Yr4_wfp.profile_index,Yr4_wfp.updown_index] = profileIndex(Yr4_wfp.depth_dosta);
 
 %% Calculate density in raw profiles to enable gridding on density surfaces
 Yr1_wfp.pdens = gsw_p_from_z(-Yr1_wfp.depth_dosta, Yr1_wfp.lat_dosta); %potential density function
@@ -176,7 +176,6 @@ Yr4_wfp.pdens = gsw_p_from_z(-Yr4_wfp.depth_dosta, Yr4_wfp.lat_dosta);
 depth_grid = [150:5:2600];
 therm_grid = [1.1:0.05:5.6];
 secinday = 60*60*24;
-
 
 %All profiles for year 1
 scivars = [Yr1_wfp.temperature_dosta, Yr1_wfp.pracsal_dosta, Yr1_wfp.oxygen, Yr1_wfp.optode_temperature...
@@ -251,10 +250,10 @@ Yr4_wfpgrid_therm.duration = Yr4_wfpgrid_therm.duration/secinday;
 Yr4_wfpgrid_therm.updown = Yr4_wfpgrid_therm.profile_direction;
 %% Take mean of paired up and down profiles
 tol = 1; %only combine profiles where time_start is < 1 day apart
-% [Yr1_wfpgrid.scivars_pair,Yr1_wfpgrid.ind_pair] = profilePairMean(Yr1_wfpgrid,tol);
-% [Yr2_wfpgrid.scivars_pair,Yr2_wfpgrid.ind_pair] = profilePairMean(Yr2_wfpgrid,tol);
-% [Yr3_wfpgrid.scivars_pair,Yr3_wfpgrid.ind_pair] = profilePairMean(Yr3_wfpgrid,tol);
-% [Yr4_wfpgrid.scivars_pair,Yr4_wfpgrid.ind_pair] = profilePairMean(Yr4_wfpgrid,tol);
+[Yr1_wfpgrid.scivars_pair,Yr1_wfpgrid.ind_pair] = profilePairMean(Yr1_wfpgrid,tol);
+[Yr2_wfpgrid.scivars_pair,Yr2_wfpgrid.ind_pair] = profilePairMean(Yr2_wfpgrid,tol);
+[Yr3_wfpgrid.scivars_pair,Yr3_wfpgrid.ind_pair] = profilePairMean(Yr3_wfpgrid,tol);
+[Yr4_wfpgrid.scivars_pair,Yr4_wfpgrid.ind_pair] = profilePairMean(Yr4_wfpgrid,tol);
 
 [Yr1_wfpgrid_therm.scivars_pair,Yr1_wfpgrid_therm.ind_pair] = profilePairMean(Yr1_wfpgrid_therm,tol);
 [Yr2_wfpgrid_therm.scivars_pair,Yr2_wfpgrid_therm.ind_pair] = profilePairMean(Yr2_wfpgrid_therm,tol);
