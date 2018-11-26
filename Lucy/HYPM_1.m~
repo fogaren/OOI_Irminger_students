@@ -439,7 +439,7 @@ wfpmerge.chla = [Yr1_wfpgrid.chla Yr2_wfpgrid.chla Yr3_wfpgrid.chla Yr4_wfpgrid.
     C2 = cmocean('Algae'); 
 
 %Make plotting grid
-[X,Y] = meshgrid(wfpmerge.time, wfpmerge.depth_grid);
+[X,Y] = meshgrid(wfpmerge.time, wfpmerge.de[_grid);
 
 figure(i + 1); clf;
     subplot(411) %Density
