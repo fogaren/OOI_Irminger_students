@@ -359,24 +359,24 @@ Yr4_wfpgrid_therm.chla = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,7,:));
 Yr4_wfpgrid_therm.depth = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,8,:));
     
 %Calculate O2 saturation    
-    O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid.S,Yr1_wfpgrid.T);
-Yr1_wfpgrid.O2sat = (Yr1_wfpgrid.O2conc./O2equil - 1)*100;   
-    O2equil = gsw_O2sol_SP_pt(Yr2_wfpgrid.S,Yr2_wfpgrid.T);
-Yr2_wfpgrid.O2sat = (Yr2_wfpgrid.O2conc./O2equil - 1)*100;
-    O2equil = gsw_O2sol_SP_pt(Yr3_wfpgrid.S,Yr3_wfpgrid.T);
-Yr3_wfpgrid.O2sat = (Yr3_wfpgrid.O2conc./O2equil - 1)*100;
-    O2equil = gsw_O2sol_SP_pt(Yr4_wfpgrid.S,Yr4_wfpgrid.T);
-Yr4_wfpgrid.O2sat = (Yr4_wfpgrid.O2conc./O2equil - 1)*100;
+    Yr1_wfpgrid.O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid.S,Yr1_wfpgrid.T);
+Yr1_wfpgrid.O2sat = (Yr1_wfpgrid.O2conc./Yr1_wfpgrid.O2equil - 1)*100;   
+    Yr2_wfpgrid.O2equil = gsw_O2sol_SP_pt(Yr2_wfpgrid.S,Yr2_wfpgrid.T);
+Yr2_wfpgrid.O2sat = (Yr2_wfpgrid.O2conc./Yr2_wfpgrid.O2equil - 1)*100;
+    Yr3_wfpgrid.O2equil = gsw_O2sol_SP_pt(Yr3_wfpgrid.S,Yr3_wfpgrid.T);
+Yr3_wfpgrid.O2sat = (Yr3_wfpgrid.O2conc./Yr3_wfpgrid.O2equil - 1)*100;
+    Yr4_wfpgrid.O2equil = gsw_O2sol_SP_pt(Yr4_wfpgrid.S,Yr4_wfpgrid.T);
+Yr4_wfpgrid.O2sat = (Yr4_wfpgrid.O2conc./Yr4_wfpgrid.O2equil - 1)*100;
 
 %Calculate O2 saturation for thermgrid 
- O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid_therm.S,Yr1_wfpgrid_therm.T);
-Yr1_wfpgrid_therm.O2sat = (Yr1_wfpgrid_therm.O2conc./O2equil - 1)*100;
-    O2equil = gsw_O2sol_SP_pt(Yr2_wfpgrid_therm.S,Yr2_wfpgrid_therm.T);
-Yr2_wfpgrid_therm.O2sat = (Yr2_wfpgrid_therm.O2conc./O2equil - 1)*100;
-    O2equil = gsw_O2sol_SP_pt(Yr3_wfpgrid_therm.S,Yr3_wfpgrid_therm.T);
-Yr3_wfpgrid_therm.O2sat = (Yr3_wfpgrid_therm.O2conc./O2equil - 1)*100;
-    O2equil = gsw_O2sol_SP_pt(Yr4_wfpgrid_therm.S,Yr4_wfpgrid_therm.T);
-Yr4_wfpgrid_therm.O2sat = (Yr4_wfpgrid_therm.O2conc./O2equil - 1)*100;
+ Yr1_wfpgrid_therm.O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid_therm.S,Yr1_wfpgrid_therm.T);
+Yr1_wfpgrid_therm.O2sat = (Yr1_wfpgrid_therm.O2conc./Yr1_wfpgrid_therm.O2equil - 1)*100;
+    Yr2_wfpgrid_therm.O2equil = gsw_O2sol_SP_pt(Yr2_wfpgrid_therm.S,Yr2_wfpgrid_therm.T);
+Yr2_wfpgrid_therm.O2sat = (Yr2_wfpgrid_therm.O2conc./Yr2_wfpgrid_therm.O2equil - 1)*100;
+    Yr3_wfpgrid_therm.O2equil = gsw_O2sol_SP_pt(Yr3_wfpgrid_therm.S,Yr3_wfpgrid_therm.T);
+Yr3_wfpgrid_therm.O2sat = (Yr3_wfpgrid_therm.O2conc./Yr3_wfpgrid_therm.O2equil - 1)*100;
+    Yr4_wfpgrid_therm.O2equil = gsw_O2sol_SP_pt(Yr4_wfpgrid_therm.S,Yr4_wfpgrid_therm.T);
+Yr4_wfpgrid_therm.O2sat = (Yr4_wfpgrid_therm.O2conc./Yr4_wfpgrid_therm.O2equil - 1)*100;
 
 %% Visualize gridded data
 for i = 1:4

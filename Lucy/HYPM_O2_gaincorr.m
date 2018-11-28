@@ -1,26 +1,26 @@
 %% Correct O2 data years 1-4
 %Initial gain correction of DOSTA    
-Yr1_wfp.oxygen_corr = Yr1_wfp.oxygen * gain(1,1) 
-Yr2_wfp.oxygen_corr = Yr2_wfp.oxygen * gain(1,2)
-Yr3_wfp.oxygen_corr = Yr3_wfp.oxygen * gain(1,3)
-Yr4_wfp.oxygen_corr = Yr4_wfp.oxygen * gain(1,4)
+Yr1_wfp.oxygen_corr = Yr1_wfp.oxygen * gain(1,1); 
+Yr2_wfp.oxygen_corr = Yr2_wfp.oxygen * gain(1,2);
+Yr3_wfp.oxygen_corr = Yr3_wfp.oxygen * gain(1,3);
+Yr4_wfp.oxygen_corr = Yr4_wfp.oxygen * gain(1,4);
 
-Yr1_wfpgrid.oxygen_corr = Yr1_wfpgrid.O2conc * gain(1,1) 
-Yr2_wfpgrid.oxygen_corr = Yr2_wfpgrid.O2conc * gain(1,2)
-Yr3_wfpgrid.oxygen_corr = Yr3_wfpgrid.O2conc * gain(1,3)
-Yr4_wfpgrid.oxygen_corr = Yr4_wfpgrid.O2conc * gain(1,4)
+Yr1_wfpgrid.oxygen_corr = Yr1_wfpgrid.O2conc * gain(1,1); 
+Yr2_wfpgrid.oxygen_corr = Yr2_wfpgrid.O2conc * gain(1,2);
+Yr3_wfpgrid.oxygen_corr = Yr3_wfpgrid.O2conc * gain(1,3);
+Yr4_wfpgrid.oxygen_corr = Yr4_wfpgrid.O2conc * gain(1,4);
 
-Yr1_wfpgrid_therm.oxygen_corr = Yr1_wfpgrid_therm.O2conc * gain(1,1) 
-Yr2_wfpgrid_therm.oxygen_corr = Yr2_wfpgrid_therm.O2conc * gain(1,2)
-Yr3_wfpgrid_therm.oxygen_corr = Yr3_wfpgrid_therm.O2conc * gain(1,3)
-Yr4_wfpgrid_therm.oxygen_corr = Yr4_wfpgrid_therm.O2conc * gain(1,4)
+Yr1_wfpgrid_therm.oxygen_corr = Yr1_wfpgrid_therm.O2conc * gain(1,1); 
+Yr2_wfpgrid_therm.oxygen_corr = Yr2_wfpgrid_therm.O2conc * gain(1,2);
+Yr3_wfpgrid_therm.oxygen_corr = Yr3_wfpgrid_therm.O2conc * gain(1,3);
+Yr4_wfpgrid_therm.oxygen_corr = Yr4_wfpgrid_therm.O2conc * gain(1,4);
 
 %%
 %Calculate O2 saturation with initial correction   
-Yr1_wfpgrid.O2satcorr = (Yr2_wfpgrid.oxygen_corr./O2equil - 1)*100;
-Yr2_wfpgrid.O2satcorr = (Yr2_wfpgrid.oxygen_corr./O2equil - 1)*100;
-Yr3_wfpgrid.O2satcorr = (Yr3_wfpgrid.oxygen_corr./O2equil - 1)*100;
-Yr4_wfpgrid.O2satcorr = (Yr4_wfpgrid.oxygen_corr./O2equil - 1)*100;
+Yr1_wfpgrid.O2satcorr = (Yr1_wfpgrid.oxygen_corr./Yr1_wfpgrid.O2equil - 1)*100;
+Yr2_wfpgrid.O2satcorr = (Yr2_wfpgrid.oxygen_corr./Yr2_wfpgrid.O2equil - 1)*100;
+Yr3_wfpgrid.O2satcorr = (Yr3_wfpgrid.oxygen_corr./Yr3_wfpgrid.O2equil - 1)*100;
+Yr4_wfpgrid.O2satcorr = (Yr4_wfpgrid.oxygen_corr./Yr4_wfpgrid.O2equil - 1)*100;
 
 %% Visualize initial gain correction data
 for i = 1:4
@@ -63,6 +63,7 @@ end
 
 %%
 wfpmerge.oxygen_corr = [Yr1_wfpgrid.oxygen_corr Yr2_wfpgrid.oxygen_corr Yr3_wfpgrid.oxygen_corr Yr4_wfpgrid.oxygen_corr];
+wfpmerge.O2satcorr = [Yr1_wfpgrid.O2satcorr Yr2_wfpgrid.O2satcorr Yr3_wfpgrid.O2satcorr Yr4_wfpgrid.O2satcorr];
 %% Plot merged data
 %Adjustable parameters for plotting
     mindepth = 150; maxdepth = 2600;
@@ -93,7 +94,7 @@ datetick('x',2,'keeplimits');
 title('Temperature (deg C)', 'Fontsize', 12)
 
     subplot(413) %Oxygen_corr concentration
-cmin = 230; cmax = 320; %manually set min and max
+cmin = 260; cmax = 320; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
 contourf(X,Y,wfpmerge.oxygen_corr,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
@@ -102,9 +103,9 @@ datetick('x',2,'keeplimits');
 title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 
     subplot(414) %Oxygen saturation
-cmin = -25; cmax = 0; %manually set min and max
+cmin = -15; cmax = 0; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
-contourf(X,Y,wfpmerge.O2sat,cvec,'linecolor','none'); hold on;
+contourf(X,Y,wfpmerge.O2satcorr,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
 colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)', 'Fontsize', 10); hcb = colorbar; set(hcb,'location','eastoutside')
 datetick('x',2,'keeplimits');
