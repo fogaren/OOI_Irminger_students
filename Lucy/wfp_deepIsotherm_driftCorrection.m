@@ -8,8 +8,8 @@
 %% Pin everything to stable deep ocean measurement in deep WFP data - plotting on isotherms
 % Use rate of change on deep isotherms to correct for drift in WFP O2 and salinity
 figure(1); clf
-thermplot = Yr1_wfpgrid_therm.therm_grid(21:4:47); %select stable deep isotherms
-thermstr = {'2.1 deg C', '2.3 deg C', '2.5 deg C', '2.7 deg C', '2.9 deg C', '3.1 deg C', '3.3 deg C'};
+thermplot = Yr1_wfpgrid_therm.therm_grid(25:4:43); %select stable deep isotherms
+thermstr = {'2.3 deg C', '2.5 deg C', '2.7 deg C', '2.9 deg C', '3.1 deg C'};
 clear C h; bot = nicecolor('rrywwwwww'); top = nicecolor('rrykkkkkk');
 C = [linspace(top(1),bot(1),length(thermplot))' linspace(top(2),bot(2),length(thermplot))' linspace(top(3),bot(3),length(thermplot))'];
 yearspan = {'2014-2015','2015-2016','2016-2017','2017-2018'};
@@ -81,9 +81,6 @@ for j = 1:length(thermplot)
     idtherm = find(plotting.therm_grid == thermplot(j));
     if length(idtherm) == 1
         h(j) = plot(plotting.time_start, O2gaincorr(idtherm,:),'.','color',C(j,:),'markersize',M); hold on;
-%         plot(plotting.time_start, O2int(idtherm) + plotting.time_start*O2slope(idtherm,i),'color',C(j,:),'linewidth',1); hold on;
-%         plot(plotting.time_start(plottime), coefa(idtherm,i)*exp((plotting.time_start(plottime) - min(plotting.time_start))*coefb(idtherm,i)) + ...
-%             coefc(idtherm,i)*exp((plotting.time_start(plottime) - min(plotting.time_start))*coefd(idtherm,i)),'color',C(j,:),'linewidth',1); hold on;
     end
 end
 datetick('x',3); ylim([274 304]); %legend(h, thermstr)
@@ -103,9 +100,16 @@ for j = 1:length(thermplot)
     idtherm = find(plotting.therm_grid == thermplot(j));
     if length(idtherm) == 1
         h(j) = plot(plotting.time_start, plotting.depth(idtherm,:),'.','color',C(j,:),'markersize',M); hold on;
-        %plot(plotting.time_start, Sint(idtherm) + plotting.time_start*Sslope(idtherm,i),'color',C(j,:),'linewidth',1); hold on;
     end
 end
 datetick('x',3); set(gca,'ydir','reverse'); ylim([1400 2700]); legend(h,thermstr,'location','southeast')
 title(['Depth of WFP isotherms below winter ventilation, ' yearspan{i}])
+end
+
+%% Calculate mean drift rate based on all non-outlier stable deep isotherms
+stable = find(plotting.therm_grid >= min(thermplot) & plotting.therm_grid <= max(thermplot)); %indices of stable deep isotherms
+for i = 1:4
+    wfp_O2drift(i) = nanmean(O2slope(stable,i));
+    wfp_O2drift_std(i) = nanstd(O2slope(stable,i));
+    wfp_O2drift_num(i) = sum(~isnan(O2slope(stable,i)));
 end
