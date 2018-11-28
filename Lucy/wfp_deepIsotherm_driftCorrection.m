@@ -12,14 +12,14 @@ thermplot = Yr1_wfpgrid_therm.therm_grid(21:4:47); %select stable deep isotherms
 thermstr = {'2.1 deg C', '2.3 deg C', '2.5 deg C', '2.7 deg C', '2.9 deg C', '3.1 deg C', '3.3 deg C'};
 clear C h; bot = nicecolor('rrywwwwww'); top = nicecolor('rrykkkkkk');
 C = [linspace(top(1),bot(1),length(thermplot))' linspace(top(2),bot(2),length(thermplot))' linspace(top(3),bot(3),length(thermplot))'];
-yearspan = {'2014-2015','2015-2016'};
+yearspan = {'2014-2015','2015-2016','2016-2017','2017-2018'};
 M = 15;
 
 for i = 1:4
     if i == 1
         plotting = Yr1_wfpgrid_therm;
         plotting.time_start = Yr1_wfpgrid_therm.time_start(Yr1_wfpgrid_therm.ind_pair);
-        O2gaincorr = plotting.wfp.oxygen_corr; %plot gain corr O2 -- not sure if it should be wfp.oxygen_corr or Yr1_wfpgrid_therm.oxygen_corr
+        O2gaincorr = plotting.oxygen_corr; %plot gain corr O2 -- you want what was originally Yr1_wfpgrid_therm.oxygen_corr, which is now also plotting.oxygen_corr
         %Initialize arrays to hold slopes
             O2slope = NaN*ones(length(plotting.therm_grid),2);
             O2slope_err = NaN*ones(length(plotting.therm_grid),2);
@@ -30,15 +30,15 @@ for i = 1:4
     elseif i == 2
         plotting = Yr2_wfpgrid_therm;
         plotting.time_start = Yr2_wfpgrid_therm.time_start(Yr2_wfpgrid_therm.ind_pair);
-        O2gaincorr = plotting.wfp.oxygen_corr); 
+        O2gaincorr = plotting.oxygen_corr; 
     elseif i == 3
         plotting = Yr3_wfpgrid_therm;
         plotting.time_start = Yr3_wfpgrid_therm.time_start(Yr3_wfpgrid_therm.ind_pair);
-        O2gaincorr = plotting.wfp.oxygen_corr); 
+        O2gaincorr = plotting.oxygen_corr;
     elseif i == 4
         plotting = Yr4_wfpgrid_therm;
         plotting.time_start = Yr4_wfpgrid_therm.time_start(Yr4_wfpgrid_therm.ind_pair);
-        O2gaincorr = plotting.wfp.oxygen_corr); 
+        O2gaincorr = plotting.oxygen_corr; 
     end
     
 %Set up to calculate varying drift rate over time
@@ -54,16 +54,6 @@ for k = 1:length(plotting.therm_grid)
     ind = find(O2gaincorr(k,:) > nanmean(O2gaincorr(k,:)) - 2*nanstd(O2gaincorr(k,:)) & O2gaincorr(k,:) < nanmean(O2gaincorr(k,:)) + 2*nanstd(O2gaincorr(k,:)));
     [P,S] = polyfit(plotting.time_start(ind), O2gaincorr(k,ind)',1);
     O2slope(k,i) = P(1); O2int(k) = P(2);
-    if sum(size(S.R)) == 4
-        err = sqrt(diag((S.R)\inv(S.R'))./S.normr.^2./S.df);
-        O2slope_err(k,i) = err(1); O2int_err(k) = err(2);
-        % Calculate exponential fit
-        if k >=12 & k<=82
-            f = fit(plotting.time_start(ind) - min(plotting.time_start), O2gaincorr(k,ind)','exp2');
-            fitvalues = coeffvalues(f);
-            coefa(k,i) = fitvalues(1); coefb(k,i) = fitvalues(2); coefc(k,i) = fitvalues(3); coefd(k,i) = fitvalues(4);
-        end
-    end
     for j = 1:length(tgrid2)-1
         tind = find(plotting.time_start >= tgrid2(j) + floor(tmin) & plotting.time_start < tgrid2(j+1) + floor(tmin));
         intind = intersect(tind,ind);
@@ -85,7 +75,7 @@ for k = 1:length(plotting.therm_grid)
     end
 end
 %%% Plot trends at specific isotherms
-subplot(3,2,i)
+subplot(3,4,i)
     plottime = [1:ceil(length(plotting.time_start)*1)];
 for j = 1:length(thermplot)
     idtherm = find(plotting.therm_grid == thermplot(j));
@@ -98,7 +88,7 @@ for j = 1:length(thermplot)
 end
 datetick('x',3); ylim([274 304]); %legend(h, thermstr)
 title(['O_2 concentration from WFP isotherms below winter ventilation, ' yearspan{i}])
-subplot(3,2,i+2)
+subplot(3,4,i+4)
 for j = 1:length(thermplot)
     idtherm = find(plotting.therm_grid == thermplot(j));
     if length(idtherm) == 1
@@ -106,9 +96,9 @@ for j = 1:length(thermplot)
         plot(plotting.time_start, Sint(idtherm) + plotting.time_start*Sslope(idtherm,i),'color',C(j,:),'linewidth',1); hold on;
     end
 end
-datetick('x',3); ylim([34.86 34.93]); %legend(h,thermstr,'location','southwest')
+datetick('x',3); ylim([34.86 34.96]); %legend(h,thermstr,'location','southwest')
 title(['Salinity from WFP isotherms below winter ventilation, ' yearspan{i}])
-subplot(3,2,i+4)
+subplot(3,4,i+8)
 for j = 1:length(thermplot)
     idtherm = find(plotting.therm_grid == thermplot(j));
     if length(idtherm) == 1

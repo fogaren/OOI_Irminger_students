@@ -253,7 +253,7 @@ Yr4_wfpgrid.updown = Yr4_wfpgrid.profile_direction;
     [~,deepind] = unique(Yr4_wfp.temperature_dosta); %remove duplicates so can use interp1 function
 [Yr4_wfpgrid_therm] = glider_grid_dens(Yr4_wfp.time_dosta(deepind),Yr4_wfp.lat_dosta(deepind),Yr4_wfp.lon_dosta(deepind),...
     Yr4_wfp.temperature_dosta(deepind),Yr4_wfp.profile_index(deepind),Yr4_wfp.updown_index(deepind)',[scivars(deepind,:), Yr4_wfp.depth_dosta(deepind)],therm_grid);
-    Yr2_wfpgrid_therm.therm_grid = therm_grid;
+    Yr4_wfpgrid_therm.therm_grid = therm_grid;
 Yr4_wfpgrid_therm.time_start = convertTime(Yr4_wfpgrid_therm.time_start);
 Yr4_wfpgrid_therm.duration = Yr4_wfpgrid_therm.duration/secinday;
 Yr4_wfpgrid_therm.updown = Yr4_wfpgrid_therm.profile_direction;
