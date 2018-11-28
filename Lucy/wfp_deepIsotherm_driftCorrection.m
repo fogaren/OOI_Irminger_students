@@ -15,11 +15,11 @@ C = [linspace(top(1),bot(1),length(thermplot))' linspace(top(2),bot(2),length(th
 yearspan = {'2014-2015','2015-2016'};
 M = 15;
 
-for i = 1:2
+for i = 1:4
     if i == 1
         plotting = Yr1_wfpgrid_therm;
         plotting.time_start = Yr1_wfpgrid_therm.time_start(Yr1_wfpgrid_therm.ind_pair);
-        O2gaincorr = plotting.O2conc*gain_wfp(1); %note need a better format for saving gain
+        O2gaincorr = plotting.wfp.oxygen_corr; %plot gain corr O2 -- not sure if it should be wfp.oxygen_corr or Yr1_wfpgrid_therm.oxygen_corr
         %Initialize arrays to hold slopes
             O2slope = NaN*ones(length(plotting.therm_grid),2);
             O2slope_err = NaN*ones(length(plotting.therm_grid),2);
@@ -30,7 +30,15 @@ for i = 1:2
     elseif i == 2
         plotting = Yr2_wfpgrid_therm;
         plotting.time_start = Yr2_wfpgrid_therm.time_start(Yr2_wfpgrid_therm.ind_pair);
-        O2gaincorr = plotting.O2conc*gain_wfp(2); %note need a better format for saving gain
+        O2gaincorr = plotting.wfp.oxygen_corr); 
+    elseif i == 3
+        plotting = Yr3_wfpgrid_therm;
+        plotting.time_start = Yr3_wfpgrid_therm.time_start(Yr3_wfpgrid_therm.ind_pair);
+        O2gaincorr = plotting.wfp.oxygen_corr); 
+    elseif i == 4
+        plotting = Yr4_wfpgrid_therm;
+        plotting.time_start = Yr4_wfpgrid_therm.time_start(Yr4_wfpgrid_therm.ind_pair);
+        O2gaincorr = plotting.wfp.oxygen_corr); 
     end
     
 %Set up to calculate varying drift rate over time
