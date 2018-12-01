@@ -1,74 +1,33 @@
 %% Correct O2 data years 1-4
-%drift correction    
-Yr1_wfp.oxygen_driftcalib = Yr1_wfp.oxygen_corr * wfp_O2drift(1,1); %this will produce a negative drift calib
-Yr2_wfp.oxygen_driftcalib = Yr2_wfp.oxygen_corr * wfp_O2drift(1,2);
-Yr3_wfp.oxygen_driftcalib = Yr3_wfp.oxygen_corr * wfp_O2drift(1,3);
-Yr4_wfp.oxygen_driftcalib = Yr4_wfp.oxygen_corr * wfp_O2drift(1,4);
+    %makes an array of times profiles were collected, the same size as the paired profile data
+    %note that this is a throwaway variable that is re-written for each year (though you could change and save it in the structure)
+    timegrid = repmat(Yr1_wfpgrid.time_start(Yr1_wfpgrid.ind_pair),1,length(depth_grid))';
+Yr1_wfpgrid.oxygen_driftcalib = (timegrid - Yr1_wfpgrid.time_start(1)) * wfp_O2drift(1,1); %calculates cumulative drift since deployment = (today's date - day 1 of deployment)* (drift rate of O2 per day)
+    timegrid = repmat(Yr2_wfpgrid.time_start(Yr2_wfpgrid.ind_pair),1,length(depth_grid))';
+Yr2_wfpgrid.oxygen_driftcalib = (timegrid - Yr2_wfpgrid.time_start(1)) * wfp_O2drift(1,2);
+    timegrid = repmat(Yr3_wfpgrid.time_start(Yr3_wfpgrid.ind_pair),1,length(depth_grid))';
+Yr3_wfpgrid.oxygen_driftcalib = (timegrid - Yr3_wfpgrid.time_start(1)) * wfp_O2drift(1,3);
+    timegrid = repmat(Yr4_wfpgrid.time_start(Yr4_wfpgrid.ind_pair),1,length(depth_grid))';
+Yr4_wfpgrid.oxygen_driftcalib = (timegrid - Yr4_wfpgrid.time_start(1)) * wfp_O2drift(1,4);
 
-Yr1_wfp.oxygen_driftcorr = Yr1_wfp.oxygen_corr + Yr1_wfp.oxygen_driftcalib; %basically subtracting the drift calculation
-Yr2_wfp.oxygen_driftcorr = Yr2_wfp.oxygen_corr + Yr2_wfp.oxygen_driftcalib;
-Yr3_wfp.oxygen_driftcorr = Yr3_wfp.oxygen_corr + Yr3_wfp.oxygen_driftcalib;
-Yr4_wfp.oxygen_driftcorr = Yr4_wfp.oxygen_corr + Yr4_wfp.oxygen_driftcalib;
-
-Yr1_wfpgrid.oxygen_driftcalib = Yr1_wfpgrid.oxygen_corr * wfp_O2drift(1,1); %this will produce a negative drift calib
-Yr2_wfpgrid.oxygen_driftcalib = Yr2_wfpgrid.oxygen_corr * wfp_O2drift(1,2);
-Yr3_wfpgrid.oxygen_driftcalib = Yr3_wfpgrid.oxygen_corr * wfp_O2drift(1,3);
-Yr4_wfpgrid.oxygen_driftcalib = Yr4_wfpgrid.oxygen_corr * wfp_O2drift(1,4);
-
-Yr1_wfpgrid.oxygen_driftcorr = Yr1_wfpgrid.oxygen_corr + Yr1_wfpgrid.oxygen_driftcalib; %basically subtracting the drift calculation
-Yr2_wfpgrid.oxygen_driftcorr = Yr2_wfpgrid.oxygen_corr + Yr2_wfpgrid.oxygen_driftcalib;
-Yr3_wfpgrid.oxygen_driftcorr = Yr3_wfpgrid.oxygen_corr + Yr3_wfpgrid.oxygen_driftcalib;
-Yr4_wfpgrid.oxygen_driftcorr = Yr4_wfpgrid.oxygen_corr + Yr4_wfpgrid.oxygen_driftcalib;
+%Note the sign of the drift above is negative (sensor drifts down), so
+%subtract the driftcalib value to correct the value back up to correct number
+Yr1_wfpgrid.oxygen_driftcorr = Yr1_wfpgrid.oxygen_corr - Yr1_wfpgrid.oxygen_driftcalib; %basically subtracting the drift calculation
+Yr2_wfpgrid.oxygen_driftcorr = Yr2_wfpgrid.oxygen_corr - Yr2_wfpgrid.oxygen_driftcalib;
+Yr3_wfpgrid.oxygen_driftcorr = Yr3_wfpgrid.oxygen_corr - Yr3_wfpgrid.oxygen_driftcalib;
+Yr4_wfpgrid.oxygen_driftcorr = Yr4_wfpgrid.oxygen_corr - Yr4_wfpgrid.oxygen_driftcalib;
 
 %%
-%Calculate O2 saturation with initial correction   
-% Yr1_wfpgrid.O2satcorr = (Yr1_wfpgrid.oxygen_corr./Yr1_wfpgrid.O2equil - 1)*100;
-% Yr2_wfpgrid.O2satcorr = (Yr2_wfpgrid.oxygen_corr./Yr2_wfpgrid.O2equil - 1)*100;
-% Yr3_wfpgrid.O2satcorr = (Yr3_wfpgrid.oxygen_corr./Yr3_wfpgrid.O2equil - 1)*100;
-% Yr4_wfpgrid.O2satcorr = (Yr4_wfpgrid.oxygen_corr./Yr4_wfpgrid.O2equil - 1)*100;
+%Calculate O2 saturation with drift correction   
+Yr1_wfpgrid.O2sat_driftcorr = (Yr1_wfpgrid.oxygen_driftcorr./Yr1_wfpgrid.O2equil - 1)*100;
+Yr2_wfpgrid.O2sat_driftcorr = (Yr2_wfpgrid.oxygen_driftcorr./Yr2_wfpgrid.O2equil - 1)*100;
+Yr3_wfpgrid.O2sat_driftcorr = (Yr3_wfpgrid.oxygen_driftcorr./Yr3_wfpgrid.O2equil - 1)*100;
+Yr4_wfpgrid.O2sat_driftcorr = (Yr4_wfpgrid.oxygen_driftcorr./Yr4_wfpgrid.O2equil - 1)*100;
 
-%% Visualize initial gain correction data
-for i = 1:4
-    if i == 1
-        plotting = Yr1_wfpgrid;
-    elseif i == 2
-        plotting = Yr2_wfpgrid;
-    elseif i == 3
-        plotting = Yr3_wfpgrid;
-    elseif i == 4
-        plotting = Yr4_wfpgrid;
-    end
-
-
-figure(i); clf
-set(gcf,'color','w')
-x0=1;
-y0=1;
-width=28;
-height=20;
-set(gcf,'units','centimeters','position',[x0,y0,width,height]) 
-    subplot(4,2,1)
-imagesc(plotting.T); colorbar; title('Temperature');
-    subplot(4,2,2)
-imagesc(plotting.S); colorbar; title('Salinity');
-    subplot(4,2,3)
-imagesc(plotting.pdens); colorbar; title('Density');
-    subplot(4,2,4)
-imagesc(plotting.oxygen_driftcorr); colorbar; caxis([240 300]); title('O_2 concentration');
-    subplot(4,2,5)
-imagesc(plotting.O2sat); colorbar; caxis([-25 0]); title('O_2 sat');
-    subplot(4,2,6)
-imagesc(plotting.backscatter); colorbar; caxis([0 0.002]); title('Backscatter');
-    subplot(4,2,7)
-imagesc(plotting.scat_total); colorbar; title('Scat Total');
-    subplot(4,2,8)
-imagesc(plotting.chla); colorbar; caxis([0 0.3]); title('Chlorophyll a');
-
-end
 
 %%
 wfpmerge.oxygen_driftcorr = [Yr1_wfpgrid.oxygen_driftcorr Yr2_wfpgrid.oxygen_driftcorr Yr3_wfpgrid.oxygen_driftcorr Yr4_wfpgrid.oxygen_driftcorr];
-%wfpmerge.O2satcorr = [Yr1_wfpgrid.O2satcorr Yr2_wfpgrid.O2satcorr Yr3_wfpgrid.O2satcorr Yr4_wfpgrid.O2satcorr];
+wfpmerge.O2sat_driftcorr = [Yr1_wfpgrid.O2sat_driftcorr Yr2_wfpgrid.O2sat_driftcorr Yr3_wfpgrid.O2sat_driftcorr Yr4_wfpgrid.O2sat_driftcorr];
 %% Plot merged data
 %Adjustable parameters for plotting
     mindepth = 150; maxdepth = 2600;
@@ -110,7 +69,7 @@ title('Oxygen concentration (mol/L)', 'Fontsize', 12)
     subplot(414) %Oxygen saturation
 cmin = -15; cmax = 0; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
-contourf(X,Y,wfpmerge.O2satcorr,cvec,'linecolor','none'); hold on;
+contourf(X,Y,wfpmerge.O2sat_driftcorr,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
 colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)', 'Fontsize', 10); hcb = colorbar; set(hcb,'location','eastoutside')
 datetick('x',2,'keeplimits');
