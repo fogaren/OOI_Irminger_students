@@ -123,8 +123,17 @@ Yr3_wfp.depth_dosta = -gsw_z_from_p(Yr3_wfp.pressure_dosta,Yr3_wfp.lat_dosta);
     [Yr3_wfp.profile_index,Yr3_wfp.updown_index] = profileIndex(Yr3_wfp.depth_dosta);
 
 %% Calculate density in raw profiles to enable gridding on density surfaces
-% Removed for now - will need to be added back in later for depth surface
-% gridding using gsw_rho function
+[Yr1_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr1_wfp.pracsal_dosta, Yr1_wfp.pressure_dosta, Yr1_wfp.lon_dosta, Yr1_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr1_wfp.CT_dosta = gsw_CT_from_t(Yr1_wfp.SA_dosta, Yr1_wfp.temperature_dosta, Yr1_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr1_wfp.pdens = gsw_rho(Yr1_wfp.SA_dosta, Yr1_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
+[Yr2_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr2_wfp.pracsal_dosta, Yr2_wfp.pressure_dosta, Yr2_wfp.lon_dosta, Yr2_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr2_wfp.CT_dosta = gsw_CT_from_t(Yr2_wfp.SA_dosta, Yr2_wfp.temperature_dosta, Yr2_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr2_wfp.pdens = gsw_rho(Yr2_wfp.SA_dosta, Yr2_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
+[Yr3_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr3_wfp.pracsal_dosta, Yr3_wfp.pressure_dosta, Yr3_wfp.lon_dosta, Yr3_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr3_wfp.CT_dosta = gsw_CT_from_t(Yr3_wfp.SA_dosta, Yr3_wfp.temperature_dosta, Yr3_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr3_wfp.pdens = gsw_rho(Yr3_wfp.SA_dosta, Yr3_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
 
 %% Grid data to consistent depth intervals for each profile
 depth_grid = [150:5:2600];
