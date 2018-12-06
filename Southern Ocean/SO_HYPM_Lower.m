@@ -134,6 +134,14 @@ Yr3_wfp.depth_dosta = -gsw_z_from_p(Yr3_wfp.pressure_dosta,Yr3_wfp.lat_dosta);
 Yr1_wfp.CT_dosta = gsw_CT_from_t(Yr1_wfp.SA_dosta, Yr1_wfp.temperature_dosta, Yr1_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
 Yr1_wfp.pdens = gsw_rho(Yr1_wfp.SA_dosta, Yr1_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
 
+[Yr2_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr2_wfp.pracsal_dosta, Yr2_wfp.pressure_dosta, Yr2_wfp.lon_dosta, Yr2_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr2_wfp.CT_dosta = gsw_CT_from_t(Yr2_wfp.SA_dosta, Yr2_wfp.temperature_dosta, Yr2_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr2_wfp.pdens = gsw_rho(Yr2_wfp.SA_dosta, Yr2_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
+[Yr3_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr3_wfp.pracsal_dosta, Yr3_wfp.pressure_dosta, Yr3_wfp.lon_dosta, Yr3_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr3_wfp.CT_dosta = gsw_CT_from_t(Yr3_wfp.SA_dosta, Yr3_wfp.temperature_dosta, Yr3_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr3_wfp.pdens = gsw_rho(Yr3_wfp.SA_dosta, Yr3_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
 
 %% Grid data to consistent depth intervals for each profile
 depth_grid = [1000:5:5000];
@@ -250,7 +258,7 @@ imagesc(plotting.S); colorbar; title('Salinity');
     subplot(4,2,3)
 imagesc(plotting.pdens); colorbar; title('Density');
     subplot(4,2,4)
-imagesc(plotting.O2conc); colorbar; caxis([240 300]); title('O_2 concentration');
+imagesc(plotting.O2conc); colorbar; caxis([150 180]); title('O_2 concentration');
     subplot(4,2,5)
 imagesc(plotting.O2sat); colorbar; caxis([-25 0]); title('O_2 sat');
     subplot(4,2,6)
@@ -275,7 +283,7 @@ wfpmerge.chla = [Yr1_wfpgrid.chla Yr2_wfpgrid.chla Yr3_wfpgrid.chla];
 
 %% Plot merged data
 %Adjustable parameters for plotting
-    mindepth = 150; maxdepth = 2600;
+    mindepth = 2150; maxdepth = 4000;
     cints = 60; %number of contour intervals
     C = cmocean('Dense'); %set colormap
     C2 = cmocean('Algae'); 
@@ -294,7 +302,7 @@ datetick('x',2,'keeplimits');
 title('\sigma_\theta', 'Fontsize', 12)
 
     subplot(412) %Temperature
-cmin = 2; cmax = 6; %manually set min and max
+cmin = 0; cmax = 2; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
 contourf(X,Y,wfpmerge.T,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
@@ -303,7 +311,7 @@ datetick('x',2,'keeplimits');
 title('Temperature (deg C)', 'Fontsize', 12)
 
     subplot(413) %Oxygen concentration
-cmin = 230; cmax = 320; %manually set min and max
+cmin = 150; cmax = 180; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
 contourf(X,Y,wfpmerge.O2conc,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
@@ -312,7 +320,7 @@ datetick('x',2,'keeplimits');
 title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 
     subplot(414) %Oxygen saturation
-cmin = -25; cmax = 0; %manually set min and max
+cmin = -70; cmax = -45; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
 contourf(X,Y,wfpmerge.O2sat,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
