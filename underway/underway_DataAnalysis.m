@@ -46,7 +46,7 @@ gps.lon = gps.merge_data(:,2);
     gps.timeofday = gps.text_data(3:end,2);
 gps.time = NaN*ones(length(gps.merge_data),1);
 indnonan = find(isnan(gps.lat) == 0);
-gps.time(indnonan) = datenum(gps.date(indnonan)) + datenum(gps.timeofday(indnonan)) - datenum(2018,1,1);
+gps.time(indnonan) = datenum(gps.date(indnonan)) + datenum(gps.timeofday(indnonan)) - datenum(2019,1,1);
 
 %% Read in ship's underway seawater data
 %%% To merge ship's underway T, S, + fluo data: copy AR_SSW* irminger5_ssw.csv
@@ -61,14 +61,14 @@ ssw.flow = ssw.merge_data(:,6); %flow rate to ship's TSG and fluorometer
     ssw.timeofday = ssw.text_data(3:end,2);
 ssw.time = NaN*ones(length(ssw.merge_data),1);
 indnonan = find(isnan(ssw.SST) == 0);
-ssw.time(indnonan) = datenum(ssw.date(indnonan)) + datenum(ssw.timeofday(indnonan)) - datenum(2018,1,1);
+ssw.time(indnonan) = datenum(ssw.date(indnonan)) + datenum(ssw.timeofday(indnonan)) - datenum(2019,1,1);
 
 %% Pick time ranges for plots and analysis
 mintime = datenum(2018,6,5); maxtime = datenum(2018,6,25);
 
 %% Filter everything to an even grid to plot
     time_step = 10/24/60; %10 minutes
-    begtime  = mintime; 
+    begtime = mintime; 
     endtime = maxtime;
 
 [ssw.time_filt, ssw.data_filt] = meanTimeInterval(ssw.time, [ssw.flr ssw.SST ssw.SSS ssw.merge_data(:,3)], time_step, begtime, endtime);
@@ -311,7 +311,7 @@ axis([lonminplot lonmaxplot flrmin flrmax])
 xlabel('Longitude'); ylabel('Fluo'); title('Fluo by Space and Time')
     subplot(313)
 scatter(gps.lon_filt, optode.O2Sat, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
-axis([lonminplot lonmaxplot 0 .3])
+axis([lonminplot lonmaxplot 0 20])
 xlabel('Longitude'); ylabel('O2 Sat'); title('O2 Saturation by Space and Time')
 
 %% Emma Spatial Ratio Comparisons !DOES NOT INCLUDE ALL SECTIONS
