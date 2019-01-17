@@ -105,7 +105,7 @@ figure(1); clf; %Suggested nutrient samples to analyze
 plot(suna.time_filt, suna.NO3_filt, 'm.'); hold on; %NO3 from underway 
 plot(discrete_suna, discrete_suna_y, 'rx'); %discrete samples
 axis([mintime maxtime -15 20]); datetick('x',2, 'keeplimits');  
-ylabel('NO3', 'Fontsize', 15); title('NO3/nutrients: suggested discrete samples');
+ylabel('NO_3', 'Fontsize', 15); title('NO_3/nutrients: suggested discrete samples');
 %% Define Sections for Time & Spatial Analysis   
     %times = [begtime arriveOOI CTD010 CTD012 startWest CTD020 leaveOOI underwayoff]
 times = [begtime datenum(2018,6,8,5,00,00) datenum(2018,6,12,19,51,00) datenum(2018,6,13,20,30,00) datenum(2018,6,16,15,00,00) datenum(2018,6,19,13,49,00) datenum(2018,6,21,15,00,00) datenum(2018,6,23,17,40,00)];
@@ -119,14 +119,13 @@ transect = [T1 T2]; %all indices from transects
 array = [array1 array2]; %all indices from array
 
 figure(11); clf; %Shows gps track with sections color coded
-for i = 1:6
-    sections = {T1 T2 OSNAPeast OSNAPwest array1 array2}; %Sections 
-    sectionC = {nicecolor('Rw') nicecolor('rk') nicecolor('Bbw') nicecolor('GY') nicecolor('BRw') nicecolor('rBk')}; %Section colors
-    scatter(gps.lon_filt(sections{i}), gps.lat_filt(sections{i}), [], sectionC{i}, 'filled', 'LineWidth', .75); hold on;
-end 
-axis([-42 -30 59.5 63]);
-legend({'Transect 1', 'Transect 2', 'OSNAP East', 'OSNAP West', 'OOI Array 1', 'OOI Array 2'}, 'Fontsize', 16);
-xlabel('Longitude', 'Fontsize', 15); ylabel('Latitude', 'Fontsize', 15); title('Sections of Cruise Track', 'Fontsize', 15);
+    for i = 1:6
+        sections = {T1 T2 OSNAPeast OSNAPwest array1 array2}; %Sections 
+        sectionC = {nicecolor('Rw') nicecolor('rk') nicecolor('Bbw') nicecolor('GY') nicecolor('BRw') nicecolor('rBk')}; %Section colors
+        scatter(gps.lon_filt(sections{i}), gps.lat_filt(sections{i}), [], sectionC{i}, 'filled', 'LineWidth', .75); hold on;
+    end 
+    axis([-42 -30 59.5 63]); legend({'Transect 1', 'Transect 2', 'OSNAP East', 'OSNAP West', 'OOI Array 1', 'OOI Array 2'}, 'Fontsize', 16);
+    xlabel('Longitude', 'Fontsize', 15); ylabel('Latitude', 'Fontsize', 15); title('Sections of Cruise Track', 'Fontsize', 15);
 
 %% Filter oxygen data
 %Calculate derivative of O2 data
@@ -148,7 +147,7 @@ end
 A = find(O2cut < length(optode.time));
 O2cut = O2cut(A);
 
-figure(2); clf;
+figure(2); clf; %Plot optode data showing spikes to remove
     subplot(2,1,1)
 plot(optode.time, optode.O2raw, 'k.'); hold on;
 plot(optode.time(O2cut), optode.O2raw(O2cut), 'b.'); hold on;
@@ -192,191 +191,149 @@ optode.O2sol_filt = gsw_O2sol_SP_pt(ssw.SSS_filt, ssw.SST_filt); %calculates O2s
 optode.aou_filt = (optode.O2sol_filt)-(optode.O2_nospike_salcorr_filt); %calculates AOU
     AOU = optode.aou_filt; %AOU including outliers 
     outAOU = find(optode.aou_filt>50);
-    optode.aou_filt(outAOU) = NaN; %optode.aou_filt now OMITS outliers
-optode.O2Sat= (((optode.O2_nospike_salcorr_filt)-(optode.O2sol_filt))./(optode.O2sol_filt))*100; %Percent saturation
-
+    optode.aou_filt(outAOU) = NaN; %optode.aou_filt now OMITS outliers over 50
+optode.O2Sat = (((optode.O2_nospike_salcorr_filt)-(optode.O2sol_filt))./(optode.O2sol_filt))*100; %Percent saturation
 AOUmin= -100; AOUmax= 10; 
-figure(3);clf; %Plot AOU
+
+figure(3);clf; %Plot O2_sol and percent saturation
     yyaxis left 
-        plot(optode.time_filt, optode.aou_filt); hold on;
-        axis([mintime maxtime AOUmin AOUmax]);
-        ylabel ('AOU');
-        legend('AOU');
-        datetick('x', 2, 'keeplimits'); title('Oxygen');
+        plot(optode.time_filt, optode.O2sol_filt); hold on;
+        ylabel ('O_2');
     yyaxis right
-        plot(optode.time_filt, optode.O2Sat);
+        plot(optode.time_filt, optode.O2Sat); hold on;
         axis([mintime maxtime 0 30]);
         ylabel ('Percent Saturation')
-        legend('Percent Saturation')
+    legend('O_2 solubility', 'Percent Saturation');
+    datetick('x', 2, 'keeplimits'); title('Oxygen');
 %% Correlations between NO3 and AOU
-indT1 = find((isnan(optode.aou_filt(T1)))==0);%includes only real numbers of T1, omits outliers
-    P1 = polyfit(suna.NO3_filt(T1(indT1)), optode.aou_filt(T1(indT1)), 1);
-        %rho = 0.9699; df = 7; rho_sig95 = 0.7531; T1 stats 
-indSh = find(isnan(optode.aou_filt(OSNAPwest))==0);
-    P2 = polyfit(suna.NO3_filt(OSNAPwest(indSh)), optode.aou_filt(OSNAPwest(indSh)), 1);
-        %rho = 0.1180; df = 37; rho_sig95 = 0.3240; shelf stats 
-indA1 = find(optode.aou_filt(array1)>-44);
-    P3 = polyfit(suna.NO3_filt(array1(indA1)), optode.aou_filt(array1(indA1)), 1);
-        %rho = 0.6881; df = 14; rho_sig95 = 0.5306; array1 stats
-indM4 = find(((isnan(optode.aou_filt(OSNAPeast)))==0));
-    P4 = polyfit(suna.NO3_filt(OSNAPeast(indM4)), optode.aou_filt(OSNAPeast(indM4)), 1);
-        %rho = 0.8236; df = 22; rho_sig95 = 0.4216; M4 stats
-indA2 = find(optode.aou_filt(array2)>-33);
-    P5 = polyfit(suna.NO3_filt(array2(indA2)), optode.aou_filt(array2(indA2)), 1);
-        %rho = -0.0280; df = 27; rho_sig95 = 0.3800; array2 stats
-indT2 = find((isnan(optode.aou_filt(T2))==0) & suna.NO3_filt(T2)>-5);%includes only real numbers of T1, omits outliers
-    P6 = polyfit(suna.NO3_filt(T2(indT2)), optode.aou_filt(T2(indT2)), 1);
-        %rho = -0.2772; df = 11; rho_sig95 = 0.5999; T1 stats 
+for i = 1:6
+    x = find(isfinite(optode.aou_filt(sections{i}))==1); %finds only real numbers of sections
+        if i == 2
+            x = find((isfinite(optode.aou_filt(T2))==1) & suna.NO3_filt(T2)>-5); %only real numbers, omits outliers
+        end
+            % ^this takes out outliers>(-5)NO3
+        if i == 5,6;
+            x = find((isfinite(suna.NO3_filt(sections{i}))==1) & (optode.aou_filt(sections{i})) > ((i-1).*(-11)));
+        end
+            % ^this takes out outliers>(-44 if array1) or (-33 if array 2)
+    P(i,:) = polyfit(suna.NO3_filt(sections{i}(x)), optode.aou_filt(sections{i}(x)), 1); %variable P created to polyfit NO3 by AOU  
+end
+
+sectionL = {'Transect 1', 'Transect 2', 'OSNAP East', 'OSNAP West', 'OOI Array 1', 'OOI Array 2'};
 XtoPlot = [-5:25];
+figure(10); clf; % Figure showing sections with NO3 vs AOU correlations as lines
+for i = 1:6
+    subplot(2,3,i)
+    scatter(suna.NO3_filt(sections{i}), optode.aou_filt(sections{i}), 25, sectionC{i}, 'filled'); hold on;
+    plot(XtoPlot, (P(i,1))*XtoPlot + (P(i,2)), 'r--', 'LineWidth', 1); 
+    ylabel(sectionL{i}, 'FontSize', 16);
+    title(sectionL{i}, 'FontSize', 16);
+end
 
 %% Plot data by time
 O2min = 290; O2max = 390; NO3min = -10; NO3max = 25; SSTmin = 4; SSTmax = 10; flrmin = 50; flrmax = 110;
 
 figure(4); clf
-    subplot(4,1,1)
-plot(ssw.time, ssw.SST, 'k.'); hold on;
-plot(ssw.time_filt, ssw.SST_filt, 'b.'); hold on;
-axis([mintime maxtime SSTmin SSTmax])
-datetick('x', 2, 'keeplimits'); title('SST')
-
-    subplot(4,1,2)
-plot(ssw.time, ssw.flr, 'k.'); hold on;
-plot(ssw.time_filt, ssw.flr_filt, 'b.'); hold on;
-axis([mintime maxtime flrmin flrmax])
-datetick('x', 2, 'keeplimits'); title('fluo')
-
-    subplot(4,1,3)
-plot(optode.time, optode.O2_nospike_salcorr, 'k.'); hold on;
-plot(optode.time_filt, optode.O2_nospike_salcorr_filt, 'b.'); hold on;
-% plot(Winkler_timeUnderway, Winkler_BCP(indUnderway,16), 'r.','markersize',15); hold on;
-axis([mintime maxtime O2min O2max])
-datetick('x', 2, 'keeplimits'); title('Oxygen concentration')
-
-    subplot(4,1,4) %INCLUDES CLEANING TIMES STILL
-plot(suna.time, suna.NO3raw, 'k.'); hold on;
-plot(suna.time_filt, suna.NO3_filt, 'b.'); hold on;
-axis([mintime maxtime NO3min NO3max])
-datetick('x', 2, 'keeplimits'); title('Nitrate')
+    subplot(4,1,1) %SST
+        plot(ssw.time, ssw.SST, 'k.'); hold on;
+        plot(ssw.time_filt, ssw.SST_filt, 'b.'); hold on;
+        axis([mintime maxtime SSTmin SSTmax])
+        datetick('x', 2, 'keeplimits'); title('SST')
+    subplot(4,1,2) %Fluo
+        plot(ssw.time, ssw.flr, 'k.'); hold on;
+        plot(ssw.time_filt, ssw.flr_filt, 'b.'); hold on;
+        axis([mintime maxtime flrmin flrmax])
+        datetick('x', 2, 'keeplimits'); title('fluo')
+    subplot(4,1,3) %O2
+        plot(optode.time, optode.O2_nospike_salcorr, 'k.'); hold on;
+        plot(optode.time_filt, optode.O2_nospike_salcorr_filt, 'b.'); hold on;
+        % plot(Winkler_timeUnderway, Winkler_BCP(indUnderway,16), 'r.','markersize',15); hold on;
+        axis([mintime maxtime O2min O2max])
+        datetick('x', 2, 'keeplimits'); title('Oxygen concentration')
+    subplot(4,1,4) %NO3
+        plot(suna.time, suna.NO3raw, 'k.'); hold on;
+        plot(suna.time_filt, suna.NO3_filt, 'b.'); hold on;
+        axis([mintime maxtime NO3min NO3max])
+        datetick('x', 2, 'keeplimits'); title('Nitrate')
 
 %% Plot ship track to date
 figure(5); clf
 latminplot = 59; latmaxplot = 65; lonminplot = -45; lonmaxplot = -20;
-    subplot(221)
-scatter(gps.lon_filt, gps.lat_filt, [], ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
-axis([lonminplot lonmaxplot latminplot latmaxplot])
-xlabel('Longitude'); ylabel('Latitude'); title('Time in cruise (days)')   
-    subplot(222)
-scatter(gps.lon_filt, gps.lat_filt, [], ssw.SST_filt, 'filled'); colorbar;
-axis([lonminplot lonmaxplot latminplot latmaxplot])
-xlabel('Longitude'); ylabel('Latitude'); title('Sea surface temperature (deg C)')   
-    subplot(223)
-scatter(gps.lon_filt, gps.lat_filt, [], ssw.flr_filt, 'filled'); colorbar;
-axis([lonminplot lonmaxplot latminplot latmaxplot])
-xlabel('Longitude'); ylabel('Latitude'); title('Chlorophyll fluorescence')
-    subplot(224)
-scatter(gps.lon_filt, gps.lat_filt, [], suna.NO3_filt, 'filled'); colorbar;
-axis([lonminplot lonmaxplot latminplot latmaxplot])
-xlabel('Longitude'); ylabel('Latitude'); title('Nitrate')
-%% Emma spatial and time-based figures for fluo and nitrate LONGITUDE
+    subplot(221) %days
+        scatter(gps.lon_filt, gps.lat_filt, [], ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+        axis([lonminplot lonmaxplot latminplot latmaxplot])
+        xlabel('Longitude'); ylabel('Latitude'); title('Time in cruise (days)')   
+    subplot(222) %SST
+        scatter(gps.lon_filt, gps.lat_filt, [], ssw.SST_filt, 'filled'); colorbar;
+        axis([lonminplot lonmaxplot latminplot latmaxplot])
+        xlabel('Longitude'); ylabel('Latitude'); title('Sea surface temperature (deg C)')   
+    subplot(223) %Fluo
+        scatter(gps.lon_filt, gps.lat_filt, [], ssw.flr_filt, 'filled'); colorbar;
+        axis([lonminplot lonmaxplot latminplot latmaxplot])
+        xlabel('Longitude'); ylabel('Latitude'); title('Chlorophyll fluorescence')
+    subplot(224) %NO3
+        scatter(gps.lon_filt, gps.lat_filt, [], suna.NO3_filt, 'filled'); colorbar;
+        axis([lonminplot lonmaxplot latminplot latmaxplot])
+        xlabel('Longitude'); ylabel('Latitude'); title('Nitrate')
+%% Spatial and temporal patterns for fluo, nitrate, O2, LONGITUDE
 figure (7); clf;
-lonminplot= -43; lonmaxplot= -20; NO3minplot= -30; NO3maxplot= 20;
-    subplot(311)
-scatter(gps.lon_filt, suna.NO3_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
-axis([lonminplot lonmaxplot NO3minplot NO3maxplot])
-xlabel('Longitude'); ylabel('Nitrate'); title('Nitrate by Space and Time')
-    subplot(312)
-scatter(gps.lon_filt, ssw.flr_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
-axis([lonminplot lonmaxplot flrmin flrmax])
-xlabel('Longitude'); ylabel('Fluo'); title('Fluo by Space and Time')
-    subplot(313)
-scatter(gps.lon_filt, optode.O2Sat, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
-axis([lonminplot lonmaxplot 0 20])
-xlabel('Longitude'); ylabel('O2 Sat'); title('O2 Saturation by Space and Time')
-
-%% Emma Spatial Ratio Comparisons !DOES NOT INCLUDE ALL SECTIONS
+NO3minplot= -30; NO3maxplot= 20;
+    subplot(311) %NO3
+        scatter(gps.lon_filt, suna.NO3_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+        axis([lonminplot lonmaxplot NO3minplot NO3maxplot])
+        xlabel('Longitude'); ylabel('Nitrate'); title('Nitrate by Space and Time')
+    subplot(312) %Fluo
+        scatter(gps.lon_filt, ssw.flr_filt, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+        axis([lonminplot lonmaxplot flrmin flrmax])
+        xlabel('Longitude'); ylabel('Fluo'); title('Fluo by Space and Time')
+    subplot(313) %O2
+        scatter(gps.lon_filt, optode.O2Sat, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+        axis([lonminplot lonmaxplot 0 20])
+        xlabel('Longitude'); ylabel('O2 Sat'); title('O2 Saturation by Space and Time')
+%% Emma Spatial Ratio Comparisons
 figure (9); clf; 
 subplot(221)
-    scatter(suna.NO3_filt(T1), ssw.flr_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
-    scatter(suna.NO3_filt(T2), ssw.flr_filt(T2), 15, nicecolor('rk'), 'filled'); hold on;
-    scatter(suna.NO3_filt(array1), ssw.flr_filt(array1), 15, nicecolor('BRw'), 'filled'); hold on;
-    scatter(suna.NO3_filt(array2), ssw.flr_filt(array2), 15, nicecolor('rBk'), 'filled'); hold on;
-    scatter(suna.NO3_filt(OSNAPwest), ssw.flr_filt(OSNAPwest), 15,  nicecolor('GY'), 'filled'); hold on;
-    scatter(suna.NO3_filt(OSNAPeast), ssw.flr_filt(OSNAPeast), 15, nicecolor('Bbw'), 'filled'); hold on;
-    xlabel('Nitrate'); ylabel('Fluo');
-    axis ([NO3min NO3max flrmin flrmax]); title('NO3 vs. Fluo');
+    for i = [5,1,2,3,4,6] %better to plot out of order so that array1 doesn't cover the others
+        scatter(suna.NO3_filt(sections{i}), ssw.flr_filt(sections{i}), 15, sectionC{i}, 'filled'); hold on;
+    end
+    xlabel('Nitrate'); ylabel('Fluo'); axis ([NO3min NO3max flrmin flrmax]); title('NO_3 vs. Fluo');
 subplot(222)
-    scatter(suna.NO3_filt(T1), optode.aou_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
-    scatter(suna.NO3_filt(T2), optode.aou_filt(T2), 15, nicecolor('rk'), 'filled'); hold on;
-    scatter(suna.NO3_filt(array1), optode.aou_filt(array1), 15, nicecolor('BRw'), 'filled'); hold on;
-    scatter(suna.NO3_filt(array2), optode.aou_filt(array2), 15,  nicecolor('rBk'), 'filled'); hold on;
-    scatter(suna.NO3_filt(OSNAPwest), optode.aou_filt(OSNAPwest), 15, nicecolor('GY'), 'filled'); hold on;
-    scatter(suna.NO3_filt(OSNAPeast), optode.aou_filt(OSNAPeast), 15, nicecolor('Bbw'), 'filled'); hold on;
-    xlabel('Nitrate'); ylabel('AOU')
-    axis ([NO3min NO3max AOUmin AOUmax]); title('NO3 vs. AOU')
+    for i = [5,1,2,3,4,6]
+        scatter(suna.NO3_filt(sections{i}), optode.aou_filt(sections{i}), 15, sectionC{i}, 'filled'); hold on;
+    end
+    xlabel('Nitrate'); ylabel('AOU'); axis ([NO3min NO3max AOUmin AOUmax]); title('NO_3 vs. AOU')
 subplot(223)
-    scatter(ssw.flr_filt(T1), optode.aou_filt(T1), 15, nicecolor('Rw'), 'filled'); hold on;
-    scatter(ssw.flr_filt(T2), optode.aou_filt(T2), 15, nicecolor('rk'), 'filled'); hold on;
-    scatter(ssw.flr_filt(array1), optode.aou_filt(array1), 15, nicecolor('BRw'), 'filled'); hold on;
-    scatter(ssw.flr_filt(array2), optode.aou_filt(array2), 15,  nicecolor('rBk'), 'filled'); hold on;
-    scatter(ssw.flr_filt(OSNAPwest), optode.aou_filt(OSNAPwest), 15, nicecolor('GY'), 'filled'); hold on;
-    scatter(ssw.flr_filt(OSNAPeast), optode.aou_filt(OSNAPeast), 15, nicecolor('Bbw'), 'filled'); hold on;
-    xlabel('Fluo'); ylabel('AOU')
-    axis ([flrmin flrmax AOUmin AOUmax]); title('Fluo vs. AOU')
-%% Emma NO3 vs AOU by AREA SECTIONS with LINES
-figure (10); clf;
-subplot(221)
-    scatter(suna.NO3_filt(T1), optode.aou_filt(T1), 25, nicecolor('Rw'), 'filled'); hold on;
-    scatter(suna.NO3_filt(T2), optode.aou_filt(T2), 25, nicecolor('rk'), 'filled'); hold on;
-    plot(XtoPlot, P1(1)*XtoPlot + P1(2), 'r--', 'LineWidth', 1); 
-    ylabel('AOU', 'FontSize', 16)
-    axis ([NO3min 20 -70 0]); title('Transects', 'FontSize', 16);
-subplot(222)
-    scatter(suna.NO3_filt(array1), optode.aou_filt(array1), 25, nicecolor('BRw'), 'filled'); hold on;
-    scatter(suna.NO3_filt(array2), optode.aou_filt(array2), 25, nicecolor('rBk'), 'filled'); hold on;
-    plot(XtoPlot, P3(1)*XtoPlot + P3(2), 'r--', 'LineWidth', 1); 
-    axis ([NO3min 20 -70 0]); title('OOI Array', 'FontSize', 16);
-subplot(223)
-    scatter(suna.NO3_filt(OSNAPwest), optode.aou_filt(OSNAPwest), 25, nicecolor('GY'), 'filled'); hold on;    
-    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
-    axis ([NO3min 20 -70 0]); title('OSNAP West', 'FontSize', 16);
-subplot(224)
-    scatter(suna.NO3_filt(OSNAPeast), optode.aou_filt(OSNAPeast), 25, nicecolor('Bbw'), 'filled'); hold on;    
-    xlabel('Nitrate', 'FontSize', 16);
-    plot(XtoPlot, P4(1)*XtoPlot + P4(2), 'r--', 'LineWidth', 1); 
-    axis ([NO3min 20 -70 0]); title('OSNAP East', 'FontSize', 16);
-%% Average Osats Boxplot work
-x1 = optode.O2Sat(transect);
-x2 = optode.O2Sat(T1);
-x3 = optode.O2Sat(T2);
-x4 = optode.O2Sat(array);
-x5 = optode.O2Sat(array1);
-x6 = optode.O2Sat(array2);
-x7 = optode.O2Sat(OSNAPwest);
-x8 = optode.O2Sat(OSNAPeast);
+    for i = [5,1,2,3,4,6]
+        scatter(ssw.flr_filt(sections{i}), optode.aou_filt(sections{i}), 15, sectionC{i}, 'filled'); hold on;
+    end
+    xlabel('Fluo'); ylabel('AOU'); axis ([flrmin flrmax AOUmin AOUmax]); title('Fluo vs. AOU')
+%% Average O2sats boxplot work
+x = [optode.O2Sat(transect); optode.O2Sat(array); optode.O2Sat(array2); optode.O2Sat(array1); optode.O2Sat(OSNAPwest); ...
+         optode.O2Sat(OSNAPeast); optode.O2Sat(T2); optode.O2Sat(T1)];
+g = [zeros(length(transect),1); ones(length(array),1); 2*ones(length(array2),1); 3*ones(length(array1),1); 4*ones(length(OSNAPwest),1); 5*ones(length(OSNAPeast),1); 6*ones(length(T2),1); 7*ones(length(T1),1)];
 
-x = [x1; x2; x3; x4; x5; x6; x7; x8];
-g = [zeros(length(x1),1); ones(length(x2),1); 2*ones(length(x3),1); 3*ones(length(x4),1); 4*ones(length(x5),1); 5*ones(length(x6),1); 6*ones(length(x7),1); 7*ones(length(x8),1)];
-    figure (12);clf;
-    boxplot(x, g,'symbol', 'y.',...
-        'Labels', {'Transects','Transect1', 'Transect2', 'OOI Array', 'Array1', 'Array2', 'OSNAP West', 'OSNAP East'},...
-        'colors', 'k'); % 'LineWidth', 5);
-        %'Color'%,{nicecolor('r'),nicecolor('R'), nicecolor('Rk'), nicecolor('B'), nicecolor('BBR'), nicecolor('rB'), nicecolor('GY'), nicecolor('Bk')});
-        ylabel('Oxygen Saturation', 'FontSize', 20);
+figure (12); clf;
+    boxplot(x, g,'symbol', 'y.', 'Labels', {'Transects', 'OOI Array','Array2' 'Array1', 'OSNAP West', 'OSNAP East','Transect2', 'Transect1' ,}); 
+%Commented out for now; have not found a way to fill with color AND have median lines
+%     h = findobj(gca,'Tag','Box'); 
+%     for j=1:length(h)
+%        patch(get(h(j),'XData'),get(h(j),'YData'), sectionC{j}); % <this is where you add the color at the end
+%     end   
+    ylabel('Oxygen Saturation', 'FontSize', 20);
 %% AOU and Nitrate over time
 figure(13); clf;
     fig = figure(13);
-    left_color = nicecolor('RRk'); 
-    right_color = nicecolor('RBk');
+    left_color = nicecolor('RRk'); right_color = nicecolor('RBk');
     set(fig,'defaultAxesColorOrder',[left_color; right_color]);
-    yyaxis left 
+    yyaxis left %AOU
         scatter(optode.time_filt, optode.aou_filt, '.'); hold on;
         axis([mintime maxtime AOUmin AOUmax]);
         ylabel ('AOU');
         datetick('x', 2, 'keeplimits'); title('Oxygen');
-    yyaxis right
+    yyaxis right %NO3
         scatter(suna.time_filt, suna.NO3_filt, '.');
         axis([mintime maxtime NO3min NO3max]);
-        ylabel ('NO3')
+        ylabel ('NO_3')
 %% NO3 vs AOU Shelf investigation
 figure(14); clf;
 subplot(221)
@@ -422,33 +379,6 @@ subplot(224)
     %axis ([-70 AOUmax flrmin flrmax]);
     title('Nitrate vs. AOU vs. Days');
     
-    %% POSTER Shelf investigation figure
-figure(17); clf;
-subplot(233)
-    scatter(ssw.SST_filt(OSNAPwest), ssw.SSS_filt(OSNAPwest), [], ssw.flr_filt(OSNAPwest), 'filled'); colorbar;    
-    xlabel('SST', 'FontSize', 16); ylabel('Salinity', 'FontSize', 16)
-    %axis ([NO3min 10 -70 AOUmax]);
-    title('Fluo', 'FontSize', 16);
-subplot(232)
-    scatter(ssw.SST_filt(OSNAPwest), ssw.SSS_filt(OSNAPwest), [], optode.aou_filt(OSNAPwest), 'filled'); colorbar;    
-    xlabel('SST', 'FontSize', 16); ylabel('Salinity', 'FontSize', 16)
-    %axis ([-70 AOUmax flrmin flrmax]);
-    title('AOU', 'FontSize', 16);
-subplot(231)
-    scatter(suna.NO3_filt(OSNAPwest), optode.aou_filt(OSNAPwest), [], ssw.flr_filt(OSNAPwest),'filled'); colorbar;    
-    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
-    %axis ([NO3min 10 -70 AOUmax]);
-    title('Fluo', 'FontSize', 16);
-subplot(234)
-    scatter(suna.NO3_filt(OSNAPwest), optode.aou_filt(OSNAPwest), [], ssw.SST_filt(OSNAPwest), 'filled'); colorbar;    
-    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
-    %axis ([NO3min 10 -70 AOUmax]);
-    title('SST', 'FontSize', 16);
-subplot(235)
-    scatter(suna.NO3_filt(OSNAPwest), optode.aou_filt(OSNAPwest), [],ssw.SSS_filt(OSNAPwest), 'filled'); colorbar;    
-    xlabel('Nitrate', 'FontSize', 16); ylabel('AOU', 'FontSize', 16)
-    %axis ([-70 AOUmax flrmin flrmax]);
-    title('Salinity', 'FontSize', 16);
 %% Sensors over time COLORED BY SECTION
 figure(15); clf
     subplot(4,1,1)
