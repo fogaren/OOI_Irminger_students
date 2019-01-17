@@ -10,9 +10,9 @@ filename = ['deployment0001_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr1_wfp.temperature_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_temperature'); %standard_name = 'sea_water_temperature' units = 'deg_C'
     Yr1_wfp.pracsal_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_practical_salinity'
     Yr1_wfp.pressure_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
-    %Optode data
-    Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,1);
-    %Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');%standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+       %Optode data
+    %Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,1);
+    Yr1_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');%standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
     Yr1_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
@@ -52,8 +52,8 @@ filename = ['deployment0002_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr2_wfp.pracsal_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_sci_water_pracsal'); %standard_name = 'sea_water_practical_salinity'
     Yr2_wfp.pressure_dosta = ncread(filename,'ctdpf_ckl_wfp_instrument_recovered-ctdpf_ckl_seawater_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
-    Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,2); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    %Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');
+%     Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen')* gain(1,2); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+    Yr2_wfp.oxygen = ncread(filename,'dosta_ln_wfp_abs_oxygen');
     Yr2_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'   
     %Convert to matlab time
     Yr2_wfp.time_dosta_mat = convertTime(Yr2_wfp.time_dosta);
@@ -84,8 +84,8 @@ filename = ['deployment0003_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr3_wfp.pracsal_dosta = ncread(filename,'practical_salinity'); %standard_name = 'sea_water_practical_salinity'
     Yr3_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
-    Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,3); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    %Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen');
+%     Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,3); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+    Yr3_wfp.oxygen = ncread(filename,'dissolved_oxygen');
     Yr3_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
@@ -125,8 +125,8 @@ filename = ['deployment0004_GI02HYPM-WFP02-03-DOSTAL000-recovered_wfp-dosta_ln_w
     Yr4_wfp.pracsal_dosta = ncread(filename,'practical_salinity'); %standard_name = 'sea_water_practical_salinity'
     Yr4_wfp.pressure_dosta = ncread(filename,'int_ctd_pressure'); %standard_name = 'sea_water_pressure' units = 'dbar'
     %Optode data
-    Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,4); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
-    %Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen');
+%     Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen')* gain(1,4); %standard_name = 'moles_of_oxygen_per_unit_mass_in_sea_water' units = 'umol kg-1'
+    Yr4_wfp.oxygen = ncread(filename,'dissolved_oxygen');
     Yr4_wfp.optode_temperature = ncread(filename,'optode_temperature'); %long_name = 'Optode Temperature' units = 'deg_C'
         %Note that these points fall close to, but not exactly on, a 1:1
         %line with the CTD temperature. Points with zero value of optode
@@ -168,10 +168,21 @@ Yr4_wfp.depth_dosta = -gsw_z_from_p(Yr4_wfp.pressure_dosta,Yr4_wfp.lat_dosta);
     [Yr4_wfp.profile_index,Yr4_wfp.updown_index] = profileIndex(Yr4_wfp.depth_dosta)
 
 %% Calculate density in raw profiles to enable gridding on density surfaces
-Yr1_wfp.pdens = gsw_p_from_z(-Yr1_wfp.depth_dosta, Yr1_wfp.lat_dosta); %potential density function
-Yr2_wfp.pdens = gsw_p_from_z(-Yr2_wfp.depth_dosta, Yr2_wfp.lat_dosta);
-Yr3_wfp.pdens = gsw_p_from_z(-Yr3_wfp.depth_dosta, Yr3_wfp.lat_dosta);
-Yr4_wfp.pdens = gsw_p_from_z(-Yr4_wfp.depth_dosta, Yr4_wfp.lat_dosta);
+[Yr1_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr1_wfp.pracsal_dosta, Yr1_wfp.pressure_dosta, Yr1_wfp.lon_dosta, Yr1_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr1_wfp.CT_dosta = gsw_CT_from_t(Yr1_wfp.SA_dosta, Yr1_wfp.temperature_dosta, Yr1_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr1_wfp.pdens = gsw_rho(Yr1_wfp.SA_dosta, Yr1_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
+[Yr2_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr2_wfp.pracsal_dosta, Yr2_wfp.pressure_dosta, Yr2_wfp.lon_dosta, Yr2_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr2_wfp.CT_dosta = gsw_CT_from_t(Yr2_wfp.SA_dosta, Yr2_wfp.temperature_dosta, Yr2_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr2_wfp.pdens = gsw_rho(Yr2_wfp.SA_dosta, Yr2_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
+[Yr3_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr3_wfp.pracsal_dosta, Yr3_wfp.pressure_dosta, Yr3_wfp.lon_dosta, Yr3_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr3_wfp.CT_dosta = gsw_CT_from_t(Yr3_wfp.SA_dosta, Yr3_wfp.temperature_dosta, Yr3_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr3_wfp.pdens = gsw_rho(Yr3_wfp.SA_dosta, Yr3_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
+
+[Yr4_wfp.SA_dosta, in_ocean] = gsw_SA_from_SP(Yr4_wfp.pracsal_dosta, Yr4_wfp.pressure_dosta, Yr4_wfp.lon_dosta, Yr4_wfp.lat_dosta); %absolute salinity from practical salinity - [SA, ~] = gsw_SA_from_SP(SP,p,long,lat)
+Yr4_wfp.CT_dosta = gsw_CT_from_t(Yr4_wfp.SA_dosta, Yr4_wfp.temperature_dosta, Yr4_wfp.pressure_dosta); %Conservative Temperature from in-situ temperature - CT = gsw_CT_from_t(SA,t,p)
+Yr4_wfp.pdens = gsw_rho(Yr4_wfp.SA_dosta, Yr4_wfp.CT_dosta, 0); %calculate potential density at reference pressure of 0 (surface)
 
 %% Grid data to consistent depth intervals for each profile
 depth_grid = [150:5:2600];
@@ -253,6 +264,11 @@ Yr4_wfpgrid_therm.updown = Yr4_wfpgrid_therm.profile_direction;
 [Yr3_wfpgrid.scivars_pair,Yr3_wfpgrid.ind_pair] = profilePairMean(Yr3_wfpgrid,tol);
 [Yr4_wfpgrid.scivars_pair,Yr4_wfpgrid.ind_pair] = profilePairMean(Yr4_wfpgrid,tol);
 
+[Yr1_wfpgrid_therm.scivars_pair,Yr1_wfpgrid_therm.ind_pair] = profilePairMean(Yr1_wfpgrid_therm,tol);
+[Yr2_wfpgrid_therm.scivars_pair,Yr2_wfpgrid_therm.ind_pair] = profilePairMean(Yr2_wfpgrid_therm,tol);
+[Yr3_wfpgrid_therm.scivars_pair,Yr3_wfpgrid_therm.ind_pair] = profilePairMean(Yr3_wfpgrid_therm,tol);
+[Yr4_wfpgrid_therm.scivars_pair,Yr4_wfpgrid_therm.ind_pair] = profilePairMean(Yr4_wfpgrid_therm,tol);
+
 %% Unpack scivars in gridded form
 %When using scivars, gets all profiles (both up and down)
 %When using scivars_pair, takes mean of paired up and down profiles
@@ -268,8 +284,16 @@ Yr1_wfpgrid.chla = squeeze(Yr1_wfpgrid.scivars_pair(:,7,:));
 Yr1_wfpgrid.pdens = gsw_sigma0(Yr1_wfpgrid.S,Yr1_wfpgrid.T)+1000; 
 Yr1_wfpgrid.press = gsw_p_from_z(repmat(-Yr1_wfpgrid.depth_grid,length(Yr1_wfpgrid.profile_ind),1)',...
         repmat(Yr1_wfpgrid.lat,1,length(Yr1_wfpgrid.depth_grid))');
-
     
+Yr1_wfpgrid_therm.T = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,1,:));
+Yr1_wfpgrid_therm.S = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,2,:));
+Yr1_wfpgrid_therm.O2conc = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,3,:));
+Yr1_wfpgrid_therm.optode_temperature = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,4,:));
+Yr1_wfpgrid_therm.backscatter = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,5,:));
+Yr1_wfpgrid_therm.scat_total = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,6,:));
+Yr1_wfpgrid_therm.chla = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,7,:));  
+Yr1_wfpgrid_therm.depth = squeeze(Yr1_wfpgrid_therm.scivars_pair(:,8,:));
+  
 % Year 2
 Yr2_wfpgrid.T = squeeze(Yr2_wfpgrid.scivars_pair(:,1,:));
 Yr2_wfpgrid.S = squeeze(Yr2_wfpgrid.scivars_pair(:,2,:));
@@ -280,9 +304,19 @@ Yr2_wfpgrid.scat_total = squeeze(Yr2_wfpgrid.scivars_pair(:,6,:));
 Yr2_wfpgrid.chla = squeeze(Yr2_wfpgrid.scivars_pair(:,7,:));
 Yr2_wfpgrid.pdens = gsw_sigma0(Yr2_wfpgrid.S,Yr2_wfpgrid.T)+1000; 
 Yr2_wfpgrid.press = gsw_p_from_z(repmat(-Yr2_wfpgrid.depth_grid,length(Yr2_wfpgrid.profile_ind),1)',...
-        repmat(Yr2_wfpgrid.lat,1,length(Yr2_wfpgrid.depth_grid))');      
+        repmat(Yr2_wfpgrid.lat,1,length(Yr2_wfpgrid.depth_grid))');  
     
-         % Year 3
+      
+Yr2_wfpgrid_therm.T = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,1,:));
+Yr2_wfpgrid_therm.S = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,2,:));
+Yr2_wfpgrid_therm.O2conc = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,3,:));
+Yr2_wfpgrid_therm.optode_temperature = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,4,:));
+Yr2_wfpgrid_therm.backscatter = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,5,:));
+Yr2_wfpgrid_therm.scat_total = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,6,:));
+Yr2_wfpgrid_therm.chla = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,7,:));  
+Yr2_wfpgrid_therm.depth = squeeze(Yr2_wfpgrid_therm.scivars_pair(:,8,:)); 
+
+ % Year 3
 Yr3_wfpgrid.T = squeeze(Yr3_wfpgrid.scivars_pair(:,1,:));
 Yr3_wfpgrid.S = squeeze(Yr3_wfpgrid.scivars_pair(:,2,:));
 Yr3_wfpgrid.O2conc = squeeze(Yr3_wfpgrid.scivars_pair(:,3,:));
@@ -294,6 +328,15 @@ Yr3_wfpgrid.pdens = gsw_sigma0(Yr3_wfpgrid.S,Yr3_wfpgrid.T)+1000;
 Yr3_wfpgrid.press = gsw_p_from_z(repmat(-Yr3_wfpgrid.depth_grid,length(Yr3_wfpgrid.profile_ind),1)',...
         repmat(Yr3_wfpgrid.lat,1,length(Yr3_wfpgrid.depth_grid))'); 
     
+Yr3_wfpgrid_therm.T = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,1,:));
+Yr3_wfpgrid_therm.S = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,2,:));
+Yr3_wfpgrid_therm.O2conc = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,3,:));
+Yr3_wfpgrid_therm.optode_temperature = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,4,:));
+Yr3_wfpgrid_therm.backscatter = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,5,:));
+Yr3_wfpgrid_therm.scat_total = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,6,:));
+Yr3_wfpgrid_therm.chla = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,7,:));  
+Yr3_wfpgrid_therm.depth = squeeze(Yr3_wfpgrid_therm.scivars_pair(:,8,:)); 
+
     % Year 4
 Yr4_wfpgrid.T = squeeze(Yr4_wfpgrid.scivars_pair(:,1,:));
 Yr4_wfpgrid.S = squeeze(Yr4_wfpgrid.scivars_pair(:,2,:));
@@ -305,7 +348,15 @@ Yr4_wfpgrid.chla = squeeze(Yr4_wfpgrid.scivars_pair(:,7,:));
 Yr4_wfpgrid.pdens = gsw_sigma0(Yr4_wfpgrid.S,Yr4_wfpgrid.T)+1000; 
 Yr4_wfpgrid.press = gsw_p_from_z(repmat(-Yr4_wfpgrid.depth_grid,length(Yr4_wfpgrid.profile_ind),1)',...
         repmat(Yr4_wfpgrid.lat,1,length(Yr4_wfpgrid.depth_grid))'); 
-   
+
+Yr4_wfpgrid_therm.T = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,1,:));
+Yr4_wfpgrid_therm.S = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,2,:));
+Yr4_wfpgrid_therm.O2conc = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,3,:));
+Yr4_wfpgrid_therm.optode_temperature = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,4,:));
+Yr4_wfpgrid_therm.backscatter = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,5,:));
+Yr4_wfpgrid_therm.scat_total = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,6,:));
+Yr4_wfpgrid_therm.chla = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,7,:));  
+Yr4_wfpgrid_therm.depth = squeeze(Yr4_wfpgrid_therm.scivars_pair(:,8,:));
     
 %Calculate O2 saturation    
     O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid.S,Yr1_wfpgrid.T);
@@ -316,6 +367,16 @@ Yr2_wfpgrid.O2sat = (Yr2_wfpgrid.O2conc./O2equil - 1)*100;
 Yr3_wfpgrid.O2sat = (Yr3_wfpgrid.O2conc./O2equil - 1)*100;
     O2equil = gsw_O2sol_SP_pt(Yr4_wfpgrid.S,Yr4_wfpgrid.T);
 Yr4_wfpgrid.O2sat = (Yr4_wfpgrid.O2conc./O2equil - 1)*100;
+
+%Calculate O2 saturation for thermgrid 
+ O2equil = gsw_O2sol_SP_pt(Yr1_wfpgrid_therm.S,Yr1_wfpgrid_therm.T);
+Yr1_wfpgrid_therm.O2sat = (Yr1_wfpgrid_therm.O2conc./O2equil - 1)*100;
+    O2equil = gsw_O2sol_SP_pt(Yr2_wfpgrid_therm.S,Yr2_wfpgrid_therm.T);
+Yr2_wfpgrid_therm.O2sat = (Yr2_wfpgrid_therm.O2conc./O2equil - 1)*100;
+    O2equil = gsw_O2sol_SP_pt(Yr3_wfpgrid_therm.S,Yr3_wfpgrid_therm.T);
+Yr3_wfpgrid_therm.O2sat = (Yr3_wfpgrid_therm.O2conc./O2equil - 1)*100;
+    O2equil = gsw_O2sol_SP_pt(Yr4_wfpgrid_therm.S,Yr4_wfpgrid_therm.T);
+Yr4_wfpgrid_therm.O2sat = (Yr4_wfpgrid_therm.O2conc./O2equil - 1)*100;
 
 %% If using separate up and down profiles, show comparison (don't do this if using profilePairMean above)
 %plotUpDownProfileComparisonWFP

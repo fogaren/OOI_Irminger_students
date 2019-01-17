@@ -14,10 +14,10 @@
 
 %% Read in the merged xlsx data
 %Optode headers: Timestamp	OptodeType	SerialNumber	O2 Conc (uM)	Air Sat (%)	Temp (Deg)	CalPhase (Deg)	TCPhase (Deg)	C1RPh (Deg)	C2RPh (Deg)	C1Amp (mV)	C2Amp (mV)	RawTemp (mV)
-optode.merge_data = xlsread('C:\Users\emmal\Dropbox\OOI_Irminger_students\Irminger5_CruiseDocs\underway\irminger5_underwayOptode.xlsx');
+optode.merge_data = xlsread('C:\Users\Hilary\Dropbox\Wellesley\OOI_Irminger_students\Irminger5_CruiseDocs\underway\irminger5_underwayOptode.xlsx');
 optode.timein = optode.merge_data(:,1); %milliseconds since Jan 1 1970
 
-suna.merge_data = xlsread('C:/Users/emmal/Dropbox/OOI_Irminger_students/Irminger5_CruiseDocs/underway/irminger5_underwaySuna_truncated.xlsx');
+suna.merge_data = xlsread('C:/Users/Hilary/Dropbox/Wellesley/OOI_Irminger_students/Irminger5_CruiseDocs/underway/irminger5_underwaySuna_truncated.xlsx');
 suna.timein = suna.merge_data(:,1); %milliseconds since Jan 1 1970
 
 %%% Convert the optode timestamps to datenum
@@ -37,7 +37,7 @@ suna.NO3raw(indzero) = NaN;
 
 %% Read in ship's underway data
 %%% To merge ship's GPS data: copy AR_GPS10_* irminger5_gps.csv
-[gps.merge_data, gps.text_data] = xlsread('C:/Users/emmal/Dropbox/OOI_Irminger_students/Irminger5_CruiseDocs/underway/irminger5_gps.csv');
+[gps.merge_data, gps.text_data] = xlsread('C:/Users/Hilary/Dropbox/Wellesley/OOI_Irminger_students/Irminger5_CruiseDocs/underway/irminger5_gps.csv');
 gps.lat = gps.merge_data(:,1);
 gps.lon = gps.merge_data(:,2);
 
@@ -50,7 +50,7 @@ gps.time(indnonan) = datenum(gps.date(indnonan)) + datenum(gps.timeofday(indnona
 
 %% Read in ship's underway seawater data
 %%% To merge ship's underway T, S, + fluo data: copy AR_SSW* irminger5_ssw.csv
-[ssw.merge_data, ssw.text_data] = xlsread('C:/Users/emmal/Dropbox/OOI_Irminger_students/Irminger5_CruiseDocs/underway/irminger5_ssw.csv');
+[ssw.merge_data, ssw.text_data] = xlsread('C:/Users/Hilary/Dropbox/Wellesley/OOI_Irminger_students/Irminger5_CruiseDocs/underway/irminger5_ssw.csv');
 ssw.SST = ssw.merge_data(:,3); %using AML temperature for SST
 ssw.SSS = ssw.merge_data(:,7); %using SBE45 TSG salinity for SSS
 ssw.flr = ssw.merge_data(:,5); %fluorescence from shipboard fluorometer

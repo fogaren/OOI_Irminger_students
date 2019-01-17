@@ -221,10 +221,10 @@ plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidt
 plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2, 'Color',nicecolor('bw')); hold on;
 plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2, 'Color', nicecolor('bw')); hold on;
 %title('AOU Profile Illustrating WVD')
-ylabel('Depth (meters)')
-xlabel('AOU (micromoles/L)')
+ylabel('Depth (meters)', 'Fontsize', 15)
+xlabel('AOU (micromoles/L)', 'Fontsize', 15)
 ylim ([0 2600])
-legend ({'Cast 4', 'Cast 11', 'Cast 16','Cast 18', 'Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 8, 'Location', 'southwest')
+legend ({'Cast 4', 'Cast 11', 'Cast 16','Cast 18', 'Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 11, 'Location', 'southwest')
 axis ij
 
 subplot(1,2,2);
@@ -237,9 +237,9 @@ plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewi
 plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on;
 plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2,'Color', nicecolor('bw')); hold on;
 %title('Density Profile Illustrating WVD')
-ylabel('Depth (meters)')
-xlabel('Density (kg/m^3)')
-legend ({'Cast 4', 'Cast 11', 'Cast 16', 'Cast 18','Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 8, 'Location', 'southwest')
+ylabel('Depth (meters)', 'Fontsize', 15)
+xlabel('Density (kg/m^3)','Fontsize', 15)
+legend ({'Cast 4', 'Cast 11', 'Cast 16', 'Cast 18','Cast 6', 'Cast 8', 'Cast 12', 'Cast 15'}, 'FontSize', 11, 'Location', 'southwest')
 axis ij
 
 
