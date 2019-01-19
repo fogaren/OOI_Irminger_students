@@ -142,25 +142,34 @@ optode.O2_nospike_salcorr = aaoptode_salpresscorr(optode.O2_nospike, optode.SST_
 %     Tship_uw = interp1(ssw.time_filt, ssw.Tship_filt, time_uw);
 %     dens_uw = sw_dens0(SSS_uw, Tship_uw);
     
-%% Calculate O2sol and AOU
+%% Calculate O2sol and AOU and O2sat
 optode.O2sol_filt = gsw_O2sol_SP_pt(ssw.SSS_filt, ssw.SST_filt); %calculates O2sol using PSU and SST
 optode.aou_filt = (optode.O2sol_filt)-(optode.O2_nospike_salcorr_filt); %calculates AOU
     AOU = optode.aou_filt; %AOU including outliers 
     outAOU = find(optode.aou_filt>50);
     optode.aou_filt(outAOU) = NaN; %optode.aou_filt now OMITS outliers over 50
-optode.O2Sat = (((optode.O2_nospike_salcorr_filt)-(optode.O2sol_filt))./(optode.O2sol_filt))*100; %Percent saturation
+optode.O2sat = (((optode.O2_nospike_salcorr_filt)-(optode.O2sol_filt))./(optode.O2sol_filt))*100; %Percent saturation
 
 figure(2);clf; %Plot O2_sol and percent saturation
     yyaxis left 
         plot(optode.time_filt, optode.O2sol_filt); hold on;
         ylabel ('O_2');
     yyaxis right
-        plot(optode.time_filt, optode.O2Sat); hold on;
+        plot(optode.time_filt, optode.O2sat); hold on;
         axis([mintime maxtime 0 30]);
         ylabel ('Percent Saturation')
     legend('O_2 solubility', 'Percent Saturation');
     datetick('x', 2, 'keeplimits'); title('Oxygen');
 
+%% Remove cleaning times from suna 
+clean1t = [datenum(2018,6,15,16,15,00) datenum(2018,6,15,17,45,00)]; %Cleaned SUNA-only 
+clean2t = [datenum(2018,6,19,12,00,00) datenum(2018,6,19,13,30,00)]; %tube cleaning
+    clean1 = find(suna.time_filt>clean1t(1) & suna.time_filt<clean1t(2));
+    clean2 = find(suna.time_filt>clean2t(1) & suna.time_filt<clean2t(2));
+clean = [clean1, clean2]; %all NO3 samples taken during cleaning times
+
+    suna.NO3_beforeclean = suna.NO3_filt; %to use samples INCLUDING  cleaning times, use .NO3beforeclean
+    suna.NO3_filt(clean) = NaN; %now suna.NO3_filt omits cleaning times
 %% Plot data by time
 O2min = 290; O2max = 390; NO3min = -10; NO3max = 25; SSTmin = 4; SSTmax = 10; flrmin = 50; flrmax = 110; AOUmin= -100; AOUmax= 10; 
 figure(3); clf
@@ -205,17 +214,8 @@ latminplot = 59; latmaxplot = 65; lonminplot = -45; lonmaxplot = -20;
         scatter(gps.lon_filt, gps.lat_filt, [], suna.NO3_filt, 'filled'); colorbar;
         axis([lonminplot lonmaxplot latminplot latmaxplot])
         xlabel('Longitude'); ylabel('Latitude'); title('Nitrate')
-%% Remove cleaning times from nitrate 
-clean1t = [datenum(2018,6,15,16,15,00) datenum(2018,6,15,17,45,00)]; %Cleaned SUNA-only 
-clean2t = [datenum(2018,6,19,12,00,00) datenum(2018,6,19,13,30,00)]; %tube cleaning
-    clean1 = find(suna.time_filt>clean1t(1) & suna.time_filt<clean1t(2));
-    clean2 = find(suna.time_filt>clean2t(1) & suna.time_filt<clean2t(2));
-clean = [clean1, clean2]; %all NO3 samples taken during cleaning times
-
-    suna.NO3_beforeclean = suna.NO3_filt; %to use samples INCLUDING  cleaning times, use .NO3beforeclean
-    suna.NO3_filt(clean) = NaN; %now suna.NO3_filt omits cleaning times
-    
-%% Suggested discrete samples to analyze and SUNA cleaning times
+ 
+%% Suggested discrete nutrient samples to analyze
 discrete_suna = [datenum(2018,6,5,19,27,00) datenum(2018,6,6,6,42,00) datenum(2018,6,8,6,26,00) datenum(2018,6,9,8,25,00) ...
                 datenum(2018,6,10,6,31,00) datenum(2018,6,12,6,31,00) datenum(2018,6,12,19,58,00) datenum(2018,6,13,18,27,00) ...
                 datenum(2018,6,14,6,39,00) datenum(2018,6,15,17,40,00) datenum(2018,6,16,12,38,00) datenum(2018,6,17,18,52,00) ...
@@ -238,9 +238,10 @@ times = [begtime datenum(2018,6,8,5,00,00) datenum(2018,6,12,19,51,00) datenum(2
     T2 = find(ssw.time_filt>times(7) & ssw.time_filt<times(8));
 transect = [T1 T2]; %all indices from transects
 array = [array1 array2]; %all indices from array
-sectionL = {'Transect 1', 'Transect 2', 'OSNAP East', 'OSNAP West', 'OOI Array 1', 'OOI Array 2'};
 
-figure(6); clf; %Shows gps track with sections color coded
+%% Figure with gps track with sections color coded
+figure(6); clf; 
+sectionL = {'Transect 1', 'Transect 2', 'OSNAP East', 'OSNAP West', 'OOI Array 1', 'OOI Array 2'};
     for i = 1:6
         sections = {T1 T2 OSNAPeast OSNAPwest array1 array2}; %Sections 
         sectionC = {nicecolor('Rw') nicecolor('rk') nicecolor('Bbw') nicecolor('GY') nicecolor('BRw') nicecolor('rBk')}; %Section colors
@@ -299,7 +300,7 @@ NO3minplot= -30; NO3maxplot= 20;
         axis([lonminplot lonmaxplot flrmin flrmax])
         xlabel('Longitude'); ylabel('Fluo'); title('Fluo by Space and Time')
     subplot(313) %O2
-        scatter(gps.lon_filt, optode.O2Sat, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
+        scatter(gps.lon_filt, optode.O2sat, 10, ssw.time_filt - min(ssw.time_filt), 'filled'); colorbar;
         axis([lonminplot lonmaxplot 0 20])
         xlabel('Longitude'); ylabel('O2 Sat'); title('O2 Saturation by Space and Time')
 %% Emma Spatial Ratio Comparisons
@@ -320,8 +321,8 @@ subplot(223)
     end
     xlabel('Fluo'); ylabel('AOU'); axis ([flrmin flrmax AOUmin AOUmax]); title('Fluo vs. AOU')
 %% Average O2sats boxplot work
-x = [optode.O2Sat(transect); optode.O2Sat(array); optode.O2Sat(array2); optode.O2Sat(array1); optode.O2Sat(OSNAPwest); ...
-         optode.O2Sat(OSNAPeast); optode.O2Sat(T2); optode.O2Sat(T1)];
+x = [optode.O2sat(transect); optode.O2sat(array); optode.O2sat(array2); optode.O2sat(array1); optode.O2sat(OSNAPwest); ...
+         optode.O2sat(OSNAPeast); optode.O2sat(T2); optode.O2sat(T1)];
 g = [zeros(length(transect),1); ones(length(array),1); 2*ones(length(array2),1); 3*ones(length(array1),1); 4*ones(length(OSNAPwest),1); 5*ones(length(OSNAPeast),1); 6*ones(length(T2),1); 7*ones(length(T1),1)];
 
 figure (11); clf;
@@ -334,7 +335,7 @@ figure (11); clf;
     ylabel('Oxygen Saturation', 'FontSize', 20);
 %% AOU and Nitrate over time
 figure(12); clf;
-    fig = figure(11);
+    fig = figure(12);
     left_color = nicecolor('RRk'); right_color = nicecolor('RBk');
     set(fig,'defaultAxesColorOrder',[left_color; right_color]);
     yyaxis left %AOU
