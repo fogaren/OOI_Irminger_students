@@ -1,7 +1,21 @@
 
 %plot(wfpmerge.time,wfpmerge.oxygen_driftcorr)
+%% Filtering (smoothing) the data at each depth
+NumProfilesToSmooth = 10; %set this as a variable so that you can adjust this value
 
-oxygen_driftcorr_smoothed = movmean(wfpmerge.oxygen_driftcorr, 200); %unsure at what interval I want to smooth oxygen data
+%Updated this to smooth over time, which required adding the dimension "2"
+%since you want to smooth over the 2nd dimension (time) rather than the 2st
+%dimension (depth)
+oxygen_driftcorr_smoothed = movmean(wfpmerge.oxygen_driftcorr, NumProfilesToSmooth, 2); %unsure at what interval I want to smooth oxygen data
+
+%Example plot
+figure(1); clf
+    depth_id = 51; %Example plot at the 11th depth in depth_grid (which is 400 m)
+plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
+plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
+datetick('x',2)
+
+%%
 % wfpmerge.time_smoothed = movmean(wfpmerge.time, 50);
 % plot(wfpmerge.time_smoothed, oxygen_driftcorr_smoothed, 'm-'); %having
 % trouble with getting time to show up as real dates and not numbers--
