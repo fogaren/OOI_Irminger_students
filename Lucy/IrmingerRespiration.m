@@ -26,13 +26,13 @@ id_minDO= min(oxygen_driftcorr_smoothed)';
 % datetick('x',2,'keeplimits');
 % title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 % Trans_wfpmerge.time = wfpmerge.time';
-plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; %dates are not showing up as real dates
+plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; 
+datetick('x',2,'keeplimits');
 %plot (wfpmerge.time, id_maxDO-id_minDO);
 %fitline = polyfit(wfpmerge.time, id_maxDO-id_minDO, 1);
 axis([wfpmerge.time wfpmerge.time]);
 
-%next step is to get the dates to show up as real dates, identify the strat
-%season and then use the find function to pick out only the strat season dates (but not sure how to do this in a way that matlab recognizes)  
+%next step is to identify the strat season and then use the find function to pick out only the strat season dates (but not sure how to do this in a way that matlab recognizes)  
 
 %strat_season1 = find(wfpmerge.time <= november 2016 & stationdata.Year >= june 2016) %figure out how to put in time that matlab recognizes
 %then within this season, identify max and min O2 at each depth
