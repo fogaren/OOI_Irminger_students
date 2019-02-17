@@ -4,17 +4,34 @@
 NumProfilesToSmooth = 10; %set this as a variable so that you can adjust this value
 
 %Updated this to smooth over time, which required adding the dimension "2"
-%since you want to smooth over the 2nd dimension (time) rather than the 2st
+%since you want to smooth over the 2nd dimension (time) rather than the 1st
 %dimension (depth)
 oxygen_driftcorr_smoothed = movmean(wfpmerge.oxygen_driftcorr, NumProfilesToSmooth, 2); %unsure at what interval I want to smooth oxygen data
 
 %Example plot
 figure(1); clf
-    depth_id = 51; %Example plot at the 11th depth in depth_grid (which is 400 m)
+    depth_id = 51; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
 plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
 plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
 datetick('x',2)
 
+%%
+%Plots at every 10 depths
+for i=1:10:491
+    figure(i); 
+    depth_id=i;
+    plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
+    plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
+    datetick('x',2)
+    title('i')
+end
+%%
+%Standard deviation of each profile. I don't think I want std of each
+% depth? There are 491 depths (5 m each) and 784 profiles total
+for i=1:784
+    %depth_id=i;
+    std_driftcorr_smoothed(i)=nanstd(oxygen_driftcorr_smoothed(i));
+end
 %%
 % wfpmerge.time_smoothed = movmean(wfpmerge.time, 50);
 % plot(wfpmerge.time_smoothed, oxygen_driftcorr_smoothed, 'm-'); %having
@@ -40,6 +57,7 @@ id_minDO= min(oxygen_driftcorr_smoothed)';
 % datetick('x',2,'keeplimits');
 % title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 % Trans_wfpmerge.time = wfpmerge.time';
+figure(2);
 plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; 
 datetick('x',2,'keeplimits');
 %plot (wfpmerge.time, id_maxDO-id_minDO);
@@ -50,10 +68,5 @@ axis([wfpmerge.time wfpmerge.time]);
 
 %strat_season1 = find(wfpmerge.time <= november 2016 & stationdata.Year >= june 2016) %figure out how to put in time that matlab recognizes
 %then within this season, identify max and min O2 at each depth
-
-
-
-
-        
         
     

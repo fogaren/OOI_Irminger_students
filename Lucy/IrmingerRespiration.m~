@@ -1,7 +1,37 @@
 
 %plot(wfpmerge.time,wfpmerge.oxygen_driftcorr)
+%% Filtering (smoothing) the data at each depth
+NumProfilesToSmooth = 10; %set this as a variable so that you can adjust this value
 
-oxygen_driftcorr_smoothed = movmean(wfpmerge.oxygen_driftcorr, 200); %unsure at what interval I want to smooth oxygen data
+%Updated this to smooth over time, which required adding the dimension "2"
+%since you want to smooth over the 2nd dimension (time) rather than the 1st
+%dimension (depth)
+oxygen_driftcorr_smoothed = movmean(wfpmerge.oxygen_driftcorr, NumProfilesToSmooth, 2); %unsure at what interval I want to smooth oxygen data
+
+%Example plot
+figure(1); clf
+    depth_id = 51; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
+plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
+plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
+datetick('x',2)
+
+%%
+%Plots at all depths
+for i=1:10:491
+    figure(i); 
+    depth_id=i;
+    plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
+    plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
+    datetick('x',2)
+    title('i')
+end
+%%
+%Standard deviation of each profile. I don't think I want std of each individual depth?  
+for i=1:10:491
+    depth_id=i;
+    std_driftcorr_smoothed(i)=std(oxygen_driftcorr_smoothed(i));
+end
+%%
 % wfpmerge.time_smoothed = movmean(wfpmerge.time, 50);
 % plot(wfpmerge.time_smoothed, oxygen_driftcorr_smoothed, 'm-'); %having
 % trouble with getting time to show up as real dates and not numbers--
@@ -26,19 +56,16 @@ id_minDO= min(oxygen_driftcorr_smoothed)';
 % datetick('x',2,'keeplimits');
 % title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 % Trans_wfpmerge.time = wfpmerge.time';
-plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; %dates are not showing up as real dates
+figure(2);
+plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; 
+datetick('x',2,'keeplimits');
 %plot (wfpmerge.time, id_maxDO-id_minDO);
 %fitline = polyfit(wfpmerge.time, id_maxDO-id_minDO, 1);
 axis([wfpmerge.time wfpmerge.time]);
 
-%next step is to get the dates to show up as real dates, identify the strat
-%season and then use the find function to
+%next step is to identify the strat season and then use the find function to pick out only the strat season dates (but not sure how to do this in a way that matlab recognizes)  
+
 %strat_season1 = find(wfpmerge.time <= november 2016 & stationdata.Year >= june 2016) %figure out how to put in time that matlab recognizes
 %then within this season, identify max and min O2 at each depth
-
-
-
-
-        
         
     
