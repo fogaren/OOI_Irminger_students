@@ -45,7 +45,7 @@ end
 %mean. Along the second dimension which should calculate it along rows and
 %not columns
 %for i=1:491
-    TF=isoutlier(oxygen_driftcorr_smoothed,'movmedian', 5, 2);
+    %TF=isoutlier(oxygen_driftcorr_smoothed,'movmedian', 5, 2);
     B=filloutliers(oxygen_driftcorr_smoothed,'previous', 2);
 %end
 %%
@@ -89,6 +89,11 @@ strat_season_3 = wfpmerge.time(location);
       max_O2_season3(j) = max(oxygen_strat_season_3(j,:));
       min_O2_season3(j) = min(oxygen_strat_season_3(j,:));
   end
+  
+%%
+%Strat season is different for each depth in water column, so need to write something that identifies the strat season for each depth
+for j = 1: length(wfpmerge.depth_grid)) 
+    strat_season_1(j) = max (
       
 %%      
 % wfpmerge.time_smoothed = movmean(wfpmerge.time, 50);
@@ -115,14 +120,14 @@ strat_season_3 = wfpmerge.time(location);
 % datetick('x',2,'keeplimits');
 % title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 % Trans_wfpmerge.time = wfpmerge.time';
-figure(2);
-plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; 
-datetick('x',2,'keeplimits');
-%plot (wfpmerge.time, id_maxDO-id_minDO);
-%fitline = polyfit(wfpmerge.time, id_maxDO-id_minDO, 1);
-axis([wfpmerge.time wfpmerge.time]);
 
-%next step is to identify the strat season and then use the find function to pick out only the strat season dates (but not sure how to do this in a way that matlab recognizes)  
+% figure(2);
+% plot (wfpmerge.time, id_maxDO-id_minDO, 'm.'); hold on; 
+% datetick('x',2,'keeplimits');
+% %plot (wfpmerge.time, id_maxDO-id_minDO);
+% %fitline = polyfit(wfpmerge.time, id_maxDO-id_minDO, 1);
+% axis([wfpmerge.time wfpmerge.time]);
+
 
 %strat_season1 = find(wfpmerge.time <= november 2016 & stationdata.Year >= june 2016) %figure out how to put in time that matlab recognizes
 %then within this season, identify max and min O2 at each depth
