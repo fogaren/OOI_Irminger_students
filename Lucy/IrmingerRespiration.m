@@ -36,8 +36,7 @@ end
 %%
 %just kidding I think I want std at each depth
 for i=1:491
-    %depth_id=i
-    std_driftcorr_smoothed = nanstd(oxygen_driftcorr_smoothed, 0,2);
+    std_driftcorr_smoothed(i) = nanstd(oxygen_driftcorr_smoothed(i,:),2);
 end
 
 %%
@@ -92,8 +91,8 @@ strat_season_3 = wfpmerge.time(location);
   
 %%
 %Strat season is different for each depth in water column, so need to write something that identifies the strat season for each depth
-for j = 1: length(wfpmerge.depth_grid)) 
-    strat_season_1(j) = max (
+% for j = 1: length(wfpmerge.depth_grid)) 
+%     strat_season_1(j) = max (
       
 %%      
 % wfpmerge.time_smoothed = movmean(wfpmerge.time, 50);
