@@ -36,32 +36,42 @@ end
 %%
 %just kidding I think I want std at each depth
 for i=1:491
-    std_driftcorr_smoothed(i) = nanstd(oxygen_driftcorr_smoothed(i,:),2);
+    std_driftcorr_smoothed(i) = nanstd(oxygen_driftcorr_smoothed(i,:));
 end
 
 %%
 %returns true for all elements more than three standard deviations from the
 %mean. Along the second dimension which should calculate it along rows and
 %not columns
-%for i=1:491
+
     %TF=isoutlier(oxygen_driftcorr_smoothed,'movmedian', 5, 2);
     B=filloutliers(oxygen_driftcorr_smoothed,'previous', 2);
-%end
+
+    %Added another smoothing pass after having removed the outliers
+    oxygen_driftcorr_nooutliers_smoothed = movmean(B, NumProfilesToSmooth, 2);
 %%
-for i=1:10:491
+for i=10:20:200
     figure(i); 
     depth_id=i;
     plot(wfpmerge.time, B(depth_id,:),'k.'); hold on;
-    plot(wfpmerge.time, B(depth_id,:),'m-'); hold on;
+    plot(wfpmerge.time, oxygen_driftcorr_nooutliers_smoothed(depth_id,:),'m-'); hold on;
     datetick('x',2)
-    title('i')
+    title(['Oxygen time series at ' num2str(wfpmerge.depth_grid(i)) ' meters'])
 end
 %%
 %Identifying 3 strat seasons and pulling out dates for each season
-location = find(wfpmerge.time <= datenum(datetime(2015,10,15)) & wfpmerge.time >= datenum(datetime(2015,3,15)));
-oxygen_strat_season_1 = B(:,location);
-    strat_season_1 = wfpmerge.time(location);
-    
+    %Time constraints to separately specify range of dates for O2 maximum
+    %during winter ventilation and O2 minimum at end of stratified season
+    %Note that you will want to fine-tune these date choices based on
+    %plotting and looking at the results of these calculations
+strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,5,15)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
+strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,2,15)) & wfpmerge.time >= datenum(datetime(2015,10,15)));
+oxygen_strat_beg_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_1_id);
+oxygen_strat_end_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_1_id);
+    strat_beg_1_time = wfpmerge.time(strat_beg_1_id);
+    strat_end_1_time = wfpmerge.time(strat_end_1_id);
+
+%Still need to implement a similar approach for years 2 and 3
 location = find(wfpmerge.time <= datenum(datetime(2016,10,15)) & wfpmerge.time >= datenum(datetime(2016,3,15)));
 oxygen_strat_season_2 = B(:,location);
     strat_season_2 = wfpmerge.time(location);
@@ -70,12 +80,17 @@ location = find(wfpmerge.time <= datenum(datetime(2017,10,15)) & wfpmerge.time >
 oxygen_strat_season_3 = B(:,location);
 strat_season_3 = wfpmerge.time(location);
     
-%% 
+%% Implemented for 1st stratified season - separately find max and min O2 at beginning and end of stratified season
 %Finding max and min O2 at each depth
   for j = 1: length(wfpmerge.depth_grid)
-      max_O2_season1(j) = max(oxygen_strat_season_1(j,:));
-      min_O2_season1(j) = min(oxygen_strat_season_1(j,:));
+      [max_O2_season1(j), id_max_season1(j)] = max(oxygen_strat_beg_1(j,:));
+      [min_O2_season1(j), id_min_season1(j)] = min(oxygen_strat_end_1(j,:));
   end
+  
+%Use the row indices of the maximum and minimum O2 at each depth to
+%determine when those values occur
+maxdate_O2_season1 = strat_beg_1_time(id_max_season1);
+mindate_O2_season1 = strat_end_1_time(id_min_season1);
   
 %%
   for j = 1: length(wfpmerge.depth_grid)
