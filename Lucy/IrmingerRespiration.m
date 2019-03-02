@@ -127,22 +127,25 @@ mindate_O2_season3 = strat_end_3_time(id_min_season3);
 
 %%
 figure (1);
-plot(max_O2_season1 - min_O2_season1, wfpmerge.depth_grid,'k.')
+plot(max_O2_season1(:,1:211) - min_O2_season1(:,1:211), wfpmerge.depth_grid(:,1:211),'k.')
 datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
+ylabel ('Depth')
 
 figure (2);
 plot(max_O2_season2 - min_O2_season2, wfpmerge.depth_grid,'k.')
 datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
+ylabel ('Depth')
 
 figure (3);
 plot(max_O2_season3 - min_O2_season3, wfpmerge.depth_grid,'k.')
 datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
+ylabel ('Depth')
 
 %%  
 % %%
