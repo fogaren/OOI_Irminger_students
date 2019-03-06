@@ -128,24 +128,42 @@ mindate_O2_season3 = strat_end_3_time(id_min_season3);
 %%
 figure (1);
 plot(max_O2_season1(:,1:211) - min_O2_season1(:,1:211), wfpmerge.depth_grid(:,1:211),'k.')
-datetick('x',2)
+%datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
 ylabel ('Depth')
 
 figure (2);
 plot(max_O2_season2 - min_O2_season2, wfpmerge.depth_grid,'k.')
-datetick('x',2)
+%datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
 ylabel ('Depth')
 
 figure (3);
 plot(max_O2_season3 - min_O2_season3, wfpmerge.depth_grid,'k.')
-datetick('x',2)
+%datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
 ylabel ('Depth')
+
+%% Integrate to calculate full stratified season respiration rate
+%Calculate respiration rate in each depth interval:
+   %Total resp rate (in umol O2/kg) x density at each depth interval
+   %(kg/m3) x interval between depths (m) x (conversion from umol to mol) =
+   %rate for each depth bin in mol/m2
+ThermResp = (max_O2_season1 - min_O2_season1)'.*nanmean(Yr1_wfpgrid.pdens,2).*(wfpmerge.depth_grid(2) - wfpmerge.depth_grid(1))/1000000; %respiration per depth interval (mol/m2)
+%Specify how deep to integrate (you could use similar approach to specify where to start from at top)    
+    topdepth = 240;
+    id_topdepth = find(wfpmerge.depth_grid == topdepth);
+    intdepth = 1200; %choose integration depth for base of seasonal thermocline
+    id_basetherm = find(wfpmerge.depth_grid == intdepth);
+%Take integral of ThermResp from toptherm to basetherm using rectangle sum method
+ThermResp_Int = nansum(ThermResp(id_topdepth:id_basetherm)); %mol O2 m-2 respired and ventilated during winter
+%Calculate cumulative integral from top therm to basetherm using trapezoid
+%method (note that you need to choose topdepth to avoid NaNs with this
+%approach)
+ThermResp_CumInt = cumtrapz(ThermResp(id_topdepth:id_basetherm));
 
 %%  
 % %%
