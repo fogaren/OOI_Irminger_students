@@ -1,7 +1,6 @@
 
-%plot(wfpmerge.time,wfpmerge.oxygen_driftcorr)
 %% Filtering (smoothing) the data at each depth
-NumProfilesToSmooth = 10; %set this as a variable so that you can adjust this value
+NumProfilesToSmooth = 5; %set this as a variable so that you can adjust this value
 
 %Updated this to smooth over time, which required adding the dimension "2"
 %since you want to smooth over the 2nd dimension (time) rather than the 1st
@@ -10,9 +9,10 @@ oxygen_driftcorr_smoothed = movmean(wfpmerge.oxygen_driftcorr, NumProfilesToSmoo
 
 %Example plot
 figure(1); clf
-    depth_id = 51; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
+    depth_id = 71; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
 plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
 plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
+plot(wfpmerge.time, max_O2_season2(1,71), 'b.'); hold on;
 datetick('x',2)
 
 %%
@@ -48,7 +48,18 @@ end
     B=filloutliers(oxygen_driftcorr_smoothed,'previous', 2);
 
     %Added another smoothing pass after having removed the outliers
-    oxygen_driftcorr_nooutliers_smoothed = movmean(B, NumProfilesToSmooth, 2);
+    %oxygen_driftcorr_nooutliers_smoothed = movmean(B, NumProfilesToSmooth, 2);
+    
+%%
+figure(2); clf
+    depth_id = 71; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
+plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
+plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
+%plot(wfpmerge.time, B(depth_id,:),'b-'); hold on;
+%plot(wfpmerge.time, max_O2_season2(1,71), 'b.'); hold on;
+datetick('x',2)
+
+
 %%
 for i=10:20:200
     figure(i); 
@@ -64,30 +75,29 @@ end
     %during winter ventilation and O2 minimum at end of stratified season
     %Note that you will want to fine-tune these date choices based on
     %plotting and looking at the results of these calculations
-strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,5,15)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
-strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,2,15)) & wfpmerge.time >= datenum(datetime(2015,10,15)));
-oxygen_strat_beg_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_1_id);
-oxygen_strat_end_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_1_id);
+strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,10,1)) & wfpmerge.time >= datenum(datetime(2015,5,1)));
+strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,3,15)) & wfpmerge.time >= datenum(datetime(2015,11,1)));
+oxygen_strat_beg_1 = B(:,strat_beg_1_id);
+oxygen_strat_end_1 = B(:,strat_end_1_id);
     strat_beg_1_time = wfpmerge.time(strat_beg_1_id);
     strat_end_1_time = wfpmerge.time(strat_end_1_id);
     
     
-strat_beg_2_id = find(wfpmerge.time <= datenum(datetime(2016,5,15)) & wfpmerge.time >= datenum(datetime(2016,2,1)));
-strat_end_2_id = find(wfpmerge.time <= datenum(datetime(2017,2,15)) & wfpmerge.time >= datenum(datetime(2016,10,15)));
-oxygen_strat_beg_2 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_2_id);
-oxygen_strat_end_2 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_2_id);
+strat_beg_2_id = find(wfpmerge.time <= datenum(datetime(2016,9,15)) & wfpmerge.time >= datenum(datetime(2016,5,1)));
+strat_end_2_id = find(wfpmerge.time <= datenum(datetime(2017,3,1)) & wfpmerge.time >= datenum(datetime(2016,12,1)));
+oxygen_strat_beg_2 = B(:,strat_beg_2_id);
+oxygen_strat_end_2 = B(:,strat_end_2_id);
     strat_beg_2_time = wfpmerge.time(strat_beg_2_id);
     strat_end_2_time = wfpmerge.time(strat_end_2_id);
     
     
-strat_beg_3_id = find(wfpmerge.time <= datenum(datetime(2017,5,15)) & wfpmerge.time >= datenum(datetime(2017,2,1)));
-strat_end_3_id = find(wfpmerge.time <= datenum(datetime(2018,2,15)) & wfpmerge.time >= datenum(datetime(2017,10,15)));
-oxygen_strat_beg_3 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_3_id); %takes all O2 values within the specificed time (as the column) and all rows
-oxygen_strat_end_3 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_3_id);
+strat_beg_3_id = find(wfpmerge.time <= datenum(datetime(2017,9,15)) & wfpmerge.time >= datenum(datetime(2017,5,1)));
+strat_end_3_id = find(wfpmerge.time <= datenum(datetime(2018,3,15)) & wfpmerge.time >= datenum(datetime(2017,12,15)));
+oxygen_strat_beg_3 = B(:,strat_beg_3_id); %takes all O2 values within the specificed time (as the column) and all rows
+oxygen_strat_end_3 = B(:,strat_end_3_id);
     strat_beg_3_time = wfpmerge.time(strat_beg_3_id);
     strat_end_3_time = wfpmerge.time(strat_end_3_id);
 
-%Still need to implement a similar approach for years 2 and 3
 
 % location = find(wfpmerge.time <= datenum(datetime(2016,10,15)) & wfpmerge.time >= datenum(datetime(2016,3,15)));
 % oxygen_strat_season_2 = B(:,location);
@@ -127,27 +137,83 @@ mindate_O2_season3 = strat_end_3_time(id_min_season3);
 
 %%
 figure (1);
-subplot(3,
+subplot(1,3,1)
 plot(max_O2_season1(:,1:211) - min_O2_season1(:,1:211), wfpmerge.depth_grid(:,1:211),'k.')
+%datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
 ylabel ('Depth')
+title('Year 1')
 
-figure (2);
+subplot(1,3,2)
 plot(max_O2_season2(:,11:211) - min_O2_season2(:,11:211), wfpmerge.depth_grid(:,11:211),'k.')
+%plot(max_O2_season2 - min_O2_season2, wfpmerge.depth_grid,'k.')
+%datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
 ylabel ('Depth')
+title('Year 2')
 
-figure (3);
+
+subplot(1,3,3)
 plot(max_O2_season3(:,11:211) - min_O2_season3(:,11:211), wfpmerge.depth_grid(:,11:211),'k.')
+%plot(max_O2_season3 - min_O2_season3, wfpmerge.depth_grid,'k.')
+%datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
 ylabel ('Depth')
+title('Year 3')
 
 %%
 %now calculate respiration rates throughout water column by integrating. From Max to Min at each depth makes a curve, then find area under curve 
-%Resp1 = int(
+
+%% Integrate to calculate full stratified season respiration rate
+%Calculate respiration rate in each depth interval:
+   %Total resp rate (in umol O2/kg) x density at each depth interval
+   %(kg/m3) x interval between depths (m) x (conversion from umol to mol) =
+   %rate for each depth bin in mol/m2
+ThermResp1 = (max_O2_season1 - min_O2_season1)'.*nanmean(Yr1_wfpgrid.pdens,2).*(wfpmerge.depth_grid(2) - wfpmerge.depth_grid(1))/1000000; %respiration per depth interval (mol/m2)
+%Specify how deep to integrate (you could use similar approach to specify where to start from at top)    
+    topdepth = 240;
+    id_topdepth = find(wfpmerge.depth_grid == topdepth);
+    intdepth = 1300; %choose integration depth for base of seasonal thermocline
+    id_basetherm = find(wfpmerge.depth_grid == intdepth);
+%Take integral of ThermResp from toptherm to basetherm using rectangle sum method
+ThermResp_Int1 = nansum(ThermResp1(id_topdepth:id_basetherm)); %mol O2 m-2 respired and ventilated during winter
+%Calculate cumulative integral from top therm to basetherm using trapezoid
+%method (note that you need to choose topdepth to avoid NaNs with this
+%approach)
+ThermResp_CumInt1 = cumtrapz(ThermResp1(id_topdepth:id_basetherm));
+
+%%
+%Year 2
+ThermResp2 = (max_O2_season2 - min_O2_season2)'.*nanmean(Yr2_wfpgrid.pdens,2).*(wfpmerge.depth_grid(2) - wfpmerge.depth_grid(1))/1000000; %respiration per depth interval (mol/m2)
+%Specify how deep to integrate (you could use similar approach to specify where to start from at top)    
+    topdepth = 240;
+    id_topdepth = find(wfpmerge.depth_grid == topdepth);
+    intdepth = 1000; %choose integration depth for base of seasonal thermocline
+    id_basetherm = find(wfpmerge.depth_grid == intdepth);
+%Take integral of ThermResp from toptherm to basetherm using rectangle sum method
+ThermResp_Int2 = nansum(ThermResp2(id_topdepth:id_basetherm)); %mol O2 m-2 respired and ventilated during winter
+%Calculate cumulative integral from top therm to basetherm using trapezoid
+%method (note that you need to choose topdepth to avoid NaNs with this
+%approach)
+ThermResp_CumInt2 = cumtrapz(ThermResp2(id_topdepth:id_basetherm));
+
+%%
+%Year 3
+ThermResp3 = (max_O2_season3 - min_O2_season3)'.*nanmean(Yr3_wfpgrid.pdens,2).*(wfpmerge.depth_grid(2) - wfpmerge.depth_grid(1))/1000000; %respiration per depth interval (mol/m2)
+%Specify how deep to integrate (you could use similar approach to specify where to start from at top)    
+    topdepth = 240;
+    id_topdepth = find(wfpmerge.depth_grid == topdepth);
+    intdepth = 1200; %choose integration depth for base of seasonal thermocline
+    id_basetherm = find(wfpmerge.depth_grid == intdepth);
+%Take integral of ThermResp from toptherm to basetherm using rectangle sum method
+ThermResp_Int3 = nansum(ThermResp3(id_topdepth:id_basetherm)); %mol O2 m-2 respired and ventilated during winter
+%Calculate cumulative integral from top therm to basetherm using trapezoid
+%method (note that you need to choose topdepth to avoid NaNs with this
+%approach)
+ThermResp_CumInt3 = cumtrapz(ThermResp3(id_topdepth:id_basetherm));
 
 %%  
 % %%

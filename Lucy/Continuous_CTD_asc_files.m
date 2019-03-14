@@ -212,14 +212,15 @@ axis ij
 %%
 figure (14); clf
 subplot(1,2,1); 
-plot (cast{4}.aou (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2,'Color','g'); hold on; 
-plot (cast{11}.aou (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2, 'Color', 'g'); hold on;
-plot (cast{16}.aou (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2, 'Color','g'); hold on;
-plot (cast{18}.aou (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2, 'Color','g'); hold on;
-plot (cast{6}.aou (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2, 'Color',nicecolor('bw')); hold on; 
-plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidth',2, 'Color',nicecolor('bw')); hold on;
-plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2, 'Color',nicecolor('bw')); hold on;
-plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2, 'Color', nicecolor('bw')); hold on;
+d = nicecolor('R')
+plot (cast{4}.aou (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2,'Color',d); hold on; 
+plot (cast{11}.aou (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2, 'Color', d); hold on;
+plot (cast{16}.aou (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2, 'Color',d); hold on;
+plot (cast{18}.aou (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2, 'Color',d); hold on;
+plot (cast{6}.aou (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2, 'Color',nicecolor('gb')); hold on; 
+plot (cast{8}.aou (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex),'Linewidth',2, 'Color',nicecolor('gb')); hold on;
+plot (cast{12}.aou (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2, 'Color',nicecolor('gb')); hold on;
+plot (cast{15}.aou (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2, 'Color', nicecolor('gb')); hold on;
 %title('AOU Profile Illustrating WVD')
 ylabel('Depth (meters)', 'Fontsize', 15)
 xlabel('AOU (micromoles/L)', 'Fontsize', 15)
@@ -228,14 +229,14 @@ legend ({'Cast 4', 'Cast 11', 'Cast 16','Cast 18', 'Cast 6', 'Cast 8', 'Cast 12'
 axis ij
 
 subplot(1,2,2);
-plot (cast{4}.rho0 (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2,'Color','g'); hold on; 
-plot (cast{11}.rho0 (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2,'Color','g'); hold on;
-plot (cast{16}.rho0 (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2,'Color','g'); hold on;
-plot (cast{18}.rho0 (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2,'Color','g'); hold on;
-plot (cast{6}.rho0 (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on; 
-plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on;
-plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2,'Color',nicecolor('bw')); hold on;
-plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2,'Color', nicecolor('bw')); hold on;
+plot (cast{4}.rho0 (1:cast{4}.maxindex), cast{4}.D (1:cast{4}.maxindex), 'Linewidth',2,'Color',d); hold on; 
+plot (cast{11}.rho0 (1:cast{11}.maxindex), cast{11}.D (1:cast{11}.maxindex), 'Linewidth',2,'Color',d); hold on;
+plot (cast{16}.rho0 (1:cast{16}.maxindex), cast{16}.D (1:cast{16}.maxindex), 'Linewidth',2,'Color', d); hold on;
+plot (cast{18}.rho0 (1:cast{18}.maxindex), cast{18}.D (1:cast{18}.maxindex), 'Linewidth',2,'Color', d); hold on;
+plot (cast{6}.rho0 (1:cast{6}.maxindex), cast{6}.D (1:cast{6}.maxindex), 'Linewidth',2,'Color',nicecolor('gb')); hold on; 
+plot (cast{8}.rho0 (1:cast{8}.maxindex), cast{8}.D (1:cast{8}.maxindex), 'Linewidth',2,'Color',nicecolor('gb')); hold on;
+plot (cast{12}.rho0 (1:cast{12}.maxindex), cast{12}.D (1:cast{12}.maxindex), 'Linewidth',2,'Color',nicecolor('gb')); hold on;
+plot (cast{15}.rho0 (1:cast{15}.maxindex), cast{15}.D (1:cast{15}.maxindex), 'Linewidth',2,'Color', nicecolor('gb')); hold on;
 %title('Density Profile Illustrating WVD')
 ylabel('Depth (meters)', 'Fontsize', 15)
 xlabel('Density (kg/m^3)','Fontsize', 15)
