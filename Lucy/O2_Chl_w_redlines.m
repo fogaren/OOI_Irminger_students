@@ -48,20 +48,32 @@ title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 % datetick('x',2,'keeplimits');
 % title('Oxygen concentration (mol/L)', 'Fontsize', 12)
 
-% subplot(312) %Oxygen saturation
-% cmin = -15; cmax = 0; %manually set min and max
-%     cvec = [cmin:(cmax-cmin)/cints:cmax];
-% contourf(X,Y,wfpmerge.O2satcorr,cvec,'linecolor','none'); hold on;
-% axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
-% colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)', 'Fontsize', 10); hcb = colorbar; set(hcb,'location','eastoutside')
-% datetick('x',2,'keeplimits');
-% title('Oxygen saturation (%)', 'Fontsize', 12)
-% 
-% subplot(313) %Chlorophyll
-% cmin = 0; cmax = 0.3; %manually set min and max
-%     cvec = [cmin:(cmax-cmin)/cints:cmax];
-% contourf(X,Y,wfpmerge.chla,cvec,'linecolor','none'); hold on;
-% axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
-% colormap(C2); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
-% datetick('x',2,'keeplimits');
-% title('Chlorophyll (µg/L)', 'Fontsize', 15)
+figure(2);clf; %Oxygen saturation
+cmin = -15; cmax = 0; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.O2satcorr,cvec,'linecolor','none'); hold on;
+plot(strat_beg_1_time(id_max_season1), wfpmerge.depth_grid, 'r.'); hold on;
+plot(strat_end_1_time(id_min_season1), wfpmerge.depth_grid, 'y.'); hold on;
+plot(strat_beg_2_time(id_max_season2), wfpmerge.depth_grid, 'r.'); hold on;
+plot(strat_end_2_time(id_min_season2), wfpmerge.depth_grid, 'y.'); hold on;
+plot(strat_beg_3_time(id_max_season3), wfpmerge.depth_grid, 'r.'); hold on;
+plot(strat_end_3_time(id_min_season3), wfpmerge.depth_grid, 'y.'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C); set(gca,'YDir','reverse'); ylabel('Depth (m)', 'Fontsize', 10); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Oxygen saturation (%)', 'Fontsize', 12)
+
+figure(3);clf; %Chlorophyll
+cmin = 0; cmax = 0.3; %manually set min and max
+    cvec = [cmin:(cmax-cmin)/cints:cmax];
+contourf(X,Y,wfpmerge.chla,cvec,'linecolor','none'); hold on;
+plot(strat_beg_1_time(id_max_season1), wfpmerge.depth_grid, 'r.'); hold on;
+plot(strat_end_1_time(id_min_season1), wfpmerge.depth_grid, 'y.'); hold on;
+plot(strat_beg_2_time(id_max_season2), wfpmerge.depth_grid, 'r.'); hold on;
+plot(strat_end_2_time(id_min_season2), wfpmerge.depth_grid, 'y.'); hold on;
+plot(strat_beg_3_time(id_max_season3), wfpmerge.depth_grid, 'r.'); hold on;
+plot(strat_end_3_time(id_min_season3), wfpmerge.depth_grid, 'y.'); hold on;
+axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
+colormap(C2); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
+datetick('x',2,'keeplimits');
+title('Chlorophyll (µg/L)', 'Fontsize', 15)

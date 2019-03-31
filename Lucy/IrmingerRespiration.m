@@ -1,6 +1,6 @@
 
 %% Filtering (smoothing) the data at each depth
-NumProfilesToSmooth = 5; %set this as a variable so that you can adjust this value
+NumProfilesToSmooth = 15; %set this as a variable so that you can adjust this value
 
 %Updated this to smooth over time, which required adding the dimension "2"
 %since you want to smooth over the 2nd dimension (time) rather than the 1st
@@ -12,7 +12,7 @@ figure(1); clf
     depth_id = 71; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
 plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
 plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
-plot(wfpmerge.time, max_O2_season2(1,71), 'b.'); hold on;
+%plot(wfpmerge.time, max_O2_season2(1,71), 'b.'); hold on;
 datetick('x',2)
 
 %%
@@ -48,7 +48,7 @@ end
     B=filloutliers(oxygen_driftcorr_smoothed,'previous', 2);
 
     %Added another smoothing pass after having removed the outliers
-    %oxygen_driftcorr_nooutliers_smoothed = movmean(B, NumProfilesToSmooth, 2);
+    oxygen_driftcorr_nooutliers_smoothed = movmean(B, NumProfilesToSmooth, 10);
     
 %%
 figure(2); clf
@@ -77,24 +77,24 @@ end
     %plotting and looking at the results of these calculations
 strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,8,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
 strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,3,15)) & wfpmerge.time >= datenum(datetime(2015,11,1)));
-oxygen_strat_beg_1 = B(:,strat_beg_1_id);
-oxygen_strat_end_1 = B(:,strat_end_1_id);
+oxygen_strat_beg_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_1_id);
+oxygen_strat_end_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_1_id);
     strat_beg_1_time = wfpmerge.time(strat_beg_1_id);
     strat_end_1_time = wfpmerge.time(strat_end_1_id);
     
     
 strat_beg_2_id = find(wfpmerge.time <= datenum(datetime(2016,7,15)) & wfpmerge.time >= datenum(datetime(2016,2,1)));
 strat_end_2_id = find(wfpmerge.time <= datenum(datetime(2017,3,1)) & wfpmerge.time >= datenum(datetime(2016,11,1)));
-oxygen_strat_beg_2 = B(:,strat_beg_2_id);
-oxygen_strat_end_2 = B(:,strat_end_2_id);
+oxygen_strat_beg_2 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_2_id);
+oxygen_strat_end_2 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_2_id);
     strat_beg_2_time = wfpmerge.time(strat_beg_2_id);
     strat_end_2_time = wfpmerge.time(strat_end_2_id);
     
     
 strat_beg_3_id = find(wfpmerge.time <= datenum(datetime(2017,9,15)) & wfpmerge.time >= datenum(datetime(2017,2,1)));
 strat_end_3_id = find(wfpmerge.time <= datenum(datetime(2018,3,15)) & wfpmerge.time >= datenum(datetime(2017,11,1)));
-oxygen_strat_beg_3 = B(:,strat_beg_3_id); %takes all O2 values within the specificed time (as the column) and all rows
-oxygen_strat_end_3 = B(:,strat_end_3_id);
+oxygen_strat_beg_3 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_3_id); %takes all O2 values within the specificed time (as the column) and all rows
+oxygen_strat_end_3 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_3_id);
     strat_beg_3_time = wfpmerge.time(strat_beg_3_id);
     strat_end_3_time = wfpmerge.time(strat_end_3_id);
 
@@ -140,8 +140,9 @@ for i=41:10:101 %101 is 650 meters, 41 is 350 meters
 figure(i)
     i=depth_id; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
 plot(wfpmerge.time, wfpmerge.oxygen_driftcorr(depth_id,:),'k.'); hold on;
-%plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'m-'); hold on;
-plot(wfpmerge.time, B(depth_id,:),'b-'); hold on;
+plot(wfpmerge.time, oxygen_driftcorr_nooutliers_smoothed(depth_id,:),'m-'); hold on;
+%plot(wfpmerge.time, oxygen_driftcorr_smoothed(depth_id,:),'r-'); hold on;
+%plot(wfpmerge.time, B(depth_id,:),'b-'); hold on;
 %plot(wfpmerge.time, max_O2_season2(1,71), 'b.'); hold on;
 % plot(wfpmerge.time, min_O2_season1(1,71), 'b.'); hold on;
 % plot(wfpmerge.time, min_O2_season2(1,71), 'm.'); hold on;
@@ -158,14 +159,27 @@ plot(mindate_O2_season1(i,1), min_O2_season1(1,i), 'm.', 'MarkerSize', 25); hold
 plot(mindate_O2_season2(i,1), min_O2_season2(1,i), 'r.', 'MarkerSize', 25); hold on;
 plot(mindate_O2_season3(i,1), min_O2_season3(1,i), 'g.', 'MarkerSize', 25); hold on;
 
+p(depth_id) = polyfit(wfpmerge.time(maxdate_O2_season1(i,1) to mindate_O2_season1(i,1)), oxygen_driftcorr_nooutliers_smoothed(max_O2_season1(1,i) to min_O2_season1(1,i)) %trying to find an easy way to subset the data into the stratified season chunks
+
 datetick('x',2)
 end
 
+%%
+p=polyfit(x,y)
+%%
+%Plot CHL at various depths 
+for i=41:10:101 %101 is 650 meters, 41 is 350 meters
+figure(i)
+    i=depth_id; %Example plot at the 11th depth in depth_grid (which is 400 m), in depth_grid, 400m is 51st column
+plot(wfpmerge.time, wfpmerge.chla(depth_id,:),'k.'); hold on;
+ylim([0 0.3])
+datetick('x',2)
+end
 
 %%
 figure (1);
 subplot(1,3,1)
-plot(max_O2_season1(:,1:211) - min_O2_season1(:,1:211), wfpmerge.depth_grid(:,1:211),'k.')
+plot(max_O2_season1(:,15:211) - min_O2_season1(:,15:211), wfpmerge.depth_grid(:,15:211),'k.')
 %datetick('x',2)
 axis ij
 xlabel ('O2 decrease')
@@ -183,7 +197,7 @@ title('Year 2')
 
 
 subplot(1,3,3)
-plot(max_O2_season3(:,11:211) - min_O2_season3(:,11:211), wfpmerge.depth_grid(:,11:211),'k.')
+plot(max_O2_season3(:,31:211) - min_O2_season3(:,31:211), wfpmerge.depth_grid(:,31:211),'k.')
 %plot(max_O2_season3 - min_O2_season3, wfpmerge.depth_grid,'k.')
 %datetick('x',2)
 axis ij
