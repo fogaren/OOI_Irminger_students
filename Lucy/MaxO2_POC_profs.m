@@ -1,0 +1,43 @@
+figure(1);clf;
+d = nicecolor('Bwwww')
+e = nicecolor('Gk')
+f = nicecolor('rw')
+plot(max_O2_season3(21:375),wfpmerge.depth_grid(21:375),'.','Color', d); hold on;
+plot(max_O2_season2(21:375),wfpmerge.depth_grid(21:375),'.', 'Color',e, 'LineWidth', 4); hold on;
+plot(max_O2_season1(21:375),wfpmerge.depth_grid(21:375),'.', 'Color',f, 'LineWidth', 4); hold on;
+axis ij
+xlabel('Maximum oxygen concentration', 'Fontsize', 15)
+ylabel('Depth (m)', 'Fontsize', 15)
+legend('Year 3', 'Year 2', 'Year 1', 'location', 'southeast')
+
+%%
+%Plotting POC next to backscatter 
+%first plot POC profile from HYPM cast (6)
+depth_cast6 = [ 20 50 100 150 175 200 300 400 600]
+cast6_POCvals = [20.33 14.320 6.227 2.645 2.315 2.44 2.042 1.963 2.381]
+
+%this is the date that corresponds closest to June 9 which is the day the
+%profile was taken: 737219.834895833 it's id is wfpmerge.time(783,1)
+
+
+% figure (2);
+% plot(cast6_POCvals, depth_cast6, 'r.', 'MarkerSize', 12); hold on;
+% plot(wfpmerge.backscatter(1:200,784), wfpmerge.depth_grid(1:200), 'b.'); hold on;
+% axis ij
+% ylabel('Depth (m)', 'Fontsize', 15)
+
+%% Plot Backscatter profile from HYPM 
+figure(2);
+plot(wfpmerge.backscatter(1:271,784), wfpmerge.depth_grid(1:271), 'b.'); hold on;
+axis ij
+ylabel('Depth (m)', 'Fontsize', 15)
+xlabel('Optical Backscatter m-1')
+%% %Plot Backscatter next to POC profile
+figure (3);clf;
+scatter(cast6_POCvals, depth_cast6, 'r.'); hold on;
+    ax1=gca; ax1_pos=ax1.Position;
+    ax2 = axes('Position', ax1_pos,'XAxisLocation', 'top');
+    
+scatter(wfpmerge.backscatter(1:91,784), wfpmerge.depth_grid(1:91), 'Parent', ax2,'b.'); hold on;
+axis ij
+ylabel('Depth (m)', 'Fontsize', 15)
