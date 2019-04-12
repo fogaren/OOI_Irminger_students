@@ -24,7 +24,6 @@ Yr2_wfpgrid.O2sat_driftcorr = (Yr2_wfpgrid.oxygen_driftcorr./Yr2_wfpgrid.O2equil
 Yr3_wfpgrid.O2sat_driftcorr = (Yr3_wfpgrid.oxygen_driftcorr./Yr3_wfpgrid.O2equil - 1)*100;
 Yr4_wfpgrid.O2sat_driftcorr = (Yr4_wfpgrid.oxygen_driftcorr./Yr4_wfpgrid.O2equil - 1)*100;
 
-
 %%
 wfpmerge.oxygen_driftcorr = [Yr1_wfpgrid.oxygen_driftcorr Yr2_wfpgrid.oxygen_driftcorr Yr3_wfpgrid.oxygen_driftcorr Yr4_wfpgrid.oxygen_driftcorr];
 wfpmerge.O2sat_driftcorr = [Yr1_wfpgrid.O2sat_driftcorr Yr2_wfpgrid.O2sat_driftcorr Yr3_wfpgrid.O2sat_driftcorr Yr4_wfpgrid.O2sat_driftcorr];
@@ -83,7 +82,7 @@ contourf(X,Y,wfpmerge.backscatter,cvec,'linecolor','none'); hold on;
 axis([min(wfpmerge.time) max(wfpmerge.time) mindepth maxdepth]); caxis([cmin cmax]);
 colormap(C2); set(gca,'YDir','reverse'); ylabel('Depth (m)'); hcb = colorbar; set(hcb,'location','eastoutside')
 datetick('x',2,'keeplimits');
-title('Backscatter')
+title('Backscatter', 'Fontsize', 15)
 
     subplot(212) %Chlorophyll
 cmin = 0; cmax = 0.3; %manually set min and max

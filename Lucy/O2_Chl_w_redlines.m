@@ -9,15 +9,15 @@
 %Make plotting grid
 [X,Y] = meshgrid(wfpmerge.time, wfpmerge.depth_grid);
 
-figure(1);clf;
+figure(5);clf;
 %subplot(311) %Oxygen_corr concentration
 cmin = 260; cmax = 320; %manually set min and max
     cvec = [cmin:(cmax-cmin)/cints:cmax];
 contourf(X,Y,wfpmerge.oxygen_corr,cvec,'linecolor','none'); hold on; %(11:271,:) for the Z variable?
 %contourf(X,Y,max_O2_season1,cvec,'r.'); hold on;
 %plot(strat_beg_1_time(id_max_season1(1,15:1,231)), wfpmerge.depth_grid(1,15:1,231), 'r.'); hold on; %want the y axis to be just the location of the max or min O2
-plot(strat_beg_1_time(id_max_season1(11:211)), wfpmerge.depth_grid(11:211), 'r.'); hold on; %1200 m
-plot(strat_end_1_time(id_min_season1(11:211)), wfpmerge.depth_grid(11:211), 'y.'); hold on; %1200 m
+plot(strat_beg_1_time(id_max_season1(23:191)), wfpmerge.depth_grid(23:191), 'r.'); hold on; %1200 m
+plot(strat_end_1_time(id_min_season1(11:191)), wfpmerge.depth_grid(11:191), 'y.'); hold on; %1200 m
 plot(strat_beg_2_time(id_max_season2(11:191)), wfpmerge.depth_grid(11:191), 'r.'); hold on;
 plot(strat_end_2_time(id_min_season2(11:131)), wfpmerge.depth_grid(11:131), 'y.'); hold on;
 plot(strat_beg_3_time(id_max_season3(11:131)), wfpmerge.depth_grid(11:131), 'r.'); hold on; %800 m
