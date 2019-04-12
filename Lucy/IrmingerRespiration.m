@@ -43,15 +43,15 @@ end
     %during winter ventilation and O2 minimum at end of stratified season
     %Note that you will want to fine-tune these date choices based on
     %plotting and looking at the results of these calculations
-strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,6,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
-strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,3,15)) & wfpmerge.time >= datenum(datetime(2015,12,20)));
+strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,8,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
+strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,3,15)) & wfpmerge.time >= datenum(datetime(2015,11,1)));
 oxygen_strat_beg_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_1_id);
 oxygen_strat_end_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_1_id);
     strat_beg_1_time = wfpmerge.time(strat_beg_1_id);
     strat_end_1_time = wfpmerge.time(strat_end_1_id);
     
 strat_beg_2_id = find(wfpmerge.time <= datenum(datetime(2016,6,1)) & wfpmerge.time >= datenum(datetime(2016,2,1)));
-strat_end_2_id = find(wfpmerge.time <= datenum(datetime(2017,3,1)) & wfpmerge.time >= datenum(datetime(2016,12,15)));
+strat_end_2_id = find(wfpmerge.time <= datenum(datetime(2017,3,10)) & wfpmerge.time >= datenum(datetime(2016,12,20)));
 oxygen_strat_beg_2 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_2_id);
 oxygen_strat_end_2 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_2_id);
     strat_beg_2_time = wfpmerge.time(strat_beg_2_id);
@@ -182,8 +182,12 @@ strat_season_length3 = (mindate_O2_season3 - maxdate_O2_season3);
 %Calculate resp rates for each year
 
 resp_rate1 = (strat_season_length1/365).*p1(:,1);
-resp_rate2 = strat_season_length2.*p2(:,1);
-resp_rate3 = strat_season_length3.*p3(:,1);
+resp_rate2 = (strat_season_length2/365).*p2(:,1);
+resp_rate3 = (strat_season_length3/365).*p3(:,1);
+
+sum_resp1 = sum(abs(resp_rate1))
+sum_resp2 = sum(abs(resp_rate2))
+sum_resp3 = sum(abs(resp_rate3))
 %maxdate-mindate and multiple by slopes 
 
 %%
@@ -199,7 +203,7 @@ end
 %%
 figure (1);
 subplot(1,3,1)
-plot(max_O2_season1(:,15:211) - min_O2_season1(:,15:211), wfpmerge.depth_grid(:,15:211),'k.')
+plot(max_O2_season1(:,23:211) - min_O2_season1(:,23:211), wfpmerge.depth_grid(:,23:211),'k.')
 %datetick('x',2)
 axis ij
 xlabel ('O2 decrease (?mol kg^{-1})', 'FontSize', 14)
