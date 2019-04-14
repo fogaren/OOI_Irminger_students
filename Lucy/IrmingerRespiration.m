@@ -43,7 +43,11 @@ end
     %during winter ventilation and O2 minimum at end of stratified season
     %Note that you will want to fine-tune these date choices based on
     %plotting and looking at the results of these calculations
+<<<<<<< HEAD
+strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,8,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
+=======
 strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,6,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
+>>>>>>> 2ae6946c33fc45c8b600c89e120a1303c724de82
 strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,3,15)) & wfpmerge.time >= datenum(datetime(2015,11,1)));
 oxygen_strat_beg_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_1_id);
 oxygen_strat_end_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_1_id);
@@ -180,17 +184,20 @@ strat_season_length2 = (mindate_O2_season2 - maxdate_O2_season2);
 strat_season_length3 = (mindate_O2_season3 - maxdate_O2_season3);
 
 %Calculate resp rates for each year
-% resp_rate1 = (strat_season_length1/365).*p1(:,1);
-% resp_rate2 = (strat_season_length2/365).*p2(:,1);
-% resp_rate3 = (strat_season_length3/365).*p3(:,1);
-% 
-% sum_resp1 = sum(abs(resp_rate1))
-% sum_resp2 = sum(abs(resp_rate2))
-% sum_resp3 = sum(abs(resp_rate3))
 
+<<<<<<< HEAD
+resp_rate1 = (strat_season_length1/365).*p1(:,1);
+resp_rate2 = (strat_season_length2/365).*p2(:,1);
+resp_rate3 = (strat_season_length3/365).*p3(:,1);
+
+sum_resp1 = sum(abs(resp_rate1))
+sum_resp2 = sum(abs(resp_rate2))
+sum_resp3 = sum(abs(resp_rate3))
+=======
 resp_rate1 = (strat_season_length1).*-p1(:,1);
 resp_rate2 = strat_season_length2.*-p2(:,1);
 resp_rate3 = strat_season_length3.*-p3(:,1);
+>>>>>>> 2ae6946c33fc45c8b600c89e120a1303c724de82
 %maxdate-mindate and multiple by slopes 
 
 %% Plot calculated respiration rates
@@ -218,7 +225,11 @@ end
 figure (1);
     top_id = 21;
 subplot(1,3,1)
+<<<<<<< HEAD
+plot(max_O2_season1(:,23:211) - min_O2_season1(:,23:211), wfpmerge.depth_grid(:,23:211),'k.')
+=======
 plot(max_O2_season1(:,top_id:211) - min_O2_season1(:,top_id:211), wfpmerge.depth_grid(:,top_id:211),'k.')
+>>>>>>> 2ae6946c33fc45c8b600c89e120a1303c724de82
 %datetick('x',2)
 axis ij
 xlabel ('O_2 decrease (\mumol kg^{-1})', 'FontSize', 14)
