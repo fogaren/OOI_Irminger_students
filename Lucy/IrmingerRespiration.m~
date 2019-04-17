@@ -191,11 +191,10 @@ sum_resp1 = sum(abs(resp_rate1)); %sums all depths
 sum_resp2 = sum(abs(resp_rate2));
 sum_resp3 = sum(abs(resp_rate3));
 
-%below uses the same depths as the max-min method so as to see if they
-%correspond
-sum_resp1_final = sum(abs(resp_rate1(19:171,:))); %240 to 1000 meters
-sum_resp2_final = sum(abs(resp_rate2(19:191,:))); %240 to 1100 meters 
-sum_resp3_final = sum(abs(resp_rate3(51:131,:))); %400 to 800 meters
+sum_resp1_final = sum(abs(resp_rate1(19:171,:)));
+sum_resp2_final = sum(abs(resp_rate2(19:191,:)));
+sum_resp3_final = sum(abs(resp_rate3(19:11,:)));
+
 
 
 
