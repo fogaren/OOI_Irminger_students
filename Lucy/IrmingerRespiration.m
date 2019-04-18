@@ -43,8 +43,8 @@ end
     %during winter ventilation and O2 minimum at end of stratified season
     %Note that you will want to fine-tune these date choices based on
     %plotting and looking at the results of these calculations
-strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,8,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
-%strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,6,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
+%strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,8,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
+strat_beg_1_id = find(wfpmerge.time <= datenum(datetime(2015,6,1)) & wfpmerge.time >= datenum(datetime(2015,2,1)));
 strat_end_1_id = find(wfpmerge.time <= datenum(datetime(2016,3,15)) & wfpmerge.time >= datenum(datetime(2015,11,1)));
 oxygen_strat_beg_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_beg_1_id);
 oxygen_strat_end_1 = oxygen_driftcorr_nooutliers_smoothed(:,strat_end_1_id);
@@ -183,21 +183,41 @@ strat_season_length3 = (mindate_O2_season3 - maxdate_O2_season3);
 %Calculate resp rates for each year for method 2 -- currently these numbers
 %look good and are better than what I was getting before! 
 
-resp_rate1 = (strat_season_length1/365).*p1(:,1);
-resp_rate2 = (strat_season_length2/365).*p2(:,1);
-resp_rate3 = (strat_season_length3/365).*p3(:,1);
+%\mumol/kg = days * chang(\mumol kg^{-1})/kg/day 
+chang_O2_1 = strat_season_length1.* p1(:,1);
+chang_O2_2 = strat_season_length2.* p2(:,1);
+chang_O2_3 = strat_season_length3.* p3(:,1);
 
-sum_resp1 = sum(abs(resp_rate1)); %sums all depths
-sum_resp2 = sum(abs(resp_rate2));
-sum_resp3 = sum(abs(resp_rate3));
+%avg density of each year
+avg_pdens1 = nanmean(wfpmerge.pdens(:,2:261)); 
+    avg_pdens1 = nanmean(avg_pdens1);
+avg_pdens2 = nanmean(wfpmerge.pdens(:,262:522));
+    avg_pdens2 = nanmean(avg_pdens2);
+avg_pdens3 = nanmean(wfpmerge.pdens(:,522:783)); 
+    avg_pdens3 = nanmean(avg_pdens3);
 
-%below uses the same depths as the max-min method so as to see if they
+%O2 (\mumol/m^3) = changO2 (\mumol/kg) * density  (kg/m^3)
+%I'm not sure exactly where to multiply by 5, is it below?
+tot_resp_1 = chang_O2_1 * avg_pdens1*5; 
+tot_resp_2 = chang_O2_2 * avg_pdens2;
+tot_resp_3 = chang_O2_3 * avg_pdens3;
+
+%Once above calculations are finalized I would then just sum the whole
+%water column like these calculations below: 
+sum_resp1_final = sum(abs(tot_resp_1(19:171,:))); %240 to 1000 meters
+sum_resp2_final = sum(abs(tot_resp_2(19:191,:))); %240 to 1100 meters 
+sum_resp3_final = sum(abs(tot_resp_3(51:131,:))); %400 to 800 meters
+
+%above uses the same depths as the max-min method so as to see if they
 %correspond
-sum_resp1_final = sum(abs(resp_rate1(19:171,:))); %240 to 1000 meters
-sum_resp2_final = sum(abs(resp_rate2(19:191,:))); %240 to 1100 meters 
-sum_resp3_final = sum(abs(resp_rate3(51:131,:))); %400 to 800 meters
 
+% resp_rate1 = (strat_season_length1/365).*p1(:,1);
+% resp_rate2 = (strat_season_length2/365).*p2(:,1);
+% resp_rate3 = (strat_season_length3/365).*p3(:,1);
 
+% sum_resp1 = sum(abs(resp_rate1)); %sums all depths
+% sum_resp2 = sum(abs(resp_rate2));
+% sum_resp3 = sum(abs(resp_rate3));
 
 %% %Alternative way to calculate respiration rates below where we do not divide by 365
 % resp_rate1 = (strat_season_length1).*-p1(:,1);
