@@ -189,24 +189,32 @@ chang_O2_2 = strat_season_length2.* p2(:,1);
 chang_O2_3 = strat_season_length3.* p3(:,1);
 
 %avg density of each year
-avg_pdens1 = nanmean(wfpmerge.pdens(:,2:261)); 
-    avg_pdens1 = nanmean(avg_pdens1);
-avg_pdens2 = nanmean(wfpmerge.pdens(:,262:522));
-    avg_pdens2 = nanmean(avg_pdens2);
-avg_pdens3 = nanmean(wfpmerge.pdens(:,522:783)); 
-    avg_pdens3 = nanmean(avg_pdens3);
+%%%% You want an annual mean density for each depth in each year (so output
+%%%% should have the same length as depth_grid, which also matches the
+%%%% length of chang_O2_X from above). I am assuming the specified numbers
+%%%% below mark the beginning and end of each of the three stratified seasons.
+avg_pdens1 = nanmean(wfpmerge.pdens(:,2:261)'); 
+    %avg_pdens1 = nanmean(avg_pdens1);
+avg_pdens2 = nanmean(wfpmerge.pdens(:,262:522)');
+    %avg_pdens2 = nanmean(avg_pdens2);
+avg_pdens3 = nanmean(wfpmerge.pdens(:,522:783)'); 
+    %avg_pdens3 = nanmean(avg_pdens3);
 
-%O2 (\mumol/m^3) = changO2 (\mumol/kg) * density  (kg/m^3)
+%O2 (\mumol/m^3) = changO2 (\mumol/kg) * density  (kg/m^3) * 5 meters
 %I'm not sure exactly where to multiply by 5, is it below?
-tot_resp_1 = chang_O2_1 * avg_pdens1*5; 
-tot_resp_2 = chang_O2_2 * avg_pdens2;
-tot_resp_3 = chang_O2_3 * avg_pdens3;
+%%% --> works to do this here --> final units are umol/m2 and will give you
+%%% a vector of integrals for each of the 5 m rectangles through the water
+%%% column that you will sum (integrate) below.
+tot_resp_1 = chang_O2_1.* avg_pdens1' * 5; 
+tot_resp_2 = chang_O2_2.* avg_pdens2' * 5;
+tot_resp_3 = chang_O2_3.* avg_pdens3' * 5;
 
 %Once above calculations are finalized I would then just sum the whole
 %water column like these calculations below: 
-sum_resp1_final = sum(abs(tot_resp_1(19:171,:))); %240 to 1000 meters
-sum_resp2_final = sum(abs(tot_resp_2(19:191,:))); %240 to 1100 meters 
-sum_resp3_final = sum(abs(tot_resp_3(51:131,:))); %400 to 800 meters
+%%% Convert from umol to mol
+sum_resp1_final = sum(abs(tot_resp_1(19:171,:)))/10^6; %240 to 1000 meters
+sum_resp2_final = sum(abs(tot_resp_2(19:191,:)))/10^6; %240 to 1100 meters 
+sum_resp3_final = sum(abs(tot_resp_3(51:131,:)))/10^6; %400 to 800 meters
 
 %above uses the same depths as the max-min method so as to see if they
 %correspond
